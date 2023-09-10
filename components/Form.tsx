@@ -170,7 +170,7 @@ export default function Form() {
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
         id={id}
         type={type}
         placeholder={label}
@@ -196,6 +196,7 @@ export default function Form() {
 
           Our aim is to continue the strong traditions of this fraternity and enrich the community of Boston University. We hope you will join us on our journey!</h3> */}
       </div>
+
       {renderInput("firstName", "First Name", "text", true)}
       {renderInput("lastName", "Last Name", "text", true)}
       {renderInput("preferredName", "Preferred Name")}
@@ -209,7 +210,7 @@ export default function Form() {
         {Object.entries(formData.colleges).map(([college, isChecked]) => (
           <label key={college} className="flex text-xs">
             <input
-              className="mr-2"
+              className="mr-2 focus:ring-purple-300 text-purple-600"
               type="checkbox"
               name={college}
               checked={isChecked}
@@ -223,9 +224,9 @@ export default function Form() {
 
 
       {renderInput("email", "Email", "email", true)}
-      {renderInput("phone", "Phone Number", "phone", true)}
-      {renderInput("linkedin", "LinkedIn Profile", "phone")}
-      {renderInput("website", "Website / Portfolio", "phone")}
+      {renderInput("phone", "Phone Number", "text", true)}
+      {renderInput("linkedin", "LinkedIn Profile", "text", true)}
+      {renderInput("website", "Website / Portfolio", "text", true)}
 
 
       {/* Upload your resume */}
