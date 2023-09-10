@@ -65,6 +65,8 @@ const initialValues: FormData = {
 
 export default function Form() {
   const [formData, setFormData] = useState<FormData>(initialValues);
+  const [resumeFileName, setResumeFileName] = useState<String>("");
+  const [imageFileName, setImageFileName] = useState<String>("");
 
   const maxWordCount = 200; // Adjust as needed
   const presetQuestions = [
@@ -122,6 +124,11 @@ export default function Form() {
     const file = e.target.files ? e.target.files[0] : null;
 
     if (file) {
+      if (id === "resume") {
+        setResumeFileName(file.name);
+      } else if (id === "image") {
+        setImageFileName(file.name);
+      }
       // Read the file as a base64 string
       const reader = new FileReader();
       reader.onload = () => {
@@ -221,19 +228,40 @@ export default function Form() {
       {renderInput("website", "Website / Portfolio", "phone")}
 
 
-      <div className="flex">
-        <label className="block mb-4 text-md font-medium text-gray-900">Upload your resume</label>
-        <input
-          type="file"
-          id="resume" // Use "resume" for the resume upload input
-          name="resume"
-          onChange={handleFileChange} // Handle resume upload
-        />
+      {/* Upload your resume */}
+      <div className="flex flex-col mb-6">
+        <label className="block mb-4 text-sm font-medium text-gray-900">Upload your resume <span className="text-red-500">*</span></label>
+        <div className="relative">
+          <input
+            type="file"
+            id="resume"
+            name="resume"
+            className="absolute inset-0 opacity-0 z-10"
+            onChange={handleFileChange}
+          />
+          <button className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2">
+            Upload Resume
+          </button>
+          {resumeFileName && <p className="text-gray-500 text-xs mt-1">{resumeFileName}</p>}
+        </div>
       </div>
 
-      <div className="flex">
-        <label className="block mb-4 text-md font-medium text-gray-900">Upload a picture of yourself</label>
-        <input type="file" id="fileInput" name="fileInput" />
+      {/* Upload a picture of yourself */}
+      <div className="flex flex-col mb-6">
+        <label className="block mb-4 text-sm font-medium text-gray-900">Upload a picture of yourself <span className="text-red-500">*</span></label>
+        <div className="relative">
+          <input
+            type="file"
+            id="image"
+            name="image"
+            className="absolute inset-0 opacity-0 z-10"
+            onChange={handleFileChange}
+          />
+          <button className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2">
+            Upload Image
+          </button>
+          {imageFileName && <p className="text-gray-500 text-xs mt-1">{imageFileName}</p>}
+        </div>
       </div>
 
       {renderResponseInputs()}
