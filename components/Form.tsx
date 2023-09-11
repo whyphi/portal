@@ -201,7 +201,6 @@ export default function Form() {
   }
 
   return (
-
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
       <div>
         <h1 className={textStyles.title}>PCT Fall 2023 Application</h1>
@@ -286,6 +285,7 @@ export default function Form() {
       >
         Submit
       </button>
+
     </form>
   )
 }
