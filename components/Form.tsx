@@ -174,7 +174,7 @@ export default function Form() {
         id={id}
         type={type}
         placeholder={label}
-        value={formData[id]}
+        value={formData[id] as string}
         onChange={handleChange}
         required={required}
       />
@@ -189,7 +189,7 @@ export default function Form() {
 
   return (
 
-    <form onSubmit={handleSubmit} className="flex flex-col">
+    <form onSubmit={handleSubmit} className="flex flex-col mb-8">
       <div>
         <h1 className={textStyles.title}>PCT Fall 2023 Application</h1>
         {/* <h3 className={textStyles.subtitle}>To promote the cause of higher business education and training for all individuals; To foster high ideals for everyone pursuing a career in business; To encourage fraternity and cooperation among people preparing for such careers; To stimulate the spirit of sacrifice and unselfish devotion to the attainment of such ends.
@@ -268,12 +268,12 @@ export default function Form() {
       {renderResponseInputs()}
 
       <button
-        className="ml-auto items-center mt-8 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-        onClick={handleSubmit} // Use onClick to trigger handleSubmit
-        type="button" // Use type="button" to prevent form submission
-      >
+        type="button"
+        className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        onClick={handleSubmit}>
         Submit
       </button>
+
     </form>
   )
 }
