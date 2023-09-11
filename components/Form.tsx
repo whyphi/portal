@@ -1,5 +1,6 @@
 'use client'
 import { useState } from "react";
+import { Path, useForm, UseFormRegister, SubmitHandler } from "react-hook-form"
 
 interface FormData {
   firstName: string;
@@ -64,6 +65,15 @@ const initialValues: FormData = {
 };
 
 export default function Form() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>()
+  const onSubmit: SubmitHandler<FormData> = (data) => console.log(data)
+  
+
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
@@ -73,9 +83,9 @@ export default function Form() {
     "Tell us about yourself. What are you passionate about/what motivates you?",
   ];
 
-  const handleSubmit = async () => {
-    console.log(formData)
-  }
+  // const handleSubmit = async () => {
+  //   console.log(formData)
+  // }
 
 
   const handleResponseChange = (index: number, value: string) => {
@@ -99,6 +109,7 @@ export default function Form() {
         </label>
         <textarea
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 h-32"
+          {...register("responses", { required: true, maxLength: 200})} // Uses react-hook-form to add maxLength to textarea
           value={response}
           onChange={(e) => handleResponseChange(index, e.target.value)}
         />
@@ -161,6 +172,7 @@ export default function Form() {
 
   const renderInput = (
     id: keyof FormData,
+    register: UseFormRegister<FormData>,
     label: string,
     type: string = "text",
     required: boolean = false
@@ -171,6 +183,7 @@ export default function Form() {
       </label>
       <input
         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+        {...register(id, { required })}
         id={id}
         type={type}
         placeholder={label}
@@ -189,7 +202,7 @@ export default function Form() {
 
   return (
 
-    <form onSubmit={handleSubmit} className="flex flex-col">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
       <div>
         <h1 className={textStyles.title}>PCT Fall 2023 Application</h1>
         {/* <h3 className={textStyles.subtitle}>To promote the cause of higher business education and training for all individuals; To foster high ideals for everyone pursuing a career in business; To encourage fraternity and cooperation among people preparing for such careers; To stimulate the spirit of sacrifice and unselfish devotion to the attainment of such ends.
@@ -197,13 +210,13 @@ export default function Form() {
           Our aim is to continue the strong traditions of this fraternity and enrich the community of Boston University. We hope you will join us on our journey!</h3> */}
       </div>
 
-      {renderInput("firstName", "First Name", "text", true)}
-      {renderInput("lastName", "Last Name", "text", true)}
-      {renderInput("preferredName", "Preferred Name")}
-      {renderInput("major", "Major", "text", true)}
-      {renderInput("minor", "Minor", "text")}
-      {renderInput("gpa", "GPA (N/A if not applicable)", "text", true)}
-      {renderInput("gradYear", "Expected Graduation Date (Month Year)", "text", true)}
+      {renderInput("firstName", register, "First Name", "text", true)}
+      {renderInput("lastName", register, "Last Name", "text", true)}
+      {renderInput("preferredName", register, "Preferred Name")}
+      {renderInput("major", register, "Major", "text", true)}
+      {renderInput("minor", register, "Minor", "text")}
+      {renderInput("gpa", register, "GPA (N/A if not applicable)", "text", true)}
+      {renderInput("gradYear", register, "Expected Graduation Date (Month Year)", "text", true)}
 
       <label className="block mb-2 text-sm font-medium text-gray-900">College / School <span className="text-red-500">*</span></label>
       <fieldset className="grid gap-2 grid-cols-4 mb-6">
@@ -223,10 +236,10 @@ export default function Form() {
 
 
 
-      {renderInput("email", "Email", "email", true)}
-      {renderInput("phone", "Phone Number", "text", true)}
-      {renderInput("linkedin", "LinkedIn Profile", "text", true)}
-      {renderInput("website", "Website / Portfolio", "text", true)}
+      {renderInput("email", register, "Email", "email", true)}
+      {renderInput("phone", register, "Phone Number", "text", true)}
+      {renderInput("linkedin", register, "LinkedIn Profile", "text", true)}
+      {renderInput("website", register, "Website / Portfolio", "text", true)}
 
 
       {/* Upload your resume */}
@@ -266,11 +279,10 @@ export default function Form() {
       </div>
 
       {renderResponseInputs()}
-
       <button
         className="ml-auto items-center mt-8 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-        onClick={handleSubmit} // Use onClick to trigger handleSubmit
-        type="button" // Use type="button" to prevent form submission
+        onClick={handleSubmit(onSubmit)} // Use onClick to trigger handleSubmit
+        type="submit"
       >
         Submit
       </button>
