@@ -174,7 +174,7 @@ export default function Form() {
         id={id}
         type={type}
         placeholder={label}
-        value={formData[id]}
+        value={formData[id] as string}
         onChange={handleChange}
         required={required}
       />
