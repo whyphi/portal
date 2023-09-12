@@ -19,14 +19,14 @@ export default function ListingCard({ title, active, dateCreated, applicantCount
     if (active) {
       return (
         <div className="flex flex-row items-center mb-2">
-          <span className="flex w-3 h-3 bg-green-500 rounded-full mr-1"></span>
+          <span className="flex w-3 h-3 bg-green-500 rounded-full mr-2"></span>
           <p className="text-sm font-medium">Active</p>
         </div>
       )
     } else {
       return (
         <div className="flex flex-row items-center mb-2">
-          <span className="flex w-3 h-3 bg-red-500 rounded-full mr-1"></span>
+          <span className="flex w-3 h-3 bg-red-500 rounded-full mr-2"></span>
           <p className="text-sm font-medium">Inactive</p>
         </div>
       )
