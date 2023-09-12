@@ -13,10 +13,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex justify-center items-center min-w-screen min-h-screen">
-        <div className="flex flex-col max-w-screen-sm px-5 py-2.5">
+      <body className="min-w-screen min-h-screen">
           {children}
-        </div>
       </body>
     </html>
   )
