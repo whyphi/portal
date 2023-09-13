@@ -1,7 +1,6 @@
 'use client'
 import { useState } from "react";
 import { useForm, UseFormRegister, SubmitHandler, RegisterOptions } from "react-hook-form"
-import { isValidEmail, isValidLink, isValidUSPhoneNumber } from "@/helpers/validation"
 
 interface FormData {
   firstName: string;
