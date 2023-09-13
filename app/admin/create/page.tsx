@@ -3,13 +3,13 @@ import { useState } from "react";
 
 interface FormData {
   title: string;
-  questions: string[];
+  questions: { [key: string]: string }[]; // Array of objects with string keys
   deadline: Date;
 }
 
 const initialValues: FormData = {
   title: "",
-  questions: [""],
+  questions: [],
   deadline: new Date(),
 };
 
@@ -31,7 +31,7 @@ export default function Create() {
   const handleAddQuestion = () => {
     setFormData((prevData) => ({
       ...prevData,
-      questions: [...prevData.questions, ""],
+      questions: [...prevData.questions, { question: "", additional: "" }],
     }));
   };
 
@@ -44,9 +44,9 @@ export default function Create() {
     }));
   };
 
-  const handleQuestionChange = (index: number, value: string) => {
+  const handleQuestionChange = (index: number, field: string, value: string) => {
     const updatedQuestions = [...formData.questions];
-    updatedQuestions[index] = value;
+    updatedQuestions[index][field] = value;
     setFormData((prevData) => ({
       ...prevData,
       questions: updatedQuestions,
@@ -81,7 +81,7 @@ export default function Create() {
         {formData.questions.length === 0 ? (
           "None"
         ) : (
-          formData.questions.map((question, index) => (
+          formData.questions.map((questionObj, index) => (
             <div className="w-full" key={index}>
               <div className="flex justify-end">
                 <svg
@@ -103,15 +103,32 @@ export default function Create() {
               </div>
               <div className="mb-6">
                 <label className="block mb-2 text-sm font-medium text-gray-900">
-                  Question
+                  Question <span className="text-red-500">*</span>
                 </label>
                 <input
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
                   id={`question-${index}`} // Set a unique id for each question input
                   type="text"
                   placeholder="Question"
-                  value={question}
-                  onChange={(e) => handleQuestionChange(index, e.target.value)}
+                  value={questionObj.question}
+                  onChange={(e) =>
+                    handleQuestionChange(index, "question", e.target.value)
+                  }
+                />
+              </div>
+              <div className="mb-6">
+                <label className="block mb-2 text-sm font-medium text-gray-900">
+                  Additional Context / Subheadings
+                </label>
+                <input
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+                  id={`additional-${index}`} // Set a unique id for each additional input
+                  type="text"
+                  placeholder="Add any additional text that explains the question here"
+                  value={questionObj.additional}
+                  onChange={(e) =>
+                    handleQuestionChange(index, "additional", e.target.value)
+                  }
                 />
               </div>
               <hr className="h-px mb-2 bg-gray-200 border-0 dark:bg-gray-700" />
