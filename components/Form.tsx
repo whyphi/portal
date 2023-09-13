@@ -1,6 +1,7 @@
 'use client'
 import { useState } from "react";
-import { Path, useForm, UseFormRegister, SubmitHandler } from "react-hook-form"
+import { useForm, UseFormRegister, SubmitHandler, RegisterOptions } from "react-hook-form"
+import { isValidEmail, isValidLink, isValidUSPhoneNumber } from "@/helpers/validation"
 
 interface FormData {
   firstName: string;
@@ -172,7 +173,7 @@ export default function Form() {
 
   const renderInput = (
     id: keyof FormData,
-    register: UseFormRegister<FormData>,
+    registerOptions: RegisterOptions,
     label: string,
     type: string = "text",
     required: boolean = false
@@ -183,7 +184,7 @@ export default function Form() {
       </label>
       <input
         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-        {...register(id, { required })}
+        {...register(id, registerOptions)}
         id={id}
         type={type}
         placeholder={label}
@@ -210,13 +211,13 @@ export default function Form() {
           Our aim is to continue the strong traditions of this fraternity and enrich the community of Boston University. We hope you will join us on our journey!</h3> */}
       </div>
 
-      {renderInput("firstName", register, "First Name", "text", true)}
-      {renderInput("lastName", register, "Last Name", "text", true)}
-      {renderInput("preferredName", register, "Preferred Name")}
-      {renderInput("major", register, "Major", "text", true)}
-      {renderInput("minor", register, "Minor", "text")}
-      {renderInput("gpa", register, "GPA (N/A if not applicable)", "text", true)}
-      {renderInput("gradYear", register, "Expected Graduation Date (Month Year)", "text", true)}
+      {renderInput("firstName", {  maxLength: 50, required: true }, "First Name", "text", true)}
+      {renderInput("lastName", {  maxLength: 50, required: true }, "Last Name", "text", true)}
+      {renderInput("preferredName", { }, "Preferred Name")}
+      {renderInput("major", {  maxLength: 50, required: true }, "Major", "text", true)}
+      {renderInput("minor", {  maxLength: 50, required: true }, "Minor", "text")}
+      {renderInput("gpa", {  pattern: /^(\d+(\.\d{1,2})?)?$/, required: true }, "GPA (N/A if not applicable)", "text", true)}
+      {renderInput("gradYear", { maxLength: 50, required: true }, "Expected Graduation Date (Month Year)", "text", true)}
 
       <label className="block mb-2 text-sm font-medium text-gray-900">College / School <span className="text-red-500">*</span></label>
       <fieldset className="grid gap-2 grid-cols-4 mb-6">
@@ -236,11 +237,10 @@ export default function Form() {
 
 
 
-      {renderInput("email", register, "Email", "email", true)}
-      {renderInput("phone", register, "Phone Number", "text", true)}
-      {renderInput("linkedin", register, "LinkedIn Profile", "text", true)}
-      {renderInput("website", register, "Website / Portfolio", "text", true)}
-
+      {renderInput("email", { required: true, pattern: /^\S+@\S+$/i, maxLength: 255 }, "Email", "email", true)}
+      {renderInput("phone", { required: true, pattern: /^\d{10}$/, maxLength: 15 }, "Phone Number", "text", true)}
+      {renderInput("linkedin", { required: true, pattern: /^(https?:\/\/)?(www\.)?linkedin\.com\/[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+$/i, maxLength: 255 }, "LinkedIn Profile", "text", true)}
+      {renderInput("website", { required: true, pattern: /^(https?:\/\/)?(www\.)?[A-Za-z0-9-._~:/?#[\]@!$&'()*+,;=]+$/i, maxLength: 255 }, "Website / Portfolio", "text", true)}
 
       {/* Upload your resume */}
       <div className="flex flex-col mb-6">
