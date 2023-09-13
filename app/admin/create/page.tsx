@@ -1,5 +1,7 @@
 "use client"
-import { useState } from "react";
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface FormData {
   title: string;
@@ -15,6 +17,8 @@ const initialValues: FormData = {
 
 export default function Create() {
   const [formData, setFormData] = useState<FormData>(initialValues);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
 
   const handleSubmit = async () => {
     console.log(formData);
@@ -165,6 +169,35 @@ export default function Create() {
     );
   };
 
+  const handleDateChange = (date: Date) => {
+    setSelectedDate(date);
+    setFormData((prevData) => ({
+      ...prevData,
+      deadline: date,
+    }));
+  };
+
+  const renderDeadline = () => {
+    return (
+      <div className="w-full mb-6">
+        <label className="block mb-2 text-md font-medium text-gray-900">
+          Deadline <span className="text-red-500">*</span>
+        </label>
+        <DatePicker
+          selected={selectedDate}
+          onChange={handleDateChange}
+          showTimeSelect
+          isClearable
+          timeFormat="HH:mm"
+          timeIntervals={15}
+          dateFormat="MMMM d, yyyy h:mm aa"
+          className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5"
+          wrapperClassName="w-64" // Add a custom class to make it full width
+        />
+      </div>
+    );
+  };
+
   const textStyles = {
     title: "text-4xl font-bold dark:text-white mb-6 mt-4",
     subtitle: "mb-4 text-lg font-normal text-gray-500 dark:text-gray-400",
@@ -175,11 +208,13 @@ export default function Create() {
       <h1 className={textStyles.title}>Create a New Listing</h1>
 
       {renderInput("title", "Title", "text", true)}
+
       <label className="block mb-2 text-md font-medium text-gray-900">
         Questions
       </label>
-      {renderQuestions()}
 
+      {renderQuestions()}
+      {renderDeadline()}
 
       <button
         type="button"
