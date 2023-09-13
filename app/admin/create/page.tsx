@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useRouter } from 'next/navigation'
+
 
 interface FormData {
   title: string;
@@ -16,12 +18,42 @@ const initialValues: FormData = {
 };
 
 export default function Create() {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
 
   const handleSubmit = async () => {
-    console.log(formData);
+    const currentDate = new Date();
+    const formattedDeadline = selectedDate.toISOString();
+    const formDataWithDates = {
+      ...formData,
+      dateCreated: currentDate.toISOString(),
+      deadline: formattedDeadline,
+    };
+  
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formDataWithDates),
+      });
+  
+      if (response.ok) {
+        // The request was successful, you can handle the response here if needed.
+        console.log("Request successful!");
+        router.push("/admin"); // Replace "/admin" with the actual route to your admin page
+
+      } else {
+        // Handle the case where the request was not successful.
+        console.error("Request failed with status:", response.status);
+      }
+    } catch (error) {
+      // Handle any network errors or other exceptions that may occur.
+      console.error("Error:", error);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
