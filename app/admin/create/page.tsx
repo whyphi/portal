@@ -77,65 +77,91 @@ export default function Create() {
 
   const renderQuestions = () => {
     return (
-      <div className="flex flex-col border rounded mb-6 p-4">
-        {formData.questions.length === 0 ? (
-          "None"
-        ) : (
-          formData.questions.map((questionObj, index) => (
-            <div className="w-full" key={index}>
-              <div className="flex justify-end">
-                <svg
-                  onClick={() => handleRemoveQuestion(index)}
-                  className="w-4 h-4 text-gray-800 dark:text-white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m13 7-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+      <div>
+        <div className="flex flex-col border rounded mb-6 p-4">
+          {formData.questions.length === 0 ? (
+            "None"
+          ) : (
+            formData.questions.map((questionObj, index) => (
+              <div className="w-full" key={index}>
+                <div className="flex justify-end">
+                  <svg
+                    onClick={() => handleRemoveQuestion(index)}
+                    className="w-4 h-4 text-gray-800 dark:text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m13 7-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
+                </div>
+                <div className="mb-6">
+                  <label className="block mb-2 text-sm font-medium text-gray-900">
+                    Question <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+                    id={`question-${index}`} // Set a unique id for each question input
+                    type="text"
+                    placeholder="Question"
+                    value={questionObj.question}
+                    onChange={(e) =>
+                      handleQuestionChange(index, "question", e.target.value)
+                    }
                   />
-                </svg>
+                </div>
+                <div className="mb-6">
+                  <label className="block mb-2 text-sm font-medium text-gray-900">
+                    Additional Context / Subheadings
+                  </label>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+                    id={`additional-${index}`} // Set a unique id for each additional input
+                    type="text"
+                    placeholder="Add any additional text that explains the question here"
+                    value={questionObj.additional}
+                    onChange={(e) =>
+                      handleQuestionChange(index, "additional", e.target.value)
+                    }
+                  />
+                </div>
+                <hr className="h-px mb-2 bg-gray-200 border-0 dark:bg-gray-700" />
               </div>
-              <div className="mb-6">
-                <label className="block mb-2 text-sm font-medium text-gray-900">
-                  Question <span className="text-red-500">*</span>
-                </label>
-                <input
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-                  id={`question-${index}`} // Set a unique id for each question input
-                  type="text"
-                  placeholder="Question"
-                  value={questionObj.question}
-                  onChange={(e) =>
-                    handleQuestionChange(index, "question", e.target.value)
-                  }
-                />
-              </div>
-              <div className="mb-6">
-                <label className="block mb-2 text-sm font-medium text-gray-900">
-                  Additional Context / Subheadings
-                </label>
-                <input
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-                  id={`additional-${index}`} // Set a unique id for each additional input
-                  type="text"
-                  placeholder="Add any additional text that explains the question here"
-                  value={questionObj.additional}
-                  onChange={(e) =>
-                    handleQuestionChange(index, "additional", e.target.value)
-                  }
-                />
-              </div>
-              <hr className="h-px mb-2 bg-gray-200 border-0 dark:bg-gray-700" />
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
+        <button
+          onClick={handleAddQuestion}
+          type="button"
+          className="w-full mb-8 text-center inline-flex items-center justify-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+        >
+          <svg
+            className="w-4 h-4 text-gray-800 dark:text-white mr-1"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>{" "}
+          Add Question
+        </button>
       </div>
+
+
     );
   };
 
@@ -154,28 +180,6 @@ export default function Create() {
       </label>
       {renderQuestions()}
 
-      <button
-        onClick={handleAddQuestion}
-        type="button"
-        className="mb-8 text-center inline-flex items-center justify-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-      >
-        <svg
-          className="w-4 h-4 text-gray-800 dark:text-white mr-1"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 20 20"
-        >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-          />
-        </svg>{" "}
-        Add Question
-      </button>
 
       <button
         type="button"
