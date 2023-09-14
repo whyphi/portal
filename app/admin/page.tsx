@@ -5,6 +5,7 @@ import ListingCard from "@/components/admin/ListingCard";
 interface Listing {
     title: string;
     active: boolean;
+    deadline: string;
     dateCreated: string; // You can use a more specific date type if needed
     // Define other properties as per your API response
   }
@@ -28,7 +29,7 @@ export default function Admin() {
             <div className="grid grid-cols-3 gap-4">
                 {listings.map((listing, index) => (
                     <div key={index} className="col-span-1">
-                        <ListingCard title={listing.title} active={true} dateCreated={listing.dateCreated} applicantCount={0} />
+                        <ListingCard title={listing.title} active={true} deadline={listing.deadline} dateCreated={listing.dateCreated} applicantCount={0} />
                     </div>
                 ))}
             </div>

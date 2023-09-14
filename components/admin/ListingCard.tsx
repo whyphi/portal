@@ -7,13 +7,14 @@ interface ListingCardProps {
   title: string;
   active: boolean;
   dateCreated: string;
+  deadline: string;
   applicantCount: number;
 }
 
 
 
 
-export default function ListingCard({ title, active, dateCreated, applicantCount }: ListingCardProps) {
+export default function ListingCard({ title, active, deadline, dateCreated, applicantCount }: ListingCardProps) {
 
   const renderIndicator = (active: boolean) => {
     if (active) {
@@ -48,7 +49,7 @@ export default function ListingCard({ title, active, dateCreated, applicantCount
     const day = String(createdDate.getDate()).padStart(2, '0');
 
     // Format the date as "yyyy-mm-dd"
-    const formattedDate = `${year}-${month}-${day}`;
+    const formattedDate = `${year}. ${month}. ${day}`;
 
     return (
       <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
@@ -57,21 +58,59 @@ export default function ListingCard({ title, active, dateCreated, applicantCount
     );
   };
 
+  const renderDeadline = (deadline: string) => {
+    // Parse the input deadline string
+    const deadlineDate = new Date(deadline);
+
+    // Check if the date is valid
+    if (isNaN(deadlineDate.getTime())) {
+      return null; // Return null or handle the invalid date as needed
+    }
+
+    // Get the year, month, day, hours, minutes, and seconds components
+    const year = deadlineDate.getFullYear();
+    const month = String(deadlineDate.getMonth() + 1).padStart(2, '0');
+    const day = String(deadlineDate.getDate()).padStart(2, '0');
+    const hours = String(deadlineDate.getHours()).padStart(2, '0');
+    const minutes = String(deadlineDate.getMinutes()).padStart(2, '0');
+    const seconds = String(deadlineDate.getSeconds()).padStart(2, '0');
+
+    // Format the date as "yyyy. dd. mm, hh:mm:ss"
+    const formattedDeadline = `${year}. ${month}. ${day}, ${hours}:${minutes}:${seconds}`;
+
+    return (
+      <div className="flex flex-row items-center">
+        <svg className="w-2 h-2 mr-1 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" strokeLinejoin="round" strokeWidth="2" d="M10 6v4l3.276 3.276M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <p className="text-xs text-gray-500">
+          {formattedDeadline}
+        </p>
+      </div>
+    );
+  };
+
+
   return (
 
-    <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-      {renderIndicator(active)}
-      <a href="#">
-        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
-      </a>
+    <div className="flex flex-col max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div>
-        {renderDateCreatedBadge(dateCreated)}
+        {renderIndicator(active)}
+        <a href="#">
+          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
+        </a>
+        <div className="mt-1">
+          {renderDateCreatedBadge(dateCreated)}
+        </div>
+      </div>
+      <div className="mt-4">
+        {renderDeadline(deadline)}
+{/* 
+        <p className="text-sm font-medium">
+          Total {applicantCount}
+        </p> */}
       </div>
 
-
-      <p className="text-sm font-medium">
-        Total {applicantCount}
-      </p>
     </div>
 
   );
