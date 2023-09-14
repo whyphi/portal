@@ -1,5 +1,6 @@
 'use client'
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface FormData {
   firstName: string;
@@ -63,19 +64,54 @@ const initialValues: FormData = {
   responses: [""]
 };
 
-export default function Form() {
+
+interface FormProps {
+  title: string | null;
+  questions: [] | [{ question: string, context: string }],
+  listingId: string | null;
+}
+
+
+
+
+export default function Form({ title, questions, listingId }: FormProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
 
   const maxWordCount = 200; // Adjust as needed
-  const presetQuestions = [
-    "Tell us about yourself. What are you passionate about/what motivates you?",
-  ];
 
   const handleSubmit = async () => {
-    console.log(formData)
-  }
+    try {
+      // Construct the data object to send to the API
+      const dataToSend = {
+        listingId: listingId,
+        ...formData,
+      };
+
+      // Make a POST request to the /submit API endpoint
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        // Handle successful response here, e.g., show a success message or redirect
+        console.log('Form submitted successfully');
+        router.push(`/public/success`);
+      } else {
+        // Handle error response here, e.g., show an error message
+        console.error('Error submitting form');
+      }
+    } catch (error) {
+      // Handle any unexpected errors here
+      console.error('An error occurred:', error);
+    }
+  };
 
 
   const handleResponseChange = (index: number, value: string) => {
@@ -87,24 +123,29 @@ export default function Form() {
     }));
   };
 
-  const getWordCount = (text: string) => {
+  const getWordCount = (text: string | undefined) => {
+    // Check if text is undefined or null and return 0 in that case
+    if (text === undefined || text === null) {
+      return 0;
+    }
+
     return text.trim().split(/\s+/).filter(Boolean).length;
   };
 
   const renderResponseInputs = () => {
-    return formData.responses.map((response, index) => (
+    return questions.map((question, index) => (
       <div key={index} className="mb-6">
         <label className="block mb-2 text-sm font-medium text-gray-900">
-          {presetQuestions[index]} (Max {maxWordCount} words) <span className="text-red-500">*</span>
+          {question.question} (Max {maxWordCount} words) <span className="text-red-500">*</span>
         </label>
         <textarea
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 h-32"
-          value={response}
+          value={formData.responses[index]}
           onChange={(e) => handleResponseChange(index, e.target.value)}
         />
         <p className="text-sm text-gray-500">
-          {maxWordCount - getWordCount(response) >= 0
-            ? `Remaining words: ${maxWordCount - getWordCount(response)}`
+          {maxWordCount - getWordCount(formData.responses[index]) >= 0
+            ? `Remaining words: ${maxWordCount - getWordCount(formData.responses[index])}`
             : "Remaining words: Over word count!"}
         </p>
       </div>
@@ -189,9 +230,9 @@ export default function Form() {
 
   return (
 
-    <form onSubmit={handleSubmit} className="flex flex-col mb-8">
+    <form onSubmit={handleSubmit} className="flex flex-col mb-8 w-full">
       <div>
-        <h1 className={textStyles.title}>PCT Fall 2023 Application</h1>
+        <h1 className={textStyles.title}>{title}</h1>
         {/* <h3 className={textStyles.subtitle}>To promote the cause of higher business education and training for all individuals; To foster high ideals for everyone pursuing a career in business; To encourage fraternity and cooperation among people preparing for such careers; To stimulate the spirit of sacrifice and unselfish devotion to the attainment of such ends.
 
           Our aim is to continue the strong traditions of this fraternity and enrich the community of Boston University. We hope you will join us on our journey!</h3> */}
@@ -265,7 +306,7 @@ export default function Form() {
         </div>
       </div>
 
-      {renderResponseInputs()}
+      {questions && renderResponseInputs()}
 
       <button
         type="button"
