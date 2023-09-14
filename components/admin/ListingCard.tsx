@@ -34,11 +34,28 @@ export default function ListingCard({ title, active, dateCreated, applicantCount
   }
 
   const renderDateCreatedBadge = (dateCreated: string) => {
-    return (
-      <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Created: {dateCreated}</span>
+    // Parse the input date string
+    const createdDate = new Date(dateCreated);
 
-    )
-  }
+    // Check if the date is valid
+    if (isNaN(createdDate.getTime())) {
+      return null; // Return null or handle the invalid date as needed
+    }
+
+    // Get the year, month, and day components
+    const year = createdDate.getFullYear();
+    const month = String(createdDate.getMonth() + 1).padStart(2, '0');
+    const day = String(createdDate.getDate()).padStart(2, '0');
+
+    // Format the date as "yyyy-mm-dd"
+    const formattedDate = `${year}-${month}-${day}`;
+
+    return (
+      <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+        Created: {formattedDate}
+      </span>
+    );
+  };
 
   return (
 
