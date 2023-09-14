@@ -111,6 +111,7 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
         </div>
       </div>
       <div className="mt-4">
+        <hr className="h-px mb-2 mt-4 bg-gray-200 border-0 dark:bg-gray-700" />
         {renderDeadline(deadline)}
         {/* 
         <p className="text-sm font-medium">
