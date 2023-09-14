@@ -2,8 +2,10 @@
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Link from 'next/link'
+import { useRouter } from "next/navigation";
 
 interface ListingCardProps {
+  listingId: string;
   title: string;
   active: boolean;
   dateCreated: string;
@@ -14,7 +16,8 @@ interface ListingCardProps {
 
 
 
-export default function ListingCard({ title, active, deadline, dateCreated, applicantCount }: ListingCardProps) {
+export default function ListingCard({ listingId, title, active, deadline, dateCreated, applicantCount }: ListingCardProps) {
+  const router = useRouter();
 
   const renderIndicator = (active: boolean) => {
     if (active) {
@@ -91,21 +94,25 @@ export default function ListingCard({ title, active, deadline, dateCreated, appl
   };
 
 
+  const handleListingCardClick = () => {
+    // Navigate to the listingId URL when the card is clicked
+    router.push(`/admin/listing/${listingId}`);
+  };
+
+
   return (
 
-    <div className="flex flex-col max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div onClick={handleListingCardClick} className="flex flex-col cursor-pointer max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div>
         {renderIndicator(active)}
-        <a href="#">
-          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
-        </a>
+        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
         <div className="mt-1">
           {renderDateCreatedBadge(dateCreated)}
         </div>
       </div>
       <div className="mt-4">
         {renderDeadline(deadline)}
-{/* 
+        {/* 
         <p className="text-sm font-medium">
           Total {applicantCount}
         </p> */}
