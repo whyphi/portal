@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-export default function Navbar() {
+export default function NavSidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
