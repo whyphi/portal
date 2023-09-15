@@ -99,7 +99,7 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
 
   return (
 
-    <div onClick={handleListingCardClick} className="flex flex-col cursor-pointer max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div onClick={handleListingCardClick} className="flex flex-col cursor-pointer p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div>
         {renderIndicator(active)}
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
