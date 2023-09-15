@@ -10,7 +10,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-w-screen min-h-screen">
+      <body className="min-w-screen">
         <NavSidebar />
         <div className="p-4 sm:ml-64 mt-14">
           {children}
