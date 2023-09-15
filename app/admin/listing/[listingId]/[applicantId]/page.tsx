@@ -6,8 +6,10 @@ import { HiMenuAlt1, HiDocumentText, HiUserCircle } from 'react-icons/hi';
 import ResponseCard from "@/components/admin/listing/ResponseCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
 import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
+import Loader from "@/components/Loader";
 
 export default function ApplicantPage({ params }: { params: { applicantId: string } }) {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [applicantData, setApplicantData] = useState<null | Applicant>(null);
 
   useEffect(() => {
@@ -16,7 +18,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
       .then((response) => response.json())
       .then((data: Applicant) => {
         setApplicantData(data);
-        console.log(data);
+        setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching listings:", error));
 
@@ -40,6 +42,8 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
       )
     );
   };
+
+  if (isLoading) return <Loader />
 
 
   return (
