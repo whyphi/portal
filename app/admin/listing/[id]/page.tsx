@@ -1,33 +1,41 @@
 "use client"
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router'
-
-interface Listing {
-  Item: {
-    deadline: string,
-    listingId: string,
-    questions: [{ question: string, context: string }],
-    title: string
-  },
-  ResponseMetadata: object
-}
+import ApplicantCard from "@/components/admin/listing/ApplicantCard";
+import { Applicant } from "@/types/applicant";
 
 
 export default function Listing({ params }: { params: { id: string } }) {
-  const [listingData, setListingData] = useState<Listing | null>(null);
+  const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
 
   useEffect(() => {
     // Fetch listings data from your /listings API endpoint
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.id}`)
       .then((response) => response.json())
-      .then((data: Listing) => setListingData(data))
+      .then((data: [Applicant]) => {
+        setApplicantData(data)
+        console.log(applicantData)
+      })
       .catch((error) => console.error("Error fetching listings:", error));
 
-    console.log(listingData)
+
   }, []);
   return (
     <div>
-      <h1> My Post: {listingData?.Item?.title}</h1>
-      {listingData?.Item?.questions.map((data) => (<p>{data.question}</p>))}
-    </div>)
+      <h1 className="text-2xl font-bold mb-4">Applicants</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+
+        {applicantData.map((applicant, index) => (
+          <div key={index} className="col-span-1">
+            <ApplicantCard
+              applicant={applicant}
+            />
+          </div>
+        ))}
+
+      </div>
+    </div>
+
+
+  )
 }

@@ -95,7 +95,7 @@ export default function Create() {
     type: string = "text",
     required: boolean = false
   ) => (
-    <div className="w-96 mb-6">
+    <div className="sm:w-full md:w-96 mb-6">
       <label className="block mb-2 text-md font-medium text-gray-900">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
