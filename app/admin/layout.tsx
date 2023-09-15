@@ -13,7 +13,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-w-screen min-h-screen">
           <Navbar />
-          <Sidebar />
+          {/* <Sidebar /> */}
           <div className="p-4 sm:ml-64 mt-14">
             {children}
           </div>
