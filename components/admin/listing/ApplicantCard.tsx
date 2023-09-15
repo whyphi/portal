@@ -1,12 +1,16 @@
-import { Card, Dropdown } from 'flowbite-react';
+"use client"
+import { Card } from 'flowbite-react';
 import Image from 'next/image'
 import { Applicant } from '@/types/applicant';
+import { useRouter } from 'next/navigation';
 
 interface ApplicantCardProps {
+  listingId: string;
   applicant: Applicant;
 }
 
 export default function ApplicantCard({ applicant }: ApplicantCardProps) {
+  const router = useRouter();
   const { colleges } = applicant;
 
   // Filter the colleges that are true and format them with year
@@ -16,9 +20,10 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 
   const gradYear = applicant.gradYear.split(' ').pop();
 
+
   return (
-    <Card>
-      <div className="flex flex-col items-center pb-1">
+    <Card className="cursor-pointer" onClick={() => router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`)}>
+      <div className="flex flex-col items-center mb-1">
         <Image
           alt={`${applicant.firstName} ${applicant.lastName} image`}
           className="mb-3 rounded-full shadow-lg"

@@ -85,9 +85,15 @@ export default function Form({ title, questions, listingId }: FormProps) {
   const handleSubmit = async () => {
     try {
       // Construct the data object to send to the API
+      const responseObjects = questions.map((question, index) => ({
+        question: question.question,
+        response: formData.responses[index],
+      }));
+  
       const dataToSend = {
         listingId: listingId,
         ...formData,
+        responses: responseObjects, // Replace the 'responses' array with response objects
       };
 
       // Make a POST request to the /submit API endpoint

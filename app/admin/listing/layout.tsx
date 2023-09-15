@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
     return (
 
-        <div className="flex flex-col mx-auto justify-center p-6">
+        <div className="flex flex-col mx-auto justify-center">
             {children}
         </div>
 

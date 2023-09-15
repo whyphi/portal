@@ -1,25 +1,30 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router'
+import Loader from "@/components/Loader";
 import ApplicantCard from "@/components/admin/listing/ApplicantCard";
 import { Applicant } from "@/types/applicant";
 
 
-export default function Listing({ params }: { params: { id: string } }) {
+
+export default function Listing({ params }: { params: { listingId: string } }) {
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // Fetch listings data from your /listings API endpoint
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
       .then((response) => response.json())
       .then((data: [Applicant]) => {
         setApplicantData(data)
-        console.log(applicantData)
+        setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching listings:", error));
 
 
   }, []);
+
+  if (isLoading) return (<Loader />)
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Applicants</h1>
@@ -28,6 +33,7 @@ export default function Listing({ params }: { params: { id: string } }) {
         {applicantData.map((applicant, index) => (
           <div key={index} className="col-span-1">
             <ApplicantCard
+              listingId={params.listingId}
               applicant={applicant}
             />
           </div>
