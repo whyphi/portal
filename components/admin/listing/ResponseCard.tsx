@@ -12,8 +12,8 @@ interface ResponseCardProp {
 export default function ResponseCard(props: ResponseCardProp) {
 
     const textStyles = {
-        question: "text-lg font-medium text-gray-900",
-        answer: "text-md text-gray-800"
+        question: "text-md md:text-lg font-medium text-gray-900",
+        answer: "text-sm md:text-md text-gray-800"
     }
 
     return (
