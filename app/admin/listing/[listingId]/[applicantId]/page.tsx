@@ -5,6 +5,7 @@ import { Tabs } from 'flowbite-react';
 import { HiMenuAlt1, HiDocumentText, HiUserCircle } from 'react-icons/hi';
 import ResponseCard from "@/components/admin/listing/ResponseCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
+import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
 
 export default function ApplicantPage({ params }: { params: { applicantId: string } }) {
   const [applicantData, setApplicantData] = useState<null | Applicant>(null);
@@ -40,6 +41,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
     );
   };
 
+
   return (
     <div className="flex flex-wrap">
       {/* Left component (ApplicantInfoCard) */}
@@ -65,15 +67,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
             icon={HiDocumentText}
             title="Resume"
           >
-            <p>
-              This is
-              <span className="font-medium text-gray-800 dark:text-white">
-                Contacts tab's associated content
-              </span>
-              .
-              Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to
-              control the content visibility and styling.
-            </p>
+            <ApplicantPDFViewer />
           </Tabs.Item>
         </Tabs.Group>
       </div>

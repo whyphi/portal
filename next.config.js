@@ -15,14 +15,24 @@
 // module.exports = nextConfig
 
 module.exports = {
-    images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'whyphi-zap.s3.amazonaws.com',
-          port: '',
-          pathname: '/**',
-        },
-      ],
-    },
-  }
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.node/,
+      use: 'raw-loader',
+    });
+
+    return config;
+  },
+
+  
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'whyphi-zap.s3.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+}
