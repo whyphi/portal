@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
+import Loader from "@/components/Loader";
 
 interface Listing {
   listingId: string;
@@ -11,15 +12,21 @@ interface Listing {
 }
 
 export default function Admin() {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
     // Fetch listings data from your /listings API endpoint
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings`)
       .then((response) => response.json())
-      .then((data: Listing[]) => setListings(data))
+      .then((data: Listing[]) => {
+        setListings(data)
+        setIsLoading(false);
+      })
       .catch((error) => console.error("Error fetching listings:", error));
   }, []);
+
+  if (isLoading) return <Loader />
 
   return (
     <main className="container mx-auto p-8">
