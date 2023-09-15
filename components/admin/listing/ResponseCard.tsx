@@ -17,7 +17,7 @@ export default function ResponseCard(props: ResponseCardProp) {
     }
 
     return (
-        <div className="flex flex-col max-w-2xl bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <div className="flex flex-col max-w-2xl bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-4">
             <div className="p-4 flex flex-row items-center bg-slate-50">
                 <div className="w-24">
                     <span className="w-1 bg-purple-200 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Question</span>
