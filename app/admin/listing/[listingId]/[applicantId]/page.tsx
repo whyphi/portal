@@ -18,7 +18,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
       .then((response) => response.json())
       .then((data: Applicant) => {
         setApplicantData(data);
-        setIsLoading(false);
+        setIsLoading(false)
       })
       .catch((error) => console.error("Error fetching listings:", error));
 
@@ -71,8 +71,15 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
             icon={HiDocumentText}
             title="Resume"
           >
-            <ApplicantPDFViewer />
+            {applicantData && applicantData.resume ? (
+              <ApplicantPDFViewer resumeLink={applicantData.resume} />
+            ) : (
+              <p>No resume available.</p>
+            )}
           </Tabs.Item>
+
+
+
         </Tabs.Group>
       </div>
     </div>

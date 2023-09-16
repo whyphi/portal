@@ -26,13 +26,6 @@ module.exports = {
 
   
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'whyphi-zap.s3.amazonaws.com',
-        port: '',
-        pathname: '/**',
-      },
-    ],
+    domains: ['whyphi-zap.s3.amazonaws.com']
   },
 }
