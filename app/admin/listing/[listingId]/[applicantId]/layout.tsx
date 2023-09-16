@@ -1,7 +1,5 @@
-import '../../globals.css'
+import '../../../../globals.css'
 import type { Metadata } from 'next'
-import Navbar from "@/components/admin/NavSidebar"
-import Sidebar from '@/components/admin/Sidebar'
 
 export const metadata: Metadata = {
     title: 'Whyphi - Create',
@@ -15,7 +13,7 @@ export default function RootLayout({
 }) {
     return (
 
-        <div className="flex flex-col mx-auto justify-center">
+        <div className="flex flex-col mx-auto justify-center max-w-screen-lg w-full">
             {children}
         </div>
 

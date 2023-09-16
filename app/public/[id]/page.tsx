@@ -4,19 +4,17 @@ import Form from "@/components/Form"
 import Loader from "@/components/Loader";
 
 interface Listing {
-  Item: {
-    deadline: string,
-    listingId: string,
-    questions: [] | [{ question: string, context: string }],
-    title: string
-  },
-  ResponseMetadata: object
+
+  deadline: string,
+  listingId: string,
+  questions: [] | [{ question: string, context: string }],
+  title: string
 }
 
 
 export default function Listing({ params }: { params: { id: string } }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [listingData, setListingData] = useState<Listing["Item"]>({
+  const [listingData, setListingData] = useState<Listing>({
     deadline: "",
     listingId: "",
     questions: [],
@@ -28,7 +26,7 @@ export default function Listing({ params }: { params: { id: string } }) {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.id}`)
       .then((response) => response.json())
       .then((data: Listing) => {
-        setListingData(data.Item);
+        setListingData(data);
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching listings:", error));
