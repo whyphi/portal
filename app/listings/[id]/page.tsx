@@ -48,7 +48,7 @@ export default function Listing({ params }: { params: { id: string } }) {
         console.error("Error fetching listings:", error);
         router.push("/error")
       });
-  }, [params.id]);
+  }, []);
 
   return isLoading ? (
     <Loader />
