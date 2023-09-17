@@ -26,4 +26,7 @@ module.exports = {
   images: {
     domains: ['whyphi-zap.s3.amazonaws.com']
   },
+  experimental: {
+    appDir: true,
+  }
 }
