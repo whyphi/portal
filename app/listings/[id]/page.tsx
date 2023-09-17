@@ -1,17 +1,14 @@
 "use client"
 
 import React from "react";
-// import Form from "@/components/Form";
+import Form from "@/components/Form";
 import Loader from "@/components/Loader";
 import { useRouter } from "next/navigation";
-import useSWR from 'swr';
-import dynamic from 'next/dynamic'
-
-const Form = dynamic(() => import('@/components/Form'), { ssr: false })
+import useSWR from "swr";
 
 interface ListingData {
   title: string;
-  questions: [{ question: string; context: string }];
+  questions: [] | [{ question: string; context: string }];
   listingId: string;
   deadline: string;
 }
@@ -19,14 +16,22 @@ interface ListingData {
 export default function Listing({ params }: { params: { id: string } }) {
   const router = useRouter();
 
-  const fetcher = (...args: Parameters<typeof fetch>) =>
-    fetch(...args).then(res => res.json());
+  const fetcher = async (...args: Parameters<typeof fetch>) => {
+    const res = await fetch(...args);
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+    return res.json();
+  };
+
   const { data, error, isValidating } = useSWR<ListingData>(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.id}`,
     fetcher
   );
 
-  if (error) router.push("/error");
+  if (error) {
+    router.push("/error");
+  }
 
   if (!data || isValidating) {
     return <Loader />;
