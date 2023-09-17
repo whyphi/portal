@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Form from "@/components/Form";
 import Loader from "@/components/Loader";
 import { useRouter } from "next/navigation";
-import useSWR from "swr";
 
 interface ListingData {
   title: string;
