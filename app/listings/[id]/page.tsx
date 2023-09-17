@@ -1,10 +1,13 @@
 "use client"
 
 import React from "react";
-import Form from "@/components/Form";
+// import Form from "@/components/Form";
 import Loader from "@/components/Loader";
 import { useRouter } from "next/navigation";
 import useSWR from 'swr';
+import dynamic from 'next/dynamic'
+
+const Form = dynamic(() => import('@/components/Form'), { ssr: false })
 
 interface ListingData {
   title: string;

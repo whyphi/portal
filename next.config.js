@@ -23,8 +23,6 @@ module.exports = {
 
     return config;
   },
-
-  
   images: {
     domains: ['whyphi-zap.s3.amazonaws.com']
   },
