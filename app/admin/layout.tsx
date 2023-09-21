@@ -1,6 +1,7 @@
 'use client'
 import '../globals.css'
-import NavSidebar from "@/components/admin/NavSidebar"
+import NavSidebar from "@/components/admin/NavSidebar";
+import { SessionProvider } from "next-auth/react";
 
 
 export default function RootLayout({
@@ -11,11 +12,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-w-screen">
-        <NavSidebar />
-        <div className="p-4 sm:ml-64 mt-14">
-          {children}
-        </div>
+        <SessionProvider>
+          <NavSidebar />
+          <div className="p-4 sm:ml-64 mt-14">
+            {children}
+          </div>
+        </SessionProvider>
       </body>
     </html>
+
   )
 }

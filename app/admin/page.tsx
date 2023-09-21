@@ -1,7 +1,9 @@
 "use client"
 import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
-import Loader from "@/components/Loader";
+import AdminLoader from "@/components/AdminLoader";
+import { useSession, signIn, signOut } from "next-auth/react";
+
 
 interface Listing {
   listingId: string;
@@ -12,21 +14,31 @@ interface Listing {
 }
 
 export default function Admin() {
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
-    // Fetch listings data from your /listings API endpoint
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings`)
-      .then((response) => response.json())
-      .then((data: Listing[]) => {
-        setListings(data)
-        setIsLoading(false);
-      })
-      .catch((error) => console.error("Error fetching listings:", error));
-  }, []);
+    if (session === null) {
+      signIn("google")
+    } else {
+      if (session && session?.user) {
+        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings`)
+          .then((response) => response.json())
+          .then((data: Listing[]) => {
+            setListings(data)
+            setIsLoading(false);
+          })
+          .catch((error) => console.error("Error fetching listings:", error));
+      }
+    }
+  }, [session]);
 
-  if (isLoading) return <Loader />
+
+
+
+
+  if (isLoading) return <AdminLoader />
 
   return (
     <main className="container mx-auto p-8">

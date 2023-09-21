@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function NavSidebar() {
+  const { data: session } = useSession();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -39,16 +41,21 @@ export default function NavSidebar() {
                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Whyphi</span>
               </a>
             </div>
-            <div className="flex items-center"></div>
+            <div className="flex items-center">
+              <button
+                onClick={() => signOut()}
+              >
+                {session?.user?.name} Sign Out
+              </button>
+            </div>
           </div>
         </div>
       </nav>
 
       <aside
         id="logo-sidebar"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
+        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
         aria-label="Sidebar"
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
