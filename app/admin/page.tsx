@@ -14,31 +14,18 @@ interface Listing {
 }
 
 export default function Admin() {
-  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
-    if (session === null) {
-      signIn("google")
-    } else {
-      if (session && session?.user) {
-        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings`)
-          .then((response) => response.json())
-          .then((data: Listing[]) => {
-            setListings(data)
-            setIsLoading(false);
-          })
-          .catch((error) => console.error("Error fetching listings:", error));
-      }
-    }
-  }, [session]);
-
-
-
-
-
-  if (isLoading) return <AdminLoader />
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings`)
+      .then((response) => response.json())
+      .then((data: Listing[]) => {
+        setListings(data)
+        setIsLoading(false);
+      })
+      .catch((error) => console.error("Error fetching listings:", error));
+  }, []);
 
   return (
     <main className="container mx-auto p-8">
