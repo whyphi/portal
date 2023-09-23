@@ -1,6 +1,5 @@
 import NextAuth, { AuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
-import { signIn } from 'next-auth/react';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -15,9 +14,22 @@ export const authOptions: AuthOptions = {
     },
   },
   callbacks: {
-    async session({ session, user }) {
-      return session;
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log({ user, account, profile, email, credentials })
+      // Pseudocode IMPLEMENT LATER
+      // if (profile && profile.email not in database) {
+      //   console.log("Not a PCT member email")
+      //   return false;
+      // }
+
+      // set cookie of user.id_token to browser
+
+      return true
     },
+    async session({ session, user, token }) {
+      return session
+    },
+
   },
 };
 
