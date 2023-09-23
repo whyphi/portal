@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { Dropdown, Avatar } from "flowbite-react";
 
 export default function NavSidebar() {
   const { data: session } = useSession();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -42,11 +44,30 @@ export default function NavSidebar() {
               </a>
             </div>
             <div className="flex items-center">
-              <button
-                onClick={() => signOut()}
-              >
-                {session?.user?.name} Sign Out
-              </button>
+              {session ? (
+                <Dropdown
+                  arrowIcon={false}
+                  inline
+                  label={<Avatar alt="User settings" img={session.user?.image || ""} rounded />}
+                >
+                  <Dropdown.Header>
+                    <span className="block text-sm">
+                      {session?.user?.name}
+                    </span>
+                    <span className="block truncate text-sm font-medium">
+                      {session?.user?.email}
+                    </span>
+                  </Dropdown.Header>
+                  <Dropdown.Divider />
+                  <button
+                    className="block text-sm w-full"
+                    onClick={() => signOut()}
+                  >
+                    Sign Out
+                  </button>
+                </Dropdown>
+              ) : ("nope bye")}
+
             </div>
           </div>
         </div>
