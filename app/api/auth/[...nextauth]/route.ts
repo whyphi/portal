@@ -6,6 +6,7 @@ const mongoUser = process.env.MONGO_USER;
 const mongoPassword = process.env.MONGO_PASSWORD;
 const uri = `mongodb+srv://${mongoUser}:${mongoPassword}@cluster0.9gtht.mongodb.net/?retryWrites=true&w=majority`;
 
+
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -43,7 +44,9 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      if (profile) return isValidUser(profile.email as string);
+      if (profile) {
+        return await isValidUser(profile.email as string);
+      }
       return true
     },
     async session({ session, user, token }) {
@@ -51,6 +54,9 @@ export const authOptions: AuthOptions = {
     },
 
   },
+  pages: {
+    error: "/authError"
+  }
 };
 
 const handler = NextAuth(authOptions);
