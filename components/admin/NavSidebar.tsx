@@ -66,7 +66,7 @@ export default function NavSidebar() {
                     Sign Out
                   </button>
                 </Dropdown>
-              ) : ("nope bye")}
+              ) : ("")}
 
             </div>
           </div>
