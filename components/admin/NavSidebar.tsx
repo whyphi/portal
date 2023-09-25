@@ -49,7 +49,7 @@ export default function NavSidebar() {
                 <Dropdown
                   arrowIcon={false}
                   inline
-                  label={<Avatar alt="User settings" img={session && session.user?.image} rounded />}
+                  label={<Avatar alt="User settings" img={session && session.user?.image as string} rounded />}
                 >
                   <Dropdown.Header>
                     <span className="block text-sm">
