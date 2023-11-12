@@ -9,12 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@netlify/plugin-nextjs": "^4.40.1",
     "@types/node": "18.17.1",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "^10.4.15",
-    "esbuild": "^0.19.5",
     "flowbite": "^1.8.1",
     "flowbite-react": "^0.6.0",
     "next": "13.4.19",
