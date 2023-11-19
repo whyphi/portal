@@ -89,7 +89,7 @@ export default function Form({ title, questions, listingId }: FormProps) {
         question: question.question,
         response: formData.responses[index],
       }));
-  
+
       const dataToSend = {
         listingId: listingId,
         ...formData,

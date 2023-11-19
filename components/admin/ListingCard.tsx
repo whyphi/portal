@@ -1,5 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ToggleSwitch } from 'flowbite-react';
 
 interface ListingCardProps {
   listingId: string;
@@ -15,18 +17,19 @@ interface ListingCardProps {
 
 export default function ListingCard({ listingId, title, active, deadline, dateCreated, applicantCount }: ListingCardProps) {
   const router = useRouter();
+  const [isActive, setIsActive] = useState(active);
 
   const renderIndicator = (active: boolean) => {
     if (active) {
       return (
-        <div className="flex flex-row items-center mb-2">
+        <div className="flex flex-row items-center">
           <span className="flex w-3 h-3 bg-green-500 rounded-full mr-2"></span>
           <p className="text-sm font-medium">Active</p>
         </div>
       )
     } else {
       return (
-        <div className="flex flex-row items-center mb-2">
+        <div className="flex flex-row items-center">
           <span className="flex w-3 h-3 bg-red-500 rounded-full mr-2"></span>
           <p className="text-sm font-medium">Inactive</p>
         </div>
@@ -96,12 +99,44 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
     router.push(`/admin/listing/${listingId}`);
   };
 
+  const handleToggleSwitchChange = async (isChecked: boolean) => {
+    try {
+      // Update the local state
+      setIsActive(isChecked);
+
+      // Make an API request to update the visibility
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${listingId}/toggle/visibility`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        console.error('API request failed:', response.statusText);
+        // Roll back the state change if needed
+        setIsActive(!isChecked);
+      }
+    } catch (error) {
+      console.error('An error occurred while making the API request:', error);
+      setIsActive(!isChecked);
+    }
+  };
+
+  const handleToggleSwitchClick = (event: React.MouseEvent) => {
+    // Prevent the click event from propagating to the parent div (card)
+    event.stopPropagation();
+    handleToggleSwitchChange(!isActive);
+  };
+
 
   return (
-
     <div onClick={handleListingCardClick} className="flex flex-col cursor-pointer p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div>
-        {renderIndicator(active)}
+        <div className="flex justify-between items-center">
+          {renderIndicator(isActive)}
+          <ToggleSwitch className="" checked={isActive} label="" onChange={handleToggleSwitchChange} onClick={handleToggleSwitchClick} />
+        </div>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
         <div className="mt-1">
           {renderDateCreatedBadge(dateCreated)}
@@ -115,9 +150,7 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
           Total {applicantCount}
         </p> */}
       </div>
-
     </div>
-
   );
 
 }
