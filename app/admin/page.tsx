@@ -11,6 +11,7 @@ interface Listing {
   active: boolean;
   deadline: string;
   dateCreated: string;
+  isVisible: boolean;
 }
 
 export default function Admin() {
@@ -35,7 +36,7 @@ export default function Admin() {
             <ListingCard
               listingId={listing.listingId}
               title={listing.title}
-              active={true}
+              active={listing.isVisible}
               deadline={listing.deadline}
               dateCreated={listing.dateCreated}
               applicantCount={0}
