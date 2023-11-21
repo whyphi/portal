@@ -1,21 +1,32 @@
 'use client'
 import '../globals.css'
-import NavSidebar from "@/components/admin/NavSidebar"
-
+import NavSidebar from "@/components/admin/NavSidebar";
+import { useSession, signIn } from "next-auth/react"
+import Loader from '@/components/Loader';
 
 export default function RootLayout({
-  children,
+  children
 }: {
-  children: React.ReactNode
+  children: React.ReactNode,
 }) {
+  const { data: session, status } = useSession()
+
+  if (status === "loading") {
+    return <Loader />
+  }
+
+  if (status === "unauthenticated") {
+    signIn('google')
+    return
+  }
+
   return (
-    <html lang="en">
-      <body className="min-w-screen">
-        <NavSidebar />
-        <div className="p-4 sm:ml-64 mt-14">
-          {children}
-        </div>
-      </body>
-    </html>
+    <>
+      <NavSidebar />
+      <div className="p-4 sm:ml-64 mt-14">
+        {children}
+      </div>
+    </>
+
   )
 }
