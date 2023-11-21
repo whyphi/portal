@@ -56,7 +56,8 @@ const authOptions: AuthOptions = {
   },
   pages: {
     error: "/authError"
-  }
+  },
+  secret: process.env.NEXTAUTH_SECRET
 };
 
 const handler = NextAuth(authOptions);
