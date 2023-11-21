@@ -265,7 +265,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col mb-8">
-      <h1 className={textStyles.title}>Settings</h1>
+      <h1 className={textStyles.title}>Listing Settings</h1>
 
       {renderInput("title", "Title", "text", true)}
 
@@ -283,6 +283,23 @@ export default function ListingSettings({ params }: { params: { listingId: strin
       >
         Update
       </button>
+
+      <div className="flex flex-col border border-red-500 rounded-t-lg mt-6 p-4">
+        <h3 className="text-md font-medium text-gray-900 mb-2">Delete Listing</h3>
+        <p className="text-sm font-thin">Permanently remove the listing and all its associated content and data from the Whyphi platform. This action is not reversible, so please continue with caution.</p>
+      </div>
+
+      <div className="flex justify-end border border-red-500 rounded-b-lg p-2 bg-red-200">
+        <button
+          type="button"
+          className="w-24 text-white bg-red-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        // onClick={handleDelete}
+        >
+          Delete
+        </button>
+      </div>
+
+
     </form>
   );
 }
