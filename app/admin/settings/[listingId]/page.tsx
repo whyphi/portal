@@ -5,6 +5,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from 'next/navigation';
 import { Listing } from "@/types/listing";
+import { Button, Modal } from 'flowbite-react';
+
 
 interface FormData {
   title: string;
@@ -20,6 +22,7 @@ const initialValues: FormData = {
 
 export default function ListingSettings({ params }: { params: { listingId: string } }) {
   const router = useRouter();
+  const [openModal, setOpenModal] = useState(false);
   const [listingData, setListingData] = useState<Listing | null>(null);
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -313,11 +316,32 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         <button
           type="button"
           className="w-24 text-white bg-red-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        onClick={handleDelete}
+        // onClick={handleDelete}
+        onClick={() => setOpenModal(true)}
         >
           Delete
         </button>
       </div>
+
+      <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
+        <Modal.Header>Delete Listing</Modal.Header>
+        <Modal.Body>
+          <div className="space-y-6">
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            Permanently remove the listing and all its associated content and data from the Whyphi platform. This action is not reversible, so please continue with caution.
+            </p>
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this listing?
+            </p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button className="w-24 text-white bg-red-500 hover:red-600 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm text-center" onClick={handleDelete}>Delete</Button>
+          <Button color="gray" onClick={() => setOpenModal(false)}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
 
     </form>
