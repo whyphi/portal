@@ -72,6 +72,26 @@ export default function ListingSettings({ params }: { params: { listingId: strin
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.listingId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        console.log("Listing deleted successfully!");
+        router.push("/admin");
+      } else {
+        console.error("Delete request failed with status:", response.status);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -293,7 +313,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         <button
           type="button"
           className="w-24 text-white bg-red-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        // onClick={handleDelete}
+        onClick={handleDelete}
         >
           Delete
         </button>
