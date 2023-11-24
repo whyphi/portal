@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from 'next/navigation';
 import { Listing } from "@/types/listing";
 import { Button, Modal } from 'flowbite-react';
+import CustomAlert from "@/components/admin/settings/CustomAlert";
 
 
 interface FormData {
@@ -28,6 +29,11 @@ export default function ListingSettings({ params }: { params: { listingId: strin
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
 
+  // For API Alerts
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+
   useEffect(() => {
     // Fetch listing data from your /listings API endpoint
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.listingId}`)
@@ -45,6 +51,16 @@ export default function ListingSettings({ params }: { params: { listingId: strin
       .catch((error) => console.error("Error fetching listing:", error));
   }, [params.listingId]); // Include params.listingId in the dependency array
 
+  useEffect(() => {
+    if (showAlert) {
+      const timeoutId = setTimeout(() => {
+        setShowAlert(false); // Hide the alert after 5 seconds
+      }, 3000);
+
+      return () => clearTimeout(timeoutId); // Cleanup the timeout on component unmount or when showAlert changes
+    }
+  }, [showAlert]);
+
   const handleSubmit = async () => {
     const currentDate = new Date();
     const formattedDeadline = selectedDate.toISOString();
@@ -55,7 +71,6 @@ export default function ListingSettings({ params }: { params: { listingId: strin
     };
 
     try {
-      // TODO: Add UPDATE API
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/create`, {
         method: "POST",
         headers: {
@@ -95,13 +110,6 @@ export default function ListingSettings({ params }: { params: { listingId: strin
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
 
   const handleAddQuestion = () => {
     setFormData((prevData) => ({
@@ -281,6 +289,51 @@ export default function ListingSettings({ params }: { params: { listingId: strin
     );
   };
 
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value;
+    setFormData((prevData) => ({
+      ...prevData,
+      title: newTitle,
+    }));
+  };
+
+  const handleTitleSave = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.listingId}/update-field`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          field: "title",
+          value: formData.title,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("Title updated successfully!");
+        handleShowAlert("Title updated"); // Show the alert
+        // Optionally, you can update the local state or perform any additional actions.
+      } else {
+        console.error("Request failed with status:", response.status);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+
+  const handleAlertClose = () => {
+    setShowAlert(false);
+    setAlertMessage('');
+  };
+
+  const handleShowAlert = (message: string) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+  };
+
+
   const textStyles = {
     title: "text-4xl font-bold dark:text-white mb-6 mt-4",
     subtitle: "mb-4 text-lg font-normal text-gray-500 dark:text-gray-400",
@@ -288,24 +341,56 @@ export default function ListingSettings({ params }: { params: { listingId: strin
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col mb-8">
-      <h1 className={textStyles.title}>Listing Settings</h1>
+      {showAlert ? (<CustomAlert message={alertMessage} onClose={handleAlertClose} />) : (<></>)}
 
-      {renderInput("title", "Title", "text", true)}
+      <h1 className={textStyles.title}>Settings</h1>
 
-      <label className="block mb-2 text-md font-medium text-gray-900">
-        Questions
-      </label>
+      <div className="flex flex-col border rounded-lg mt-6 p-4">
+        <h3 className="text-md font-medium text-gray-900 mb-2">Title</h3>
+        <input
+          className="mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+          // id={id as string}
+          // type={type}
+          placeholder={formData.title}
+          value={formData.title as string}
+          onChange={handleTitleChange}
+          required={true}
+        />
+        <button
+          type="button"
+          className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          onClick={handleTitleSave}
+        >
+          Save
+        </button>
+      </div>
 
-      {renderQuestions()}
-      {renderDeadline()}
+      {/* {renderInput("title", "Title", "text", true)} */}
 
-      <button
-        type="button"
-        className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        onClick={handleSubmit}
-      >
-        Update
-      </button>
+
+      <div className="flex flex-col border rounded-lg mt-6 p-4">
+        <h3 className="text-md font-medium text-gray-900 mb-2">Questions</h3>
+        {renderQuestions()}
+        <button
+          type="button"
+          className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          onClick={handleSubmit}
+        >
+          Save
+        </button>
+      </div>
+
+      <div className="flex flex-col border rounded-lg mt-6 p-4">
+        <h3 className="text-md font-medium text-gray-900 mb-2">Deadline</h3>
+        {renderDeadline()}
+        <button
+          type="button"
+          className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          onClick={handleSubmit}
+        >
+          Save
+        </button>
+      </div>
 
       <div className="flex flex-col border border-red-500 rounded-t-lg mt-6 p-4">
         <h3 className="text-md font-medium text-gray-900 mb-2">Delete Listing</h3>
@@ -316,8 +401,8 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         <button
           type="button"
           className="w-24 text-white bg-red-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        // onClick={handleDelete}
-        onClick={() => setOpenModal(true)}
+          // onClick={handleDelete}
+          onClick={() => setOpenModal(true)}
         >
           Delete
         </button>
@@ -328,7 +413,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         <Modal.Body>
           <div className="space-y-6">
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-            Permanently remove the listing and all its associated content and data from the Whyphi platform. This action is not reversible, so please continue with caution.
+              Permanently remove the listing and all its associated content and data from the Whyphi platform. This action is not reversible, so please continue with caution.
             </p>
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
               Are you sure you want to delete this listing?
