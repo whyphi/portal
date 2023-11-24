@@ -165,7 +165,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
           type={type}
           placeholder={label}
           value={formData[id] as string}
-          onChange={handleChange}
+          // onChange={handleChange}
           required={required}
         />
       )}
