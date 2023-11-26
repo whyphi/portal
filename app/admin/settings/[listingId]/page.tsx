@@ -46,6 +46,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
           questions: data.questions,
           deadline: new Date(data.deadline), // Assuming data.deadline is a valid date string
         });
+        setSelectedDate(new Date(data.deadline));
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching listing:", error));
@@ -136,41 +137,6 @@ export default function ListingSettings({ params }: { params: { listingId: strin
     }));
   };
 
-  const renderInput = (
-    id: keyof FormData,
-    label: string,
-    type: string = "text",
-    required: boolean = false
-  ) => (
-    <div className="sm:w-full md:w-96 mb-6">
-      <label className="block mb-2 text-md font-medium text-gray-900">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      {id === "deadline" ? (
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date) => handleDateChange(date as Date)}
-          showTimeSelect
-          isClearable
-          timeFormat="HH:mm"
-          timeIntervals={15}
-          dateFormat="MMMM d, yyyy h:mm aa"
-          className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5"
-          wrapperClassName="w-64"
-        />
-      ) : (
-        <input
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-          id={id as string}
-          type={type}
-          placeholder={label}
-          value={formData[id] as string}
-          // onChange={handleChange}
-          required={required}
-        />
-      )}
-    </div>
-  );
 
   const renderQuestions = () => {
     return (
@@ -271,9 +237,6 @@ export default function ListingSettings({ params }: { params: { listingId: strin
   const renderDeadline = () => {
     return (
       <div className="w-full mb-6">
-        <label className="block mb-2 text-md font-medium text-gray-900">
-          Deadline <span className="text-red-500">*</span>
-        </label>
         <DatePicker
           selected={selectedDate}
           onChange={handleDateChange}
@@ -297,7 +260,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
     }));
   };
 
-  const handleTitleSave = async () => {
+  const handleFieldValueSave = async (field: string, value: any) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.listingId}/update-field`, {
         method: "PATCH",
@@ -305,14 +268,14 @@ export default function ListingSettings({ params }: { params: { listingId: strin
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          field: "title",
-          value: formData.title,
+          field: field,
+          value: value,
         }),
       });
 
       if (response.ok) {
-        console.log("Title updated successfully!");
-        handleShowAlert("Title updated"); // Show the alert
+        console.log(`${field} updated successfully!`);
+        handleShowAlert(`${field} updated`); // Show the alert
         // Optionally, you can update the local state or perform any additional actions.
       } else {
         console.error("Request failed with status:", response.status);
@@ -359,7 +322,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         <button
           type="button"
           className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          onClick={handleTitleSave}
+          onClick={() => handleFieldValueSave("title", formData.title)}
         >
           Save
         </button>
@@ -374,7 +337,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         <button
           type="button"
           className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          onClick={handleSubmit}
+          onClick={() => handleFieldValueSave("questions", formData.questions)}
         >
           Save
         </button>
@@ -386,7 +349,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         <button
           type="button"
           className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          onClick={handleSubmit}
+          onClick={() => handleFieldValueSave("deadline", formData.deadline)}
         >
           Save
         </button>
@@ -401,7 +364,6 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         <button
           type="button"
           className="w-24 text-white bg-red-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          // onClick={handleDelete}
           onClick={() => setOpenModal(true)}
         >
           Delete
