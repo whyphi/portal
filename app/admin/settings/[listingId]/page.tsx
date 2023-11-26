@@ -31,6 +31,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
 
   // For API Alerts
   const [showAlert, setShowAlert] = useState(false);
+  const [isErrorAlert, setIsErrorAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
 
@@ -274,13 +275,16 @@ export default function ListingSettings({ params }: { params: { listingId: strin
       });
 
       if (response.ok) {
-        console.log(`${field} updated successfully!`);
-        handleShowAlert(`${field} updated`); // Show the alert
-        // Optionally, you can update the local state or perform any additional actions.
+        setIsErrorAlert(false);
+        handleShowAlert(`${field} updated`)
       } else {
+        setIsErrorAlert(true);
+        handleShowAlert(`${response.status} ${response.statusText}`);
         console.error("Request failed with status:", response.status);
       }
     } catch (error) {
+      setIsErrorAlert(true);
+      handleShowAlert("Error.")
       console.error("Error:", error);
     }
   };
@@ -304,7 +308,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col mb-8">
-      {showAlert ? (<CustomAlert message={alertMessage} onClose={handleAlertClose} />) : (<></>)}
+      {showAlert ? (<CustomAlert message={alertMessage} isError={isErrorAlert} onClose={handleAlertClose} />) : (<></>)}
 
       <h1 className={textStyles.title}>Settings</h1>
 
