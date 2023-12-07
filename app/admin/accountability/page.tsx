@@ -65,7 +65,12 @@ export default function Accountability() {
                 {data.name}
               </Table.Cell>
               <Table.Cell>{data.points}</Table.Cell>
-              <Table.Cell><Progress progress={data.points / maxPoints * 100} color="purple" /></Table.Cell>
+              <Table.Cell>
+                <Progress
+                  progress={data.points / maxPoints * 100}
+                  color={data.points >= maxPoints ? "green" : "purple"} // Change color to green if points are 100 or more
+                />
+              </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
