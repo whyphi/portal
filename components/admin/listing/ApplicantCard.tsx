@@ -20,12 +20,11 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
 
   const gradYear = applicant.gradYear.split(' ').pop();
 
-
   return (
     <Card className="cursor-pointer" onClick={() => router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`)}>
       <div className="flex flex-col items-center mb-1">
         <Image
-          // loader={() => applicant.image}
+          loader={() => applicant.image}
           alt={`${applicant.firstName} ${applicant.lastName} image`}
           className="mb-3 rounded-full shadow-lg"
           height={96}
