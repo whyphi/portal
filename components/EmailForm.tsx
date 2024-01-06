@@ -23,10 +23,37 @@ export default function EmailForm() {
   const router = useRouter();
   const [formData, setFormData] = useState<EmailFormData>(initialValues);
 
+  // TODO: auto-format HTML????
+
+  const emailFormHeaders = new Headers({
+    'Content-Type': 'application/json',
+  })
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // API call to SES endpoint
-    setFormData({ subject: '', content: '' });
+
+    try {
+      const dataToSend = formData
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/announcement`, {
+        method: 'POST',
+        headers: emailFormHeaders,
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        // Handle successful response here, e.g., show a success message or redirect
+        console.log('Email sent successfully');
+        setFormData({ subject: '', content: '' });
+        router.push(`/public/sent`);
+      } else {
+        // Handle error response here, e.g., show an error message
+        console.log('Error sending email');
+      }
+    } catch (error) {
+      // Handle any unexpected errors here
+      console.log('An error occurred:\n', error);
+    }
   };
 
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
