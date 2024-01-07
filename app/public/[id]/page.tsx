@@ -34,6 +34,7 @@ export default function Listing({ params }: { params: { id: string } }) {
         if (!response.ok) {
           throw new Error("API request failed");
         }
+
         return response.json();
       })
       .then((data: ListingData | ServerError) => {
@@ -42,6 +43,30 @@ export default function Listing({ params }: { params: { id: string } }) {
         } else {
           setListingData(data as ListingData);
         }
+
+        // Check if the retrieved data is a valid ListingData
+        if ("deadline" in data) {
+          const listing = data as ListingData;
+
+          // Check if the deadline is a valid date
+          const deadline = new Date(listing.deadline);
+          if (!isNaN(deadline.getTime())) {
+            const now = new Date();
+            const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+            
+            if (estNow > deadline) {
+              console.error("Deadline has passed.");
+              router.push("/error");
+              return;
+            }
+          } else {
+            console.error("Invalid deadline format.");
+            router.push("/error");
+            return;
+          }
+        }
+
+
         setIsLoading(false);
       })
       .catch((error) => {
