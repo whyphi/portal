@@ -61,7 +61,7 @@ const initialValues: FormData = {
     Wheelock: false,
     Other: false,
   },
-  responses: [""]
+  responses: []
 };
 
 
@@ -82,8 +82,32 @@ export default function Form({ title, questions, listingId }: FormProps) {
 
   const maxWordCount = 200; // Adjust as needed
 
+  const checkRequiredFields = () => {
+    const requiredFields = ['firstName', 'lastName', 'major', 'gpa', 'gradYear', 'email', 'phone', 'resume', 'image'];
+    const incompleteFields: string[] = [];
+  
+    Object.entries(formData).forEach(([field, value]) => {
+      if (requiredFields.includes(field) && (!value || (typeof value === 'string' && !value.trim()))) {
+        incompleteFields.push(field);
+      }
+    });
+    
+    if (incompleteFields.length > 0) {
+      alert(`Incomplete fields. Please fill in all required fields.`);
+      return false;
+    }
+    
+    return true;
+  };
+  
+
   const handleSubmit = async () => {
     try {
+      // Check for incomplete required fields
+      const requiredFieldsComplete = checkRequiredFields();
+      if (!requiredFieldsComplete) {
+        return;
+      }
       // Construct the data object to send to the API
       const responseObjects = questions.map((question, index) => ({
         question: question.question,
@@ -107,7 +131,6 @@ export default function Form({ title, questions, listingId }: FormProps) {
 
       if (response.ok) {
         // Handle successful response here, e.g., show a success message or redirect
-        console.log('Form submitted successfully');
         router.push(`/public/success`);
       } else {
         // Handle error response here, e.g., show an error message
@@ -171,11 +194,18 @@ export default function Form({ title, questions, listingId }: FormProps) {
     const { id } = e.target;
     const file = e.target.files ? e.target.files[0] : null;
 
+    // File validation helper function
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-
     const validateFileType = (selectedFile: File | null): boolean => {
       return !!selectedFile && allowedTypes.includes(selectedFile.type);
     };
+
+    // Set filename states to "" since cancelling upload makes file in form null
+    if (id === "resume") {
+      setResumeFileName("");
+    } else if (id === "image") {
+      setImageFileName("");
+    }
 
     if (file) {
       // Perform file validation
@@ -260,7 +290,7 @@ export default function Form({ title, questions, listingId }: FormProps) {
       {renderInput("major", "Major", "text", true)}
       {renderInput("minor", "Minor", "text")}
       {renderInput("gpa", "GPA (N/A if not applicable)", "text", true)}
-      {renderInput("gradYear", "Expected Graduation Date (Month Year)", "text", true)}
+      {renderInput("gradYear", "Expected Graduation Date (Month Year) | (Example: May 2026)", "text", true)}
 
       <label className="block mb-2 text-sm font-medium text-gray-900">College / School <span className="text-red-500">*</span></label>
       <fieldset className="grid gap-2 grid-cols-4 mb-6">
@@ -281,12 +311,11 @@ export default function Form({ title, questions, listingId }: FormProps) {
 
 
       {renderInput("email", "Email", "email", true)}
-      {renderInput("phone", "Phone Number", "text", true)}
-      {renderInput("linkedin", "LinkedIn Profile", "text", true)}
-      {renderInput("website", "Website / Portfolio", "text", true)}
+      {renderInput("phone", "Phone Number (xxx-xxx-xxxx)", "text", true)}
+      {renderInput("linkedin", "LinkedIn Profile", "text")}
+      {renderInput("website", "Website / Portfolio", "text")}
 
 
-      {/* Upload your resume */}
       <div className="flex flex-col mb-6">
         <label className="block mb-4 text-sm font-medium text-gray-900">Upload your resume (PDF) <span className="text-red-500">*</span></label>
         <div className="relative">
