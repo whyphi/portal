@@ -10,6 +10,7 @@ interface ListingData {
   questions: [] | [{ question: string; context: string }];
   listingId: string;
   deadline: string;
+  isVisible: boolean;
 }
 
 interface ServerError {
@@ -25,6 +26,7 @@ export default function Listing({ params }: { params: { id: string } }) {
     listingId: "",
     questions: [],
     title: "",
+    isVisible: true
   });
 
   useEffect(() => {
@@ -43,11 +45,10 @@ export default function Listing({ params }: { params: { id: string } }) {
         } else {
           setListingData(data as ListingData);
         }
+        const listing = data as ListingData;
 
         // Check if the retrieved data is a valid ListingData
         if ("deadline" in data) {
-          const listing = data as ListingData;
-
           // Check if the deadline is a valid date
           const deadline = new Date(listing.deadline);
           if (!isNaN(deadline.getTime())) {
@@ -64,6 +65,13 @@ export default function Listing({ params }: { params: { id: string } }) {
             router.push("/error");
             return;
           }
+        }
+
+        // Check if listing is visible
+        if (!listing.isVisible) {
+          console.error("Access denied.");
+          router.push("/error");
+          return;
         }
 
 
