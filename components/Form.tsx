@@ -138,6 +138,7 @@ export default function Form({ title, questions, listingId }: FormProps) {
     return text.trim().split(/\s+/).filter(Boolean).length;
   };
 
+  // Component that handles essay questions
   const renderResponseInputs = () => {
     return questions.map((question, index) => (
       <div key={index} className="mb-6">
@@ -145,12 +146,12 @@ export default function Form({ title, questions, listingId }: FormProps) {
           {question.question} (Max {maxWordCount} words) <span className="text-red-500">*</span>
         </label>
         <textarea
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 h-32"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 h-32"
           value={formData.responses[index]}
           onChange={(e) => handleResponseChange(index, e.target.value)}
         />
         <p className="text-sm text-gray-500">
-          {maxWordCount - getWordCount(formData.responses[index]) >= 0
+          {maxWordCount - getWordCount(formData.responses[index]) + 1 >= 0
             ? `Remaining words: ${maxWordCount - getWordCount(formData.responses[index])}`
             : "Remaining words: Over word count!"}
         </p>
@@ -251,9 +252,6 @@ export default function Form({ title, questions, listingId }: FormProps) {
     <form onSubmit={handleSubmit} className="flex flex-col mb-8 w-full">
       <div>
         <h1 className={textStyles.title}>{title}</h1>
-        {/* <h3 className={textStyles.subtitle}>To promote the cause of higher business education and training for all individuals; To foster high ideals for everyone pursuing a career in business; To encourage fraternity and cooperation among people preparing for such careers; To stimulate the spirit of sacrifice and unselfish devotion to the attainment of such ends.
-
-          Our aim is to continue the strong traditions of this fraternity and enrich the community of Boston University. We hope you will join us on our journey!</h3> */}
       </div>
 
       {renderInput("firstName", "First Name", "text", true)}
