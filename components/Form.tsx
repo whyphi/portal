@@ -85,21 +85,29 @@ export default function Form({ title, questions, listingId }: FormProps) {
   const checkRequiredFields = () => {
     const requiredFields = ['firstName', 'lastName', 'major', 'gpa', 'gradYear', 'email', 'phone', 'resume', 'image'];
     const incompleteFields: string[] = [];
-  
+
     Object.entries(formData).forEach(([field, value]) => {
       if (requiredFields.includes(field) && (!value || (typeof value === 'string' && !value.trim()))) {
         incompleteFields.push(field);
       }
     });
-    
+
     if (incompleteFields.length > 0) {
       alert(`Incomplete fields. Please fill in all required fields.`);
       return false;
     }
-    
+
+    else if (
+      formData.responses.length < questions.length ||
+      formData.responses.some(response => typeof response === 'string' && response.trim() === '')
+    ) {
+      alert(`Incomplete fields. Please fill in all required fields.`);
+      return false;
+    }
+
     return true;
   };
-  
+
 
   const handleSubmit = async () => {
     try {
@@ -135,10 +143,12 @@ export default function Form({ title, questions, listingId }: FormProps) {
       } else {
         // Handle error response here, e.g., show an error message
         console.error('Error submitting form');
+        alert(`Error submitting form. Please contact PCT with a screenshot of the error!`);
       }
     } catch (error) {
       // Handle any unexpected errors here
       console.error('An error occurred:', error);
+      alert(`An error occurred: ` + error + `. Please contact PCT with a screenshot of the error!`);
     }
   };
 
@@ -333,7 +343,6 @@ export default function Form({ title, questions, listingId }: FormProps) {
         </div>
       </div>
 
-      {/* Upload a picture of yourself */}
       <div className="flex flex-col mb-6">
         <label className="block mb-4 text-sm font-medium text-gray-900">Upload a picture of yourself (JPG/JPEG/PNG) <span className="text-red-500">*</span></label>
         <div className="relative">
