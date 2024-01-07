@@ -170,7 +170,19 @@ export default function Form({ title, questions, listingId }: FormProps) {
     const { id } = e.target;
     const file = e.target.files ? e.target.files[0] : null;
 
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+
+    const validateFileType = (selectedFile: File | null): boolean => {
+      return !!selectedFile && allowedTypes.includes(selectedFile.type);
+    };
+
     if (file) {
+      // Perform file validation
+      if (!validateFileType(file)) {
+        alert('Invalid file type. Please upload a PDF, JPG, JPEG, or PNG file.');
+        return;
+      }
+
       if (id === "resume") {
         setResumeFileName(file.name);
       } else if (id === "image") {
@@ -278,7 +290,7 @@ export default function Form({ title, questions, listingId }: FormProps) {
 
       {/* Upload your resume */}
       <div className="flex flex-col mb-6">
-        <label className="block mb-4 text-sm font-medium text-gray-900">Upload your resume <span className="text-red-500">*</span></label>
+        <label className="block mb-4 text-sm font-medium text-gray-900">Upload your resume (PDF) <span className="text-red-500">*</span></label>
         <div className="relative">
           <input
             type="file"
@@ -296,7 +308,7 @@ export default function Form({ title, questions, listingId }: FormProps) {
 
       {/* Upload a picture of yourself */}
       <div className="flex flex-col mb-6">
-        <label className="block mb-4 text-sm font-medium text-gray-900">Upload a picture of yourself <span className="text-red-500">*</span></label>
+        <label className="block mb-4 text-sm font-medium text-gray-900">Upload a picture of yourself (JPG/JPEG/PNG) <span className="text-red-500">*</span></label>
         <div className="relative">
           <input
             type="file"
