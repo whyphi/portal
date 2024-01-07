@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ToggleSwitch, Dropdown } from 'flowbite-react';
+import { ToggleSwitch, Dropdown, Button} from 'flowbite-react';
 
 interface ListingCardProps {
   listingId: string;
@@ -100,6 +100,13 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
     }
   };
 
+  // handleInsightsButtonClick : directs user to data analytics page for specified `listingId`
+  const handleInsightsButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation(); // Stop the event propagation
+    // Add any additional logic or navigation here
+    router.push(`/admin/listing/${listingId}/insights`);
+  };
+
   const handleToggleSwitchChange = async (isChecked: boolean) => {
     try {
       // Update the local state
@@ -150,6 +157,7 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
           <ToggleSwitch className="" checked={isActive} label="" onChange={handleToggleSwitchChange} onClick={handleToggleSwitchClick} />
         </div>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
+        <Button onClick={(e) => handleInsightsButtonClick(e)}>Insights</Button>
         <div className="mt-1">
           {renderDateCreatedBadge(dateCreated)}
         </div>
