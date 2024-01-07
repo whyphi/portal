@@ -1,6 +1,8 @@
 'use client'
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from 'flowbite-react';
+import { AiOutlineLoading } from 'react-icons/ai';
 
 interface FormData {
   firstName: string;
@@ -72,13 +74,12 @@ interface FormProps {
 }
 
 
-
-
 export default function Form({ title, questions, listingId }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const maxWordCount = 200; // Adjust as needed
 
@@ -95,25 +96,35 @@ export default function Form({ title, questions, listingId }: FormProps) {
     if (incompleteFields.length > 0) {
       alert(`Incomplete fields. Please fill in all required fields.`);
       return false;
-    }
-
-    else if (
+    } else if (
       formData.responses.length < questions.length ||
       formData.responses.some(response => typeof response === 'string' && response.trim() === '')
     ) {
       alert(`Incomplete fields. Please fill in all required fields.`);
       return false;
+    } else if (
+      formData.responses.some(response => {
+        if (typeof response === 'string') {
+          const wordCount = response.trim().split(/\s+/).filter(Boolean).length;
+          return wordCount > maxWordCount;
+        }
+        return false;
+      })
+    ) {
+      alert(`One or more responses are over the maximum word count. Please edit your response.`);
+      return false;
     }
-
     return true;
   };
 
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     try {
       // Check for incomplete required fields
       const requiredFieldsComplete = checkRequiredFields();
       if (!requiredFieldsComplete) {
+        setIsSubmitting(false);
         return;
       }
       // Construct the data object to send to the API
@@ -142,11 +153,13 @@ export default function Form({ title, questions, listingId }: FormProps) {
         router.push(`/public/success`);
       } else {
         // Handle error response here, e.g., show an error message
+        setIsSubmitting(false);
         console.error('Error submitting form');
         alert(`Error submitting form. Please contact PCT with a screenshot of the error!`);
       }
     } catch (error) {
       // Handle any unexpected errors here
+      setIsSubmitting(false);
       console.error('An error occurred:', error);
       alert(`An error occurred: ` + error + `. Please contact PCT with a screenshot of the error!`);
     }
@@ -182,6 +195,7 @@ export default function Form({ title, questions, listingId }: FormProps) {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 h-32"
           value={formData.responses[index]}
           onChange={(e) => handleResponseChange(index, e.target.value)}
+          disabled={isSubmitting}
         />
         <p className="text-sm text-gray-500">
           {maxWordCount - getWordCount(formData.responses[index]) + 1 >= 0
@@ -277,6 +291,7 @@ export default function Form({ title, questions, listingId }: FormProps) {
         value={formData[id] as string}
         onChange={handleChange}
         required={required}
+        disabled={isSubmitting}
       />
     </div>
   );
@@ -312,6 +327,7 @@ export default function Form({ title, questions, listingId }: FormProps) {
               name={college}
               checked={isChecked}
               onChange={handleCollegeChange}
+              disabled={isSubmitting}
             />
             {college}
           </label>
@@ -335,8 +351,12 @@ export default function Form({ title, questions, listingId }: FormProps) {
             name="resume"
             className="absolute inset-0 opacity-0 z-10"
             onChange={handleFileChange}
+            disabled={isSubmitting}
           />
-          <button className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2">
+          <button
+            className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2"
+            disabled={isSubmitting}
+          >
             Upload Resume
           </button>
           {resumeFileName && <p className="text-gray-500 text-xs mt-1">{resumeFileName}</p>}
@@ -352,8 +372,12 @@ export default function Form({ title, questions, listingId }: FormProps) {
             name="image"
             className="absolute inset-0 opacity-0 z-10"
             onChange={handleFileChange}
+            disabled={isSubmitting}
           />
-          <button className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2">
+          <button
+            className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2"
+            disabled={isSubmitting}
+          >
             Upload Image
           </button>
           {imageFileName && <p className="text-gray-500 text-xs mt-1">{imageFileName}</p>}
@@ -361,14 +385,26 @@ export default function Form({ title, questions, listingId }: FormProps) {
       </div>
 
       {questions && renderResponseInputs()}
-
-      <button
-        type="button"
-        className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        onClick={handleSubmit}>
+      <Button
+        fullSized
+        onClick={handleSubmit}
+        gradientMonochrome="purple"
+        isProcessing={isSubmitting}
+        processingSpinner={<AiOutlineLoading className="h-6 w-6 animate-spin" />}
+        disabled={isSubmitting}
+      >
         Submit
-      </button>
+      </Button>
 
-    </form>
+      {/* Original button below */}
+      {/* <button
+          type="button"
+          className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          onClick={handleSubmit}>
+          Submit
+        </button> */}
+
+
+    </form >
   )
 }
