@@ -30,7 +30,7 @@ async function isValidUser(email: string) {
   }
 }
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -56,7 +56,8 @@ export const authOptions: AuthOptions = {
   },
   pages: {
     error: "/authError"
-  }
+  },
+  secret: process.env.NEXTAUTH_SECRET
 };
 
 const handler = NextAuth(authOptions);
