@@ -56,12 +56,10 @@ export default function Listing({ params }: { params: { id: string } }) {
             const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
             
             if (estNow > deadline) {
-              console.error("Deadline has passed.");
               router.push("/error");
               return;
             }
           } else {
-            console.error("Invalid deadline format.");
             router.push("/error");
             return;
           }
@@ -69,7 +67,6 @@ export default function Listing({ params }: { params: { id: string } }) {
 
         // Check if listing is visible
         if (!listing.isVisible) {
-          console.error("Access denied.");
           router.push("/error");
           return;
         }
