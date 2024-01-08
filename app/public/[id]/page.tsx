@@ -10,6 +10,7 @@ interface ListingData {
   questions: [] | [{ question: string; context: string }];
   listingId: string;
   deadline: string;
+  isVisible: boolean;
 }
 
 interface ServerError {
@@ -25,6 +26,7 @@ export default function Listing({ params }: { params: { id: string } }) {
     listingId: "",
     questions: [],
     title: "",
+    isVisible: true
   });
 
   useEffect(() => {
@@ -34,6 +36,7 @@ export default function Listing({ params }: { params: { id: string } }) {
         if (!response.ok) {
           throw new Error("API request failed");
         }
+
         return response.json();
       })
       .then((data: ListingData | ServerError) => {
@@ -42,6 +45,33 @@ export default function Listing({ params }: { params: { id: string } }) {
         } else {
           setListingData(data as ListingData);
         }
+        const listing = data as ListingData;
+
+        // Check if the retrieved data is a valid ListingData
+        if ("deadline" in data) {
+          // Check if the deadline is a valid date
+          const deadline = new Date(listing.deadline);
+          if (!isNaN(deadline.getTime())) {
+            const now = new Date();
+            const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+            
+            if (estNow > deadline) {
+              router.push("/error");
+              return;
+            }
+          } else {
+            router.push("/error");
+            return;
+          }
+        }
+
+        // Check if listing is visible
+        if (!listing.isVisible) {
+          router.push("/error");
+          return;
+        }
+
+
         setIsLoading(false);
       })
       .catch((error) => {
