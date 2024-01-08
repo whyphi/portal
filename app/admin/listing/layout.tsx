@@ -1,7 +1,6 @@
 import '../../globals.css'
 import type { Metadata } from 'next'
-import Navbar from "@/components/admin/NavSidebar"
-import Sidebar from '@/components/admin/Sidebar'
+
 
 export const metadata: Metadata = {
     title: 'Whyphi - Create',
