@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <>
       <NavSidebar />
-      <div className="p-4 sm:ml-64 mt-14">
+      <div className="p-8 sm:ml-64 mt-14">
         {children}
       </div>
     </>

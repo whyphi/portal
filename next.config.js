@@ -23,6 +23,7 @@ module.exports = {
 
     return config;
   },
+  reactStrictMode: true,
   images: {
     domains: ['whyphi-zap.s3.amazonaws.com']
   },
