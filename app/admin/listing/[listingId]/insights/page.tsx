@@ -118,25 +118,40 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   return (
     <div>
-        <Dropdown label={selectedItem || 'Select a metric'}>
-          {fields.map((field, index) => (
-            <Dropdown.Item key={index} onClick={() => handleDropdownChange(field)}>
-              {field}
-            </Dropdown.Item>
-          ))}
-        </Dropdown>
-        <PieChart width={500} height={400}>
-          {selectedItem && distributionMetrics[selectedItem].length > 0 ? 
-            <Pie data={distributionMetrics[selectedItem]} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={130} outerRadius={160} fill="#82ca9d" label > 
-              <Label position="center">
-                {selectedItem}
-              </Label>
-            </Pie>
-            :
-            <Loader />
-          }
-          <Tooltip />
-        </PieChart>
+        {/* vertical column title/dropdown + pie */}
+        <div className="">
+          {/* horizontal column : title + dropdown */}
+          <div className="flex items-center mb-4 gap-4">
+            <h1 className="text-2xl font-bold">Insights</h1>
+            <Dropdown 
+              label={selectedItem || 'Select a metric'}
+              style={{
+                background: 'linear-gradient(to right, #8e5ef9, #6d2bd9)', // Replace these colors with your desired gradient
+                color: 'white', // Set the text color
+                // Add any other specific styles you want to apply
+              }}
+            >
+              {fields.map((field, index) => (
+                <Dropdown.Item key={index} onClick={() => handleDropdownChange(field)}>
+                  {field}
+                </Dropdown.Item>
+              ))}
+            </Dropdown>
+          </div>
+
+          <PieChart width={450} height={400}>
+            {selectedItem && distributionMetrics[selectedItem].length > 0 ? 
+              <Pie data={distributionMetrics[selectedItem]} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={130} outerRadius={160} fill="#BB9CFF" label > 
+                <Label position="center" >
+                  {selectedItem}
+                </Label>
+              </Pie>
+              :
+              <Loader />
+            }
+            <Tooltip />
+          </PieChart>
+        </div>
     </div>
 
 
