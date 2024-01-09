@@ -88,20 +88,7 @@ export default function test({ params }: { params: { listingId: string } }) {
   // if applicants data not yet received : produce loading screen
   if (isLoading) return (<Loader />)
 
-  const data02 = [
-    {
-      name: "Group A",
-      value: 2400
-    },
-    {
-      "name": "Group B",
-      "value": 4567
-    },
-    {
-      "name": "Group C",
-      "value": 1398
-    },
-  ];
+ 
   return (
     <div>
         <PieChart width={730} height={250}>
