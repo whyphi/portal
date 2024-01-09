@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Loader from "@/components/Loader";
 import ApplicantCard from "@/components/admin/listing/ApplicantCard";
-import { DistributionMetricsState, Metrics } from "@/types/insights"
+import { DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
 import { PieChart, Pie, Tooltip, Label } from "recharts";
 import { Button, Dropdown } from 'flowbite-react';
@@ -21,6 +21,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     linkedin: [],
     website: [],
   });
+  console.log(applicantData, distributionMetrics)
 
 
   // fields : list of all fields being used for analytics
@@ -72,7 +73,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     // map through list of applicants
     applicantData.map((applicant: Applicant) => {
       // iterate through keys of applicant object (only consider valid ones)
-      Object.entries(applicant).forEach(([metric, val]: [string, string]) => {
+      Object.entries(applicant).forEach(([metric, val]: [string, string | Colleges]) => {
         // valOut : changes to boolean if metric is "linkedin/website" --> otherwise string metric
         
         if (!fields.includes(metric)) {
@@ -80,13 +81,25 @@ export default function Insights({ params }: { params: { listingId: string } }) 
           return;
           
         } else if (metric == "colleges") {
-          // case 2: if colleges -> iterate over list of colleges
-          
+          // case 2: if colleges -> iterate over object of colleges
+          Object.entries(val).forEach(([college, status]: [string, boolean]) => {
+            // only consider `true` colleges
+            if (status) {
+              // search for college in updatedMetrics object
+              const foundCollege = updatedMetrics[metric].find(collegeObject => collegeObject?.name === college);
+              if (foundCollege) {
+                foundCollege.value += 1
+              } else {
+                const newCollege: Metrics = { name: college, value: 1};
+                updatedMetrics[metric].push(newCollege);
+              }
+            }
+          })
           return;
           
         } else if (["linkedin", "website"].includes(metric)) {
           // case 3: hasUrl -> true or false depending on if user has linkedin/website
-          val = val.includes("https://www.") ? "True" : "False";
+          val = typeof val === 'string' && val.includes("https://www.") ? "True" : "False";
 
         } else if (val == "") {
           // case 4: val is empty string (missing value)
@@ -99,7 +112,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         if (foundMetric) {
           foundMetric.value += 1
         } else {
-          const newMetric: Metrics = { name: val, value: 1};
+          const newMetric: Metrics = { name: typeof val === 'string' && val, value: 1};
           updatedMetrics[metric].push(newMetric);
         }
         
