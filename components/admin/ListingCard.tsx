@@ -157,7 +157,7 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
           <ToggleSwitch className="" checked={isActive} label="" onChange={handleToggleSwitchChange} onClick={handleToggleSwitchClick} />
         </div>
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
-        <Button onClick={(e) => handleInsightsButtonClick(e)}>Insights</Button>
+        <Button onClick={(e) => handleInsightsButtonClick(e)} className="mt-2 h-8 w-30">Insights</Button>
         <div className="mt-1">
           {renderDateCreatedBadge(dateCreated)}
         </div>
