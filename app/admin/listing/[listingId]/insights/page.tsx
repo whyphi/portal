@@ -1,11 +1,11 @@
 "use client"
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Loader from "@/components/Loader";
 import ApplicantCard from "@/components/admin/listing/ApplicantCard";
 import { DistributionMetricsState, Metrics } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
 import { PieChart, Pie, Tooltip, Label } from "recharts";
-import { Dropdown } from 'flowbite-react';
+import { Button, Dropdown } from 'flowbite-react';
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
@@ -22,6 +22,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     website: [],
   });
 
+
   // fields : list of all fields being used for analytics
   const fields : string[] = ["colleges", "gpa", "gradYear", "major", "minor", "linkedin", "website"]
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -29,7 +30,8 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   // selectedItem : used to track which metric plot pie chart for
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
-  
+  // useRef to track whether parseData has been called
+  const parseDataCalled = useRef(false);
   
   // Fetch listings data from your /listings API endpoint
   useEffect(() => {
@@ -38,26 +40,35 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     .then((data: [Applicant]) => {
       setApplicantData(data)
       setIsLoading(false);
+      // parseData()
     })
     .catch((error) => console.error("Error fetching applicants:", error));
     
   }, [])
-  
-  // parse through data every time applicantData finishes loading
-  useEffect(() => {
-    try {
-      if (applicantData) {
-        parseData()
-      }
-    } catch (error) {
-      console.log("error parsing data:", error)
+
+// Parse data whenever applicantData changes
+useEffect(() => {
+  try {
+    if (applicantData.length > 0 && !parseDataCalled.current) {
+      parseData();
+      parseDataCalled.current = true; // Set the flag after parsing data
     }
-  }, [applicantData])
+  } catch (error) {
+    console.log("error parsing data:", error);
+  }
+}, [applicantData]);
+
   
   // parseData : iterates over list of applicantData and obtains distribution of metrics (colleges, gpa, gradYear, major, minor, linkedin, website)
   const parseData = () => {
+    if (!(applicantData.length > 0)) {
+      console.log("applicants not yet fetched")
+      return
+    }
+
     // create temporary copy of distributionMetrics (update after)
     const updatedMetrics = { ...distributionMetrics };
+    console.log("old metrics", distributionMetrics, "copy", updatedMetrics)
     
     // map through list of applicants
     applicantData.map((applicant: Applicant) => {
@@ -81,6 +92,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         } 
         // handle all other metric updates
         const foundMetric = updatedMetrics[metric].find(metricObject => metricObject?.name === valOut);
+        console.log("adding metric", applicant, metric, valOut, updatedMetrics)
         if (foundMetric) {
           foundMetric.value += 1
         } else {
@@ -97,7 +109,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   const handleDropdownChange = (selectedItem: string) => {
     setSelectedItem(selectedItem);
   };
-  console.log("metric", selectedItem);
 
   // if applicants data not yet received : produce loading screen
   if (isLoading) return (<Loader />)
