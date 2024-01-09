@@ -93,7 +93,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
           val = "None"
         }
 
-        // handle all other metric updates
+        // handle remaining metric updates
         const foundMetric = updatedMetrics[metric].find(metricObject => metricObject?.name === val);
 
         if (foundMetric) {
@@ -128,11 +128,9 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         <PieChart width={500} height={400}>
           {selectedItem && distributionMetrics[selectedItem].length > 0 ? 
             <Pie data={distributionMetrics[selectedItem]} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={130} outerRadius={160} fill="#82ca9d" label > 
-              {/* {distributionMetrics.gradYear.map((entry, index) => (
-                <Label key={`label-${index}`} position="center">
-                  {entry.name}
-                </Label>
-              ))} */}
+              <Label position="center">
+                {selectedItem}
+              </Label>
             </Pie>
             :
             <Loader />
