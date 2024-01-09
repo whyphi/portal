@@ -46,17 +46,17 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     
   }, [])
 
-// Parse data whenever applicantData changes
-useEffect(() => {
-  try {
-    if (applicantData.length > 0 && !parseDataCalled.current) {
-      parseData();
-      parseDataCalled.current = true; // Set the flag after parsing data
+  // Parse data whenever applicantData changes
+  useEffect(() => {
+    try {
+      if (applicantData.length > 0 && !parseDataCalled.current) {
+        parseData();
+        parseDataCalled.current = true; // Set the flag after parsing data
+      }
+    } catch (error) {
+      console.log("error parsing data:", error);
     }
-  } catch (error) {
-    console.log("error parsing data:", error);
-  }
-}, [applicantData]);
+  }, [applicantData]);
 
   
   // parseData : iterates over list of applicantData and obtains distribution of metrics (colleges, gpa, gradYear, major, minor, linkedin, website)
@@ -68,14 +68,12 @@ useEffect(() => {
 
     // create temporary copy of distributionMetrics (update after)
     const updatedMetrics = { ...distributionMetrics };
-    console.log("old metrics", distributionMetrics, "copy", updatedMetrics)
     
     // map through list of applicants
     applicantData.map((applicant: Applicant) => {
       // iterate through keys of applicant object (only consider valid ones)
       Object.entries(applicant).forEach(([metric, val]: [string, string]) => {
         // valOut : changes to boolean if metric is "linkedin/website" --> otherwise string metric
-        let valOut: string | boolean = val
         
         if (!fields.includes(metric)) {
           // case 1: ignore irrelevant metrics
@@ -88,15 +86,20 @@ useEffect(() => {
           
         } else if (["linkedin", "website"].includes(metric)) {
           // case 3: hasUrl -> true or false depending on if user has linkedin/website
-          valOut = val.includes("https://www.");
-        } 
+          val = val.includes("https://www.") ? "True" : "False";
+
+        } else if (val == "") {
+          // case 4: val is empty string (missing value)
+          val = "None"
+        }
+
         // handle all other metric updates
-        const foundMetric = updatedMetrics[metric].find(metricObject => metricObject?.name === valOut);
-        console.log("adding metric", applicant, metric, valOut, updatedMetrics)
+        const foundMetric = updatedMetrics[metric].find(metricObject => metricObject?.name === val);
+
         if (foundMetric) {
           foundMetric.value += 1
         } else {
-          const newMetric: Metrics = { name: valOut, value: 1};
+          const newMetric: Metrics = { name: val, value: 1};
           updatedMetrics[metric].push(newMetric);
         }
         
