@@ -27,7 +27,6 @@ export default function test({ params }: { params: { listingId: string } }) {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
     .then((response) => response.json())
     .then((data: [Applicant]) => {
-      console.log(data)
       setApplicantData(data)
       setIsLoading(false);
     })
@@ -42,8 +41,10 @@ export default function test({ params }: { params: { listingId: string } }) {
     } catch (error) {
       console.log("error parsing data:", error)
     }
-    console.log(distributionMetrics)
   }, [applicantData])
+
+  console.log(distributionMetrics)
+  console.log(distributionMetrics.major[0]?.value)
 
   // parseData : iterates over list of applicantData and obtains distribution of metrics (colleges, gpa, gradYear, major, minor, linkedin, website)
   const parseData = () => {
@@ -54,24 +55,31 @@ export default function test({ params }: { params: { listingId: string } }) {
     applicantData.map((applicant: Applicant) => {
       // iterate through keys of applicant object (only consider valid ones)
       Object.entries(applicant).forEach(([metric, val]: [string, string]) => {
+        // valOut : changes to boolean if metric is "linkedin/website" --> otherwise string metric
+        let valOut: string | boolean = val
+
         if (!fields.includes(metric)) {
-          // ignore irrelevant metrics
+          // case 1: ignore irrelevant metrics
           return;
-        } else if (["linkedin", "website", "major"].includes(metric)) {
-            // hasUrl : true or false depending on val
-            const hasURL = val !== '';
-            const foundMetric = updatedMetrics[metric].find(disMetric => disMetric?.name === hasURL);
-            if (foundMetric) {
-              foundMetric.value += 1
-            } else {
-              const newMetric: Metrics = { name: hasURL, value: 1}
-              updatedMetrics[metric].push(newMetric)
-            }
+          
         } else if (metric == "colleges") {
-          return
+          // case 2: if colleges -> iterate over list of colleges
+
+          return;
+
+        } else if (["linkedin", "website"].includes(metric)) {
+            // case 3: hasUrl -> true or false depending on if user has linkedin/website
+            valOut = val.includes("https://www.");
+        } 
+        // handle all other metric updates
+        const foundMetric = updatedMetrics[metric].find(metricObject => metricObject?.name === valOut);
+        if (foundMetric) {
+          foundMetric.value += 1
         } else {
-          return
+          const newMetric: Metrics = { name: valOut, value: 1};
+          updatedMetrics[metric].push(newMetric);
         }
+          
       })
     })
     setDistributionMetrics(updatedMetrics)
@@ -97,7 +105,11 @@ export default function test({ params }: { params: { listingId: string } }) {
   return (
     <div>
         <PieChart width={730} height={250}>
-          <Pie data={data02} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={80} outerRadius={100} fill="#82ca9d" label />
+          {distributionMetrics.major.length > 0 ? 
+            <Pie data={distributionMetrics.gradYear} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={80} outerRadius={100} fill="#82ca9d" label />
+            :
+            <Loader />
+          }
           <Tooltip />
         </PieChart>
     </div>
