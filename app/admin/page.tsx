@@ -1,9 +1,10 @@
 "use client"
 import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
-import ListingView from "@/components/admin/ListingView";
+import ListingView from "@/components/admin/view/ListingView";
 import AdminLoader from "@/components/AdminLoader";
 import { useSession, signIn, signOut } from "next-auth/react";
+import ListingRow from "@/components/admin/view/ListingRow";
 
 
 interface Listing {
@@ -30,9 +31,22 @@ export default function Admin() {
   }, []);
 
   return (
-    <main className="container mx-auto">
-      <ListingView/>
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <main className="flex container px-1">
+      <div className="pt-3">
+        {listings.map((listing, index) => (
+          <div key={index}>
+            <ListingRow
+              listingId={listing.listingId}
+              title={listing.title}
+              active={listing.isVisible}
+              deadline={listing.deadline}
+              dateCreated={listing.dateCreated}
+              applicantCount={0}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="mx-1 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {listings.map((listing, index) => (
           <div key={index} className="col-span-1">
             <ListingCard
