@@ -1,13 +1,23 @@
 "use client"
 import React, { useState, useEffect } from 'react';
+import AddAlumniForm from './AddAlumniForm';
 
 const Alumni = () => {
     const [alumniData, setAlumniData] = useState([]);
-
+    const [isFormOpen, setFormOpen] = useState(false);
+    
     useEffect(() => {
         // Fetch data from the backend when the component mounts
         fetchAlumniData();
     }, []);
+
+    const openForm = () => {
+    setFormOpen(true);
+    };
+
+    const closeForm = () => {
+    setFormOpen(false);
+    };
 
     const fetchAlumniData = async () => {
         try {
@@ -31,7 +41,25 @@ const Alumni = () => {
         }
     };
 
-    // Add similar functions for create and update
+    const handleCreateAlumni = async (formData) => {
+        // Perform the logic to send the data to your backend and create the alumni
+        console.log('Creating alumni:', formData);
+    
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/alumni`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        // Refresh data after creation
+        fetchAlumniData();
+        if (response.ok) {
+          console.log('Alumni created successfully');
+        } else {
+          console.error('Failed to create alumni');
+        }
+    };
 
     return (
         <div>
@@ -61,6 +89,10 @@ const Alumni = () => {
                     ))}
                 </tbody>
             </table>
+            <div>
+                <button onClick={openForm}>Add Alumni</button>
+                <AddAlumniForm isOpen={isFormOpen} onClose={closeForm} onCreate={handleCreateAlumni} />
+            </div>
         </div>
     );
 };
