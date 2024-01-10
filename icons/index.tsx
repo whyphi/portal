@@ -1,21 +1,60 @@
-const Hamburger = () => {
+const ListingsIcon = () => {
   return (
-    <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 18L20 18" stroke="#000000" strokeWidth="2" strokeLinecap="round" />
-      <path d="M4 12L20 12" stroke="#000000" strokeWidth="2" strokeLinecap="round" />
-      <path d="M4 6L20 6" stroke="#000000" strokeWidth="2" strokeLinecap="round" />
+    <svg
+      className="w-5 h-5 text-gray-800 dark:text-white"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 18 20"
+    >
+      <path d="M5 9V4.13a2.96 2.96 0 0 0-1.293.749L.879 7.707A2.96 2.96 0 0 0 .13 9H5Zm11.066-9H9.829a2.98 2.98 0 0 0-2.122.879L7 1.584A.987.987 0 0 0 6.766 2h4.3A3.972 3.972 0 0 1 15 6v10h1.066A1.97 1.97 0 0 0 18 14V2a1.97 1.97 0 0 0-1.934-2Z" />
+      <path d="M11.066 4H7v5a2 2 0 0 1-2 2H0v7a1.969 1.969 0 0 0 1.933 2h9.133A1.97 1.97 0 0 0 13 18V6a1.97 1.97 0 0 0-1.934-2Z" />
     </svg>
-  )
-}
+  );
+};
 
-const Stairs = () => {
+const CreateIcon = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="20" height="20" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
-      <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
-        <path d="M3555 4423 c-167 -24 -322 -121 -414 -258 -89 -133 -95 -163 -99 -507 l-3 -298 -378 0 c-422 0 -468 -6 -594 -72 -80 -42 -193 -155 -235 -235 -63 -119 -72 -183 -72 -490 l0 -273 -388 0 c-426 0 -449 -2 -572 -62 -99 -48 -209 -162 -259 -269 -59 -125 -63 -163 -59 -599 l3 -385 33 -67 c40 -82 119 -157 200 -190 l57 -23 1685 0 c1608 0 1688 1 1745 18 197 61 345 202 406 389 l24 73 0 1485 0 1485 -33 67 c-40 83 -119 158 -200 190 -56 22 -66 23 -437 24 -209 1 -393 0 -410 -3z m744 -330 l21 -18 -2 -1435 -3 -1435 -22 -40 c-28 -52 -88 -109 -138 -132 -38 -17 -126 -18 -1674 -21 -1456 -2 -1637 -1 -1658 13 l-23 15 0 353 c0 394 2 411 67 486 19 23 54 52 77 64 40 22 51 22 486 27 425 5 447 6 490 26 53 25 103 73 133 129 21 38 22 56 27 380 6 380 6 381 80 455 76 76 63 74 560 80 l445 5 49 25 c51 26 94 71 123 130 16 31 19 77 23 375 5 324 6 342 27 380 40 76 111 129 198 148 11 3 171 5 356 6 307 1 339 -1 358 -16z" />
-      </g>
+    <svg
+      className="w-5 h-5 text-gray-800 dark:text-white"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 18 18"
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M9 1v16M1 9h16"
+      />
     </svg>
-  )
-}
+  );
+};
 
-export { Hamburger, Stairs }
+const AccountabilityIcon = () => {
+  return (
+    <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+    </svg>
+  );
+};
+
+const AnnouncementsIcon = () => {
+  return (
+    <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 19">
+    <path d="M15 1.943v12.114a1 1 0 0 1-1.581.814L8 11V5l5.419-3.871A1 1 0 0 1 15 1.943ZM7 4H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2v5a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2V4ZM4 17v-5h1v5H4ZM16 5.183v5.634a2.984 2.984 0 0 0 0-5.634Z" />
+    </svg>
+  );
+};
+
+const AlumniDBIcon = () => {
+  return (
+    <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+    <path d="M8 5.625c4.418 0 8-1.063 8-2.375S12.418.875 8 .875 0 1.938 0 3.25s3.582 2.375 8 2.375Zm0 13.5c4.963 0 8-1.538 8-2.375v-4.019c-.052.029-.112.054-.165.082a8.08 8.08 0 0 1-.745.353c-.193.081-.394.158-.6.231l-.189.067c-2.04.628-4.165.936-6.3.911a20.601 20.601 0 0 1-6.3-.911l-.189-.067a10.719 10.719 0 0 1-.852-.34 8.08 8.08 0 0 1-.493-.244c-.053-.028-.113-.053-.165-.082v4.019C0 17.587 3.037 19.125 8 19.125Zm7.09-12.709c-.193.081-.394.158-.6.231l-.189.067a20.6 20.6 0 0 1-6.3.911 20.6 20.6 0 0 1-6.3-.911l-.189-.067a10.719 10.719 0 0 1-.852-.34 8.08 8.08 0 0 1-.493-.244C.112 6.035.052 6.01 0 5.981V10c0 .837 3.037 2.375 8 2.375s8-1.538 8-2.375V5.981c-.052.029-.112.054-.165.082a8.08 8.08 0 0 1-.745.353Z" />
+    </svg>
+  );
+};
+
+export { ListingsIcon, CreateIcon, AccountabilityIcon, AnnouncementsIcon, AlumniDBIcon };
