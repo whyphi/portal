@@ -4,6 +4,18 @@ import { useRouter } from "next/navigation";
 import { Button } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
 
+// TODO: Organize interfaces in one file:
+// https://github.com/Microsoft/TypeScript/blob/main/src/compiler/types.ts
+
+interface Events {
+  infoSession1: boolean;
+  infoSession2: boolean;
+  workshop1: boolean;
+  workshop2: boolean;
+  social1: boolean;
+  social2: boolean;
+}
+
 interface FormData {
   firstName: string;
   lastName: string;
@@ -32,6 +44,7 @@ interface FormData {
     Wheelock: boolean;
     Other: boolean;
   };
+  events : Events | null;
   responses: string[];
 }
 
@@ -63,6 +76,7 @@ const initialValues: FormData = {
     Wheelock: false,
     Other: false,
   },
+  events: null,
   responses: []
 };
 
@@ -71,15 +85,27 @@ interface FormProps {
   title: string | null;
   questions: [] | [{ question: string, context: string }],
   listingId: string | null;
+  includeEventsAttended: boolean
 }
 
 
-export default function Form({ title, questions, listingId }: FormProps) {
+export default function Form({ title, questions, listingId, includeEventsAttended }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  if (includeEventsAttended) {
+    initialValues.events = {
+      infoSession1: false,
+      infoSession2: false,
+      workshop1: false,
+      workshop2: false,
+      social1: false,
+      social2: false
+    }
+  }
 
   const maxWordCount = 200; // Adjust as needed
 
@@ -334,13 +360,10 @@ export default function Form({ title, questions, listingId }: FormProps) {
         ))}
       </fieldset>
 
-
-
       {renderInput("email", "Email", "email", true)}
       {renderInput("phone", "Phone Number (xxx-xxx-xxxx)", "text", true)}
       {renderInput("linkedin", "LinkedIn Profile", "text")}
       {renderInput("website", "Website / Portfolio", "text")}
-
 
       <div className="flex flex-col mb-6">
         <label className="block mb-4 text-sm font-medium text-gray-900">Upload your resume (PDF) <span className="text-red-500">*</span></label>
@@ -383,6 +406,23 @@ export default function Form({ title, questions, listingId }: FormProps) {
           {imageFileName && <p className="text-gray-500 text-xs mt-1">{imageFileName}</p>}
         </div>
       </div>
+
+      <label className="block mb-2 text-sm font-medium text-gray-900">Events Attended <span className="text-red-500">*</span></label>
+      <fieldset className="grid gap-2 grid-cols-4 mb-6">
+        {formData.events && Object.entries(formData.events).map(([event, isChecked]) => (
+          <label key={event} className="flex text-xs">
+            <input
+              className="mr-2 focus:ring-purple-300 text-purple-600"
+              type="checkbox"
+              name={event}
+              checked={isChecked}
+              onChange={handleCollegeChange}
+              disabled={isSubmitting}
+            />
+            {event}
+          </label>
+        ))}
+      </fieldset>
 
       {questions && renderResponseInputs()}
       <Button

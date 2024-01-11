@@ -11,6 +11,7 @@ interface ListingData {
   listingId: string;
   deadline: string;
   isVisible: boolean;
+  includeEventsAttended: boolean;
 }
 
 interface ServerError {
@@ -26,7 +27,8 @@ export default function Listing({ params }: { params: { id: string } }) {
     listingId: "",
     questions: [],
     title: "",
-    isVisible: true
+    isVisible: true,
+    includeEventsAttended: false
   });
 
   useEffect(() => {
@@ -88,6 +90,7 @@ export default function Listing({ params }: { params: { id: string } }) {
         title={listingData.title}
         questions={listingData.questions}
         listingId={listingData.listingId}
+        includeEventsAttended={listingData.includeEventsAttended}
       />
     </main>
   );
