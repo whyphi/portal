@@ -1,11 +1,10 @@
 "use client"
 import React, { useState, useEffect, useRef } from "react";
 import Loader from "@/components/Loader";
-import ApplicantCard from "@/components/admin/listing/ApplicantCard";
 import { DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
-import { PieChart, Pie, Tooltip, Label } from "recharts";
-import { Button, Dropdown } from 'flowbite-react';
+import { ResponsiveContainer, PieChart, Pie, Tooltip, Label } from "recharts";
+import { Dropdown } from 'flowbite-react';
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
@@ -21,8 +20,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     linkedin: [],
     website: [],
   });
-  console.log(applicantData, distributionMetrics)
-
 
   // fields : list of all fields being used for analytics
   const fields : string[] = ["colleges", "gpa", "gradYear", "major", "minor", "linkedin", "website"]
@@ -50,6 +47,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   // Parse data whenever applicantData changes
   useEffect(() => {
     try {
+      // only run parseData once per refresh (useRef ensures this)
       if (applicantData.length > 0 && !parseDataCalled.current) {
         parseData();
         parseDataCalled.current = true; // Set the flag after parsing data
@@ -59,13 +57,9 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     }
   }, [applicantData]);
 
-  
+
   // parseData : iterates over list of applicantData and obtains distribution of metrics (colleges, gpa, gradYear, major, minor, linkedin, website)
   const parseData = () => {
-    if (!(applicantData.length > 0)) {
-      console.log("applicants not yet fetched")
-      return
-    }
 
     // create temporary copy of distributionMetrics (update after)
     const updatedMetrics = { ...distributionMetrics };
@@ -89,8 +83,9 @@ export default function Insights({ params }: { params: { listingId: string } }) 
               const foundCollege = updatedMetrics[metric].find(collegeObject => collegeObject?.name === college);
               if (foundCollege) {
                 foundCollege.value += 1
+                foundCollege.applicants.push(applicant)
               } else {
-                const newCollege: Metrics = { name: college, value: 1};
+                const newCollege: Metrics = { name: college, value: 1, applicants: [applicant]};
                 updatedMetrics[metric].push(newCollege);
               }
             }
@@ -111,8 +106,9 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
         if (foundMetric) {
           foundMetric.value += 1
+          foundMetric.applicants.push(applicant)
         } else {
-          const newMetric: Metrics = { name: typeof val === 'string' && val, value: 1};
+          const newMetric: Metrics = { name: typeof val === 'string' && val, value: 1, applicants: [applicant]};
           updatedMetrics[metric].push(newMetric);
         }
         
@@ -124,6 +120,10 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   // handleDropdownChange : updates title of dropdown...
   const handleDropdownChange = (selectedItem: string) => {
     setSelectedItem(selectedItem);
+  };
+
+  const handlePieClick = (data: any) => {
+    console.log(data, data.name, data.value)
   };
 
   // if applicants data not yet received : produce loading screen
@@ -139,9 +139,8 @@ export default function Insights({ params }: { params: { listingId: string } }) 
             <Dropdown 
               label={selectedItem || 'Select a metric'}
               style={{
-                background: 'linear-gradient(to right, #8e5ef9, #6d2bd9)', // Replace these colors with your desired gradient
-                color: 'white', // Set the text color
-                // Add any other specific styles you want to apply
+                background: 'linear-gradient(to right, #8e5ef9, #6d2bd9)',
+                color: 'white',
               }}
             >
               {fields.map((field, index) => (
@@ -151,10 +150,21 @@ export default function Insights({ params }: { params: { listingId: string } }) 
               ))}
             </Dropdown>
           </div>
-
+          
           <PieChart width={450} height={400}>
             {selectedItem && distributionMetrics[selectedItem].length > 0 ? 
-              <Pie data={distributionMetrics[selectedItem]} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={130} outerRadius={160} fill="#BB9CFF" label > 
+              <Pie 
+                data={distributionMetrics[selectedItem]}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                innerRadius={130}
+                outerRadius={160} 
+                fill="#BB9CFF"
+                label
+                onClick={handlePieClick}
+              > 
                 <Label position="center" >
                   {selectedItem}
                 </Label>
