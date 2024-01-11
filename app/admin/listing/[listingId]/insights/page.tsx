@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 import { DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
@@ -8,6 +9,7 @@ import { Dropdown, Table } from 'flowbite-react';
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
+  const router = useRouter();
   // applicantData : list of applicants
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
   // distributionMetrics : object containing frequencies of each metric for all applicants
@@ -126,6 +128,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   // handleDropdownChange : updates title of dropdown...
   const handleDropdownChange = (selectedItem: string) => {
     setSelectedItem(selectedItem);
+    setMatchingApplicants([])
   };
 
   const handlePieClick = (data: any) => {
@@ -169,8 +172,8 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   const mapMatchingApplicants = matchingApplicants.map((applicant: Applicant, index: number) => (
     <Table.Row
       key={index}
-      // className={`bg-white dark:border-gray-700 dark:bg-gray-800`}
-      // onClick={}
+      className={`bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer`}
+      onClick={() => router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`)}
     >
       <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
         {applicant.firstName} {applicant.lastName}
@@ -218,6 +221,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
                 fill="#BB9CFF"
                 label
                 onClick={handlePieClick}
+                className="cursor-pointer"
               > 
                 <Label position="center" >
                   {selectedItem}
