@@ -161,7 +161,21 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       return <Table.Cell>{colleges}</Table.Cell>
     } else if (["linkedin", "website"].includes(selectedItem)) {
       // case 2: handle url status
-      const hasURL = typeof val === 'string' && val.includes("https://www.") ? val : "False";
+      const hasURL = typeof val === 'string' && val.includes("https://www.") ? (
+        <a
+          href={val}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline hover:text-blue-500"
+          onClick={(event) => {
+            event.stopPropagation();
+          }}
+        >
+          {val}
+        </a>
+      ) : (
+        "False"
+      );
       return <Table.Cell>{hasURL}</Table.Cell>
     } else {
       // case 3: "gpa", "gradYear", "major", "minor"
