@@ -123,7 +123,13 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   };
 
   const handlePieClick = (data: any) => {
-    console.log(data, data.name, data.value)
+    if (selectedItem) {
+      distributionMetrics[selectedItem].map((metricObject) => {
+        if (data.name == metricObject.name) {
+          console.log(metricObject.applicants)
+        }
+      })
+    }
   };
 
   // if applicants data not yet received : produce loading screen
