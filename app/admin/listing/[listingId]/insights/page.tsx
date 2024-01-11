@@ -4,7 +4,7 @@ import Loader from "@/components/Loader";
 import { DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
 import { ResponsiveContainer, PieChart, Pie, Tooltip, Label } from "recharts";
-import { Dropdown } from 'flowbite-react';
+import { Dropdown, Table } from 'flowbite-react';
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
@@ -20,17 +20,23 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     linkedin: [],
     website: [],
   });
-
+  
   // fields : list of all fields being used for analytics
   const fields : string[] = ["colleges", "gpa", "gradYear", "major", "minor", "linkedin", "website"]
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  
   // selectedItem : used to track which metric plot pie chart for
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  
+  // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
+  const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
+  
+  console.log(matchingApplicants)
 
   // useRef to track whether parseData has been called
   const parseDataCalled = useRef(false);
   
+
   // Fetch listings data from your /listings API endpoint
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
@@ -123,21 +129,63 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   };
 
   const handlePieClick = (data: any) => {
-    if (selectedItem) {
+    // error handling (only if metric/selectedItem is valid)
+    if (selectedItem && fields.includes(selectedItem)) {
+      // search for correct name for given metric
       distributionMetrics[selectedItem].map((metricObject) => {
         if (data.name == metricObject.name) {
-          console.log(metricObject.applicants)
+          setMatchingApplicants(metricObject.applicants)
         }
       })
     }
   };
+
+  const renderCell = (applicant: Applicant) => {
+    // handle edge cases
+    if (!selectedItem) return
+
+    // NOTE: this is not the best practice here (overriding type setting)
+    const val = (applicant[selectedItem as keyof Applicant] as string)
+
+    if (selectedItem === "colleges") {
+      // case 1: metric is colleges
+      let colleges = ""
+      Object.entries(applicant.colleges).forEach(([college, status]: [string, boolean]) => {
+        if (status) {
+          colleges += " " + college
+        }
+      })
+      return <Table.Cell>{colleges}</Table.Cell>
+    } else if (["linkedin", "website"].includes(selectedItem)) {
+      // case 2: handle url status
+      const hasURL = typeof val === 'string' && val.includes("https://www.") ? val : "False";
+      return <Table.Cell>{hasURL}</Table.Cell>
+    } else {
+      // case 3: "gpa", "gradYear", "major", "minor"
+      return <Table.Cell>{val}</Table.Cell>
+    }
+  }
+
+  const mapMatchingApplicants = matchingApplicants.map((applicant: Applicant, index: number) => (
+    <Table.Row
+      key={index}
+      // className={`bg-white dark:border-gray-700 dark:bg-gray-800`}
+      // onClick={}
+    >
+      <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+        {applicant.firstName} {applicant.lastName}
+      </Table.Cell>
+      {renderCell(applicant)}
+    </Table.Row>
+  ))
 
   // if applicants data not yet received : produce loading screen
   if (isLoading) return (<Loader />)
 
   return (
     <div>
-        {/* vertical column title/dropdown + pie */}
+      <div className="flex flex-col">
+        {/* COLUMN 1: vertical column title/dropdown + pie */}
         <div className="">
           {/* horizontal column : title + dropdown */}
           <div className="flex items-center mb-4 gap-4">
@@ -181,8 +229,20 @@ export default function Insights({ params }: { params: { listingId: string } }) 
             <Tooltip />
           </PieChart>
         </div>
+
+        {/* COLUMN 2 */}
+        { selectedItem &&
+          <Table hoverable>
+            <Table.Head>
+              <Table.HeadCell>Name</Table.HeadCell>
+              <Table.HeadCell>{selectedItem}</Table.HeadCell>
+            </Table.Head>
+            <Table.Body>
+              {mapMatchingApplicants}
+            </Table.Body>
+          </Table>
+        }
+      </div>
     </div>
-
-
   )
 }
