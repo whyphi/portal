@@ -222,30 +222,34 @@ export default function Insights({ params }: { params: { listingId: string } }) 
             </Dropdown>
           </div>
           
-          <PieChart width={450} height={400}>
-            {selectedItem && distributionMetrics[selectedItem].length > 0 ? 
-              <Pie 
-                data={distributionMetrics[selectedItem]}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                innerRadius={130}
-                outerRadius={160} 
-                fill="#BB9CFF"
-                label
-                onClick={handlePieClick}
-                className="cursor-pointer"
-              > 
-                <Label position="center" >
-                  {selectedItem}
-                </Label>
-              </Pie>
-              :
-              <Loader />
-            }
-            <Tooltip />
-          </PieChart>
+          {/* center PieChart (IDK HOW TO STYLE THIS... TAE SUNG PLS HELP lol) */}
+          <div className="flex justify-center">
+            <PieChart width={450} height={400}>
+              {selectedItem && distributionMetrics[selectedItem].length > 0 ? 
+                <Pie 
+                  data={distributionMetrics[selectedItem]}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={130}
+                  outerRadius={160} 
+                  fill="#BB9CFF"
+                  label
+                  onClick={handlePieClick}
+                  className="cursor-pointer"
+                > 
+                  <Label position="center" >
+                    {selectedItem}
+                  </Label>
+                </Pie>
+                :
+                <Loader />
+              }
+              <Tooltip />
+            </PieChart>
+          </div>
+
         </div>
 
         {/* COLUMN 2 */}
