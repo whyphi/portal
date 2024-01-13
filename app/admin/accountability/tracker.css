@@ -1,0 +1,84 @@
+#box-warp{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    background:#ccc;
+}
+#box{
+    border: 2px;
+    margin:10px;
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+ul li{
+    list-style: none;
+}
+a {
+    text-decoration: none;
+    color:#333;
+}
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#semester {
+    font:bold 16px "malgun gothic";
+    width:130px;
+    height:50px;
+    background: #b17bce;
+    color:black;
+    line-height: 50px; 
+    text-align: center;
+}
+#semester > ul > li {
+    float:left;
+    width:130px;
+    position:relative;
+}
+#semester > ul > li > ul {
+    width:130px;
+    display:none;
+    position: absolute;
+    font-size:14px;
+    background: #a86bc9;
+}
+#semester > ul > li:hover > ul {
+    display:block;
+}
+#semester > ul > li > ul > li:hover {
+    background: #6d3d87;
+    transition: ease 1s;
+}
+#policylink{
+    font:bold 16px "malgun gothic";
+    background: #b17bce;
+    height:50px;
+    width:130px;
+    text-align: center;
+    line-height: 50px; 
+    float:right;
+}
+#pointsheet {
+    font:bold 16px "malgun gothic";
+    width:95%;
+    height:600px;
+    background: #7d5592;
+    color:rgb(255, 255, 255);
+    line-height: 50px; 
+    margin:0 auto;
+    text-align: center;
+}
+#sheetlabel{
+    background: #703a8e;
+    width:150px;
+}
+#sheetdata{
+    background: #e4c8f4;
+    width:150px;
+}
+#semesterdelete{
+    float:right;
+}
