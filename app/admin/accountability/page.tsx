@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react';
 import './tracker.css';
 import CreateSemester from './newsemester';
@@ -25,7 +26,7 @@ interface Points {
 
 const fetchSemesterPoints = async (semesterLink: string, setPoints: React.Dispatch<React.SetStateAction<Points[]>>, setIsLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
   try {
-    const response = await fetch(`/spreadsheet`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/spreadsheet`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

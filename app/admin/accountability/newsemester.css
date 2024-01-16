@@ -1,0 +1,22 @@
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: Black;
+    opacity: 0.8;
+}
+
+#modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    min-width: 500px;
+    padding: 30px;
+    background-color: White;
+    text-align: center;
+}

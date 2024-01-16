@@ -5,13 +5,9 @@
     background:#ccc;
 }
 #box{
-    border: 2px;
     margin:10px;
 }
-* {
-    margin: 0;
-    padding: 0;
-}
+
 ul li{
     list-style: none;
 }
@@ -25,7 +21,7 @@ a {
     align-items: center;
 }
 #semester {
-    font:bold 16px "malgun gothic";
+    font:bold 16px "font-normal";
     width:130px;
     height:50px;
     background: #b17bce;
@@ -64,21 +60,18 @@ a {
 #pointsheet {
     font:bold 16px "malgun gothic";
     width:95%;
-    height:600px;
+    height:500px;
     background: #7d5592;
     color:rgb(255, 255, 255);
     line-height: 50px; 
     margin:0 auto;
     text-align: center;
 }
-#sheetlabel{
-    background: #703a8e;
-    width:150px;
+#sheetheader{
+    width: 100px;
+    background: #602d7c;
 }
 #sheetdata{
-    background: #e4c8f4;
-    width:150px;
-}
-#semesterdelete{
-    float:right;
+    border-color: #e4c8f4;
+    width:100px;
 }

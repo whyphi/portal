@@ -1,6 +1,8 @@
+"use client"
 import React, { useRef } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import Modal from 'react-modal';
+import './newsemester.css';
 
 
 const CreateSemester: React.FC<{
@@ -31,7 +33,7 @@ const CreateSemester: React.FC<{
             };
     
             // Make a POST request to the /submit API endpoint
-            const response = await fetch(`/semester`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/semester`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,21 +57,24 @@ const CreateSemester: React.FC<{
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose}>
-        <div>
-            <form onSubmit={submitHandler}>
+        <div className="overlay">
+            <form id="modal"onSubmit={submitHandler}>
                 <label>
                     Semester:
                     <input type='text' ref={semester} />
                 </label>
+                <br></br>
                 <label>
                     Year:
                     <input type='text' ref={year} />
                 </label>
+                <br></br>
                 <label>
                     Link:
                     <input type='text' ref={link} />
                 </label>
-                <button type="submit">Create New Semester</button>
+                <br></br>
+                <button>Create New Semester</button>
             </form>
         </div>
     </Modal >
@@ -78,4 +83,3 @@ const CreateSemester: React.FC<{
 };
 
 export default CreateSemester;
-//exporting component
