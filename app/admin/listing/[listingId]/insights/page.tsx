@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
-import { DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
+import { Dashboard, DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
 import { ResponsiveContainer, PieChart, Pie, Tooltip, Label } from "recharts";
 import { Dropdown, Table } from 'flowbite-react';
@@ -10,6 +10,14 @@ import { Dropdown, Table } from 'flowbite-react';
 
 export default function Insights({ params }: { params: { listingId: string } }) {
   const router = useRouter();
+  // dashboard : object containing data from backend (# applicants, average gpa, #1 major, avg gradYear, avg response length)
+  const [dashboard, setDashboard] = useState<Dashboard>({
+    applicantCount: null,
+    avgGpa: null,
+    commonMajor: "",
+    avgGradYear: null,
+    avgResponseLength: null,
+  });
   // applicantData : list of applicants
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
   // distributionMetrics : object containing frequencies of each metric for all applicants
@@ -201,70 +209,76 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   return (
     <div>
-      <div className="flex flex-col">
-        {/* COLUMN 1: vertical column title/dropdown + pie */}
-        <div className="">
-          {/* horizontal column : title + dropdown */}
-          <div className="flex items-center mb-4 gap-4">
-            <h1 className="text-2xl font-bold">Insights</h1>
-            <Dropdown 
-              label={selectedItem || 'Select a metric'}
-              style={{
-                background: 'linear-gradient(to right, #8e5ef9, #6d2bd9)',
-                color: 'white',
-              }}
-            >
-              {fields.map((field, index) => (
-                <Dropdown.Item key={index} onClick={() => handleDropdownChange(field)}>
-                  {field}
-                </Dropdown.Item>
-              ))}
-            </Dropdown>
-          </div>
-          
-          {/* center PieChart (IDK HOW TO STYLE THIS... TAE SUNG PLS HELP lol) */}
-          <div className="flex justify-center">
-            <PieChart width={450} height={400}>
-              {selectedItem && distributionMetrics[selectedItem].length > 0 ? 
-                <Pie 
-                  data={distributionMetrics[selectedItem]}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={130}
-                  outerRadius={160} 
-                  fill="#BB9CFF"
-                  label
-                  onClick={handlePieClick}
-                  className="cursor-pointer"
-                > 
-                  <Label position="center" >
-                    {selectedItem}
-                  </Label>
-                </Pie>
-                :
-                <Loader />
-              }
-              <Tooltip />
-            </PieChart>
-          </div>
+      <h1 className="text-2xl font-bold">Insights</h1>
 
-        </div>
+      {/* Dashboard - Cards */}
+      <div className="grid grid-cols-6 gap-4">
+        <div className="col-span-1 bg-blue-500">1</div>
+        <div className="col-span-1 bg-green-500">2</div>
+        <div className="col-span-1 bg-red-500">3</div>
+        <div className="col-span-1 bg-yellow-500">4</div>
+        <div className="col-span-1 bg-purple-500">5</div>
 
-        {/* COLUMN 2 */}
-        { selectedItem &&
-          <Table hoverable>
-            <Table.Head>
-              <Table.HeadCell>Name</Table.HeadCell>
-              <Table.HeadCell>{selectedItem}</Table.HeadCell>
-            </Table.Head>
-            <Table.Body>
-              {mapMatchingApplicants}
-            </Table.Body>
-          </Table>
-        }
+        <div className="col-span-3 bg-orange-500">6 (Span 2)</div>
+        <div className="col-span-3 bg-indigo-500">7 (Span 2.5)</div>
       </div>
+
+
+
+      <Dropdown 
+        label={selectedItem || 'Select a metric'}
+        style={{
+          background: 'linear-gradient(to right, #8e5ef9, #6d2bd9)',
+          color: 'white',
+        }}
+      >
+        {fields.map((field, index) => (
+          <Dropdown.Item key={index} onClick={() => handleDropdownChange(field)}>
+            {field}
+          </Dropdown.Item>
+        ))}
+      </Dropdown>
+      
+    {/* center PieChart (IDK HOW TO STYLE THIS... TAE SUNG PLS HELP lol) */}
+    <div className="flex justify-center">
+      <PieChart width={450} height={400}>
+        {selectedItem && distributionMetrics[selectedItem].length > 0 ? 
+          <Pie 
+            data={distributionMetrics[selectedItem]}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            innerRadius={130}
+            outerRadius={160} 
+            fill="#BB9CFF"
+            label
+            onClick={handlePieClick}
+            className="cursor-pointer"
+          > 
+            <Label position="center" >
+              {selectedItem}
+            </Label>
+          </Pie>
+          :
+          <Loader />
+        }
+        <Tooltip />
+      </PieChart>
+    </div>
+
+    {/* display table if metric is selected */}
+    { selectedItem &&
+      <Table hoverable>
+        <Table.Head>
+          <Table.HeadCell>Name</Table.HeadCell>
+          <Table.HeadCell>{selectedItem}</Table.HeadCell>
+        </Table.Head>
+        <Table.Body>
+          {mapMatchingApplicants}
+        </Table.Body>
+      </Table>
+    }
     </div>
   )
 }
