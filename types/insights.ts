@@ -5,6 +5,7 @@ export interface Dashboard {
   applicantCount: number | null;
   avgGpa: number | null;
   commonMajor: string;
+  countCommonMajor: number;
   avgGradYear: number | null;
   avgResponseLength: number | null;
 }
