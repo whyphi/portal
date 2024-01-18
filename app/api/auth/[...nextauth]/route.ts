@@ -35,6 +35,7 @@ const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      idToken: true
     })
   ],
   events: {
@@ -43,6 +44,17 @@ const authOptions: AuthOptions = {
     },
   },
   callbacks: {
+    async jwt({ token, user, account }) {
+      // Persist the OAuth access_token to the token right after signin
+      // TODO: https://stackoverflow.com/questions/73606906/next-auth-how-to-get-google-id-token
+      // console.log(token);
+      // console.log(account);
+      if (account) {
+        token.id_token = account.id_token;
+        // console.log(token);
+      }
+      return token;
+    },
     async signIn({ user, account, profile, email, credentials }) {
       if (profile) {
         return await isValidUser(profile.email as string);
@@ -50,6 +62,7 @@ const authOptions: AuthOptions = {
       return true
     },
     async session({ session, user, token }) {
+
       return session
     },
 
