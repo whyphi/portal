@@ -16,6 +16,7 @@ export interface Applicant {
   major:         string;
   phone:         string;
   preferredName: string;
+  events:        null | { [key: string]: boolean };
 }
 
 export interface Response {
@@ -23,6 +24,6 @@ export interface Response {
   response: string;
 }
 
-export interface Example {
-  test: string;
+export interface EventsAttended {
+  [key: string]: boolean;
 }
