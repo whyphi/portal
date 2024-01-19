@@ -252,7 +252,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
   const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-  
+
     setFormData((prevData) => ({
       ...prevData,
       events: {
@@ -286,6 +286,21 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   );
 
   const renderEventsAttendedSection = () => {
+
+    // Helper function to convert id to name
+    const renderEventName = (eventId: string) => {
+      const eventIdToName = {
+        infoSession1: "Info Session 1",
+        infoSession2: "Info Session 2",
+        workshop1: "Workshop 1",
+        workshop2: "Workshop 2",
+        social1: "Social 1",
+        social2: "Social 2"
+      };
+
+      return eventIdToName[eventId as keyof typeof eventIdToName] || "Unknown Event";
+    };
+
     return (
       <>
         <label className="block mb-2 text-sm font-medium text-gray-900">Events Attended <span className="text-red-500">*</span></label>
@@ -300,7 +315,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
                 onChange={handleEventsAttendedChange}
                 disabled={isSubmitting}
               />
-              {event}
+              {renderEventName(event)}
             </label>
           ))}
         </fieldset>
