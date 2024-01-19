@@ -250,6 +250,18 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }));
   };
 
+  const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+  
+    setFormData((prevData) => ({
+      ...prevData,
+      events: {
+        ...prevData.events,
+        [name]: checked,
+      },
+    }) as FormData);
+  };
+
   const renderInput = (
     id: keyof FormData,
     label: string,
@@ -285,7 +297,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
                 type="checkbox"
                 name={event}
                 checked={isChecked}
-                onChange={handleCollegeChange}
+                onChange={handleEventsAttendedChange}
                 disabled={isSubmitting}
               />
               {event}
