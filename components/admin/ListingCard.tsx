@@ -161,6 +161,7 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
           <div className="dropdown-container"> {/* Add a class to identify the dropdown */}
             <Dropdown label="" dismissOnClick={false} renderTrigger={() => <span>{renderSettingsIcon()}</span>}>
               <Dropdown.Item onClick={() => router.push(`/public/${listingId}`)}>View Public Listing</Dropdown.Item>
+              <Dropdown.Item onClick={() => router.push(`/admin/listing/${listingId}/insights`)}>Insights</Dropdown.Item>
               <Dropdown.Item onClick={() => router.push(`/admin/settings/${listingId}`)}>Settings</Dropdown.Item>
             </Dropdown>
           </div>
