@@ -109,12 +109,12 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
               <p>No resume available.</p>
             )}
           </Tabs.Item>
-          {applicantData?.events && (<Tabs.Item
+          {applicantData?.events ? (<Tabs.Item
             icon={HiUserGroup}
             title="Events Attended"
           >
             {renderEventsAttended(applicantData.events)}
-          </Tabs.Item>)}
+          </Tabs.Item>) : ("")}
 
 
 
