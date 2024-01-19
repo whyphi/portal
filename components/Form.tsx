@@ -4,36 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
 
-interface FormData {
-  firstName: string;
-  lastName: string;
-  preferredName: string;
-  major: string;
-  minor: string;
-  gpa: string;
-  gradYear: string;
-  email: string;
-  phone: string;
-  linkedin: string;
-  website: string;
-  resume: File | null;
-  image: File | null;
-  colleges: {
-    CAS: boolean;
-    Pardee: boolean;
-    QST: boolean;
-    COM: boolean;
-    ENG: boolean;
-    CFA: boolean;
-    CDS: boolean;
-    CGS: boolean;
-    Sargent: boolean;
-    SHA: boolean;
-    Wheelock: boolean;
-    Other: boolean;
-  };
-  responses: string[];
-}
+import { Events, FormData, FormProps } from "@/types/form"
 
 const initialValues: FormData = {
   gradYear: '',
@@ -63,23 +34,29 @@ const initialValues: FormData = {
     Wheelock: false,
     Other: false,
   },
+  events: null,
   responses: []
 };
 
 
-interface FormProps {
-  title: string | null;
-  questions: [] | [{ question: string, context: string }],
-  listingId: string | null;
-}
 
-
-export default function Form({ title, questions, listingId }: FormProps) {
+export default function Form({ title, questions, listingId, includeEventsAttended }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  if (includeEventsAttended) {
+    initialValues.events = {
+      infoSession1: false,
+      infoSession2: false,
+      workshop1: false,
+      workshop2: false,
+      social1: false,
+      social2: false
+    }
+  }
 
   const maxWordCount = 200; // Adjust as needed
 
@@ -273,6 +250,18 @@ export default function Form({ title, questions, listingId }: FormProps) {
     }));
   };
 
+  const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      events: {
+        ...prevData.events,
+        [name]: checked,
+      },
+    }) as FormData);
+  };
+
   const renderInput = (
     id: keyof FormData,
     label: string,
@@ -295,6 +284,44 @@ export default function Form({ title, questions, listingId }: FormProps) {
       />
     </div>
   );
+
+  const renderEventsAttendedSection = () => {
+
+    // Helper function to convert id to name
+    const renderEventName = (eventId: string) => {
+      const eventIdToName = {
+        infoSession1: "Info Session 1",
+        infoSession2: "Info Session 2",
+        workshop1: "Workshop 1",
+        workshop2: "Workshop 2",
+        social1: "Social 1",
+        social2: "Social 2"
+      };
+
+      return eventIdToName[eventId as keyof typeof eventIdToName] || "Unknown Event";
+    };
+
+    return (
+      <>
+        <label className="block mb-2 text-sm font-medium text-gray-900">Events Attended <span className="text-red-500">*</span></label>
+        <fieldset className="grid gap-2 grid-cols-4 mb-6">
+          {formData.events && Object.entries(formData.events).map(([event, isChecked]) => (
+            <label key={event} className="flex text-xs">
+              <input
+                className="mr-2 focus:ring-purple-300 text-purple-600"
+                type="checkbox"
+                name={event}
+                checked={isChecked}
+                onChange={handleEventsAttendedChange}
+                disabled={isSubmitting}
+              />
+              {renderEventName(event)}
+            </label>
+          ))}
+        </fieldset>
+      </>
+    )
+  };
 
 
   const textStyles = {
@@ -334,13 +361,10 @@ export default function Form({ title, questions, listingId }: FormProps) {
         ))}
       </fieldset>
 
-
-
       {renderInput("email", "Email", "email", true)}
       {renderInput("phone", "Phone Number (xxx-xxx-xxxx)", "text", true)}
       {renderInput("linkedin", "LinkedIn Profile", "text")}
       {renderInput("website", "Website / Portfolio", "text")}
-
 
       <div className="flex flex-col mb-6">
         <label className="block mb-4 text-sm font-medium text-gray-900">Upload your resume (PDF) <span className="text-red-500">*</span></label>
@@ -383,6 +407,8 @@ export default function Form({ title, questions, listingId }: FormProps) {
           {imageFileName && <p className="text-gray-500 text-xs mt-1">{imageFileName}</p>}
         </div>
       </div>
+
+      {includeEventsAttended && renderEventsAttendedSection()}
 
       {questions && renderResponseInputs()}
       <Button
