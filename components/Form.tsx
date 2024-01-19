@@ -4,49 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
 
-// TODO: Organize interfaces in one file:
-// https://github.com/Microsoft/TypeScript/blob/main/src/compiler/types.ts
-
-interface Events {
-  infoSession1: boolean;
-  infoSession2: boolean;
-  workshop1: boolean;
-  workshop2: boolean;
-  social1: boolean;
-  social2: boolean;
-}
-
-interface FormData {
-  firstName: string;
-  lastName: string;
-  preferredName: string;
-  major: string;
-  minor: string;
-  gpa: string;
-  gradYear: string;
-  email: string;
-  phone: string;
-  linkedin: string;
-  website: string;
-  resume: File | null;
-  image: File | null;
-  colleges: {
-    CAS: boolean;
-    Pardee: boolean;
-    QST: boolean;
-    COM: boolean;
-    ENG: boolean;
-    CFA: boolean;
-    CDS: boolean;
-    CGS: boolean;
-    Sargent: boolean;
-    SHA: boolean;
-    Wheelock: boolean;
-    Other: boolean;
-  };
-  events: Events | null;
-  responses: string[];
-}
+import { Events, FormData, FormProps } from "@/types/form"
 
 const initialValues: FormData = {
   gradYear: '',
@@ -80,13 +38,6 @@ const initialValues: FormData = {
   responses: []
 };
 
-
-interface FormProps {
-  title: string | null;
-  questions: [] | [{ question: string, context: string }],
-  listingId: string | null;
-  includeEventsAttended: boolean
-}
 
 
 export default function Form({ title, questions, listingId, includeEventsAttended }: FormProps) {
