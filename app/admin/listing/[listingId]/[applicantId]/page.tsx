@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Applicant } from "@/types/applicant";
-import { Tabs } from 'flowbite-react';
-import { HiMenuAlt1, HiDocumentText, HiUserCircle } from 'react-icons/hi';
+import { Applicant, EventsAttended } from "@/types/applicant";
+import { Badge, Tabs, Table } from 'flowbite-react';
+import { HiMenuAlt1, HiDocumentText, HiUserGroup } from 'react-icons/hi';
 import ResponseCard from "@/components/admin/listing/ResponseCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
 import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
@@ -43,6 +43,38 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
     );
   };
 
+  const renderEventsAttended = (eventsAttended: EventsAttended) => {
+    const eventNames = Object.keys(eventsAttended).sort();
+
+    return (
+      <div className="overflow-x-auto">
+        <Table>
+          <Table.Head>
+            <Table.HeadCell>Event Name</Table.HeadCell>
+            <Table.HeadCell>Status</Table.HeadCell>
+          </Table.Head>
+
+          <Table.Body className="divide-y">
+            {eventNames.map((eventName) => (
+              <Table.Row key={eventName} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  {eventName}
+                </Table.Cell>
+                <Table.Cell className="flex">
+                  {
+                    eventsAttended[eventName] ?
+                      (<Badge className="" color="success">Attended</Badge>) :
+                      (<Badge color="failure">Not Attended</Badge>)
+                  }
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      </div>
+    );
+  }
+
   if (isLoading) return <Loader />
 
 
@@ -77,6 +109,13 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
               <p>No resume available.</p>
             )}
           </Tabs.Item>
+          {applicantData?.events ? (<Tabs.Item
+            icon={HiUserGroup}
+            title="Events Attended"
+          >
+            {renderEventsAttended(applicantData.events)}
+          </Tabs.Item>) : ("")}
+
 
 
 
