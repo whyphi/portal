@@ -44,7 +44,7 @@ interface FormData {
     Wheelock: boolean;
     Other: boolean;
   };
-  events : Events | null;
+  events: Events | null;
   responses: string[];
 }
 
@@ -322,6 +322,29 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     </div>
   );
 
+  const renderEventsAttendedSection = () => {
+    return (
+      <>
+        <label className="block mb-2 text-sm font-medium text-gray-900">Events Attended <span className="text-red-500">*</span></label>
+        <fieldset className="grid gap-2 grid-cols-4 mb-6">
+          {formData.events && Object.entries(formData.events).map(([event, isChecked]) => (
+            <label key={event} className="flex text-xs">
+              <input
+                className="mr-2 focus:ring-purple-300 text-purple-600"
+                type="checkbox"
+                name={event}
+                checked={isChecked}
+                onChange={handleCollegeChange}
+                disabled={isSubmitting}
+              />
+              {event}
+            </label>
+          ))}
+        </fieldset>
+      </>
+    )
+  };
+
 
   const textStyles = {
     title: "text-4xl font-bold dark:text-white mb-6 mt-4 text-purple-800",
@@ -407,22 +430,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         </div>
       </div>
 
-      <label className="block mb-2 text-sm font-medium text-gray-900">Events Attended <span className="text-red-500">*</span></label>
-      <fieldset className="grid gap-2 grid-cols-4 mb-6">
-        {formData.events && Object.entries(formData.events).map(([event, isChecked]) => (
-          <label key={event} className="flex text-xs">
-            <input
-              className="mr-2 focus:ring-purple-300 text-purple-600"
-              type="checkbox"
-              name={event}
-              checked={isChecked}
-              onChange={handleCollegeChange}
-              disabled={isSubmitting}
-            />
-            {event}
-          </label>
-        ))}
-      </fieldset>
+      {includeEventsAttended && renderEventsAttendedSection()}
 
       {questions && renderResponseInputs()}
       <Button
