@@ -187,15 +187,24 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    // handle edge case : only update `gpa` if valid
     if (id === "gpa") {
+      // case 1 : only update `gpa` if valid
       if (Number(value) >= 0 && Number(value) <= 4) {
         setFormData((prevData) => ({
           ...prevData,
           [id]: value,
         }));
       }
+    } else if (id === "gradYear") {
+      // case 2 : handle grad year (only accept integers)
+      if (Number.isInteger(Number(value))) {
+        setFormData((prevData) => ({
+          ...prevData,
+          [id]: value,
+        }));
+      }
     } else {
+      // case 3 : handle remaining metrics
       setFormData((prevData) => ({
         ...prevData,
         [id]: value,
@@ -349,14 +358,24 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const renderGradMonthYear = () => {
     return(
       <>
-        <label className="block mb-2 text-sm font-medium text-gray-900">Expected Graduation Date (Month Year) <span className="text-red-500">*</span></label>
-        <div className="flex">
+        <label className="block mb-2 text-sm font-medium text-gray-900">Expected Graduation Date (Month Year) | (Example: May 2026) <span className="text-red-500">*</span></label>
+        <div className="flex gap-2 mb-6">
           <input
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-1/2 p-2.5"
             id="gradMonth"
             type="text"
             placeholder="graduation month"
             value={formData["gradMonth"]}
+            onChange={handleChange}
+            // required={true}
+            disabled={isSubmitting}
+            />
+          <input
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-1/2 p-2.5"
+            id="gradYear"
+            type="number"
+            placeholder="graduation year"
+            value={formData["gradYear"]}
             onChange={handleChange}
             // required={true}
             disabled={isSubmitting}
@@ -423,7 +442,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       {renderInput("major", "Major", "text", true)}
       {renderInput("minor", "Minor", "text")}
       {renderGpaSection()}
-      {renderInput("gradYear", "Expected Graduation Date (Month Year) | (Example: May 2026)", "text", true)}
+      {renderGradMonthYear()}
+      {/* {renderInput("gradYear", "Expected Graduation Date (Month Year) | (Example: May 2026)", "text", true)} */}
 
       <label className="block mb-2 text-sm font-medium text-gray-900">College / School <span className="text-red-500">*</span></label>
       <fieldset className="grid gap-2 grid-cols-4 mb-6">
