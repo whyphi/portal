@@ -288,6 +288,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       }));
     }
   }
+  console.log()
 
   const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
