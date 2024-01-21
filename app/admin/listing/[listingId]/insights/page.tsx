@@ -31,7 +31,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     linkedin: [],
     website: [],
   });
-  console.log(applicantData)
+
   // fields : list of all fields being used for analytics
   const fields : string[] = ["colleges", "gpa", "gradYear", "major", "minor", "linkedin", "website"]
   const [isLoading, setIsLoading] = useState<boolean>(true);

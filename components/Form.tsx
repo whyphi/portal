@@ -73,7 +73,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     });
     
     if (incompleteFields.length > 0) {
-      alert(`Incomplete fields. Please fill in all required fields: ${incompleteFields}`);
+      alert(`Incomplete fields. Please fill in all required fields`);
       return false;
     } else if (
       formData.responses.length < questions.length ||
@@ -273,20 +273,20 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
   const handleHasGpaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    if (checked) {
-      // case 1 : checked (didn't have gpa, now does -> no change to `gpa`)
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: !checked,
-        gpa : "",
-      }));
-    } else {
+    // if (checked) {
+    //   // case 1 : checked (didn't have gpa, now does -> no change to `gpa`)
+    //   setFormData((prevData) => ({
+    //     ...prevData,
+    //     [name]: !checked,
+    //     gpa : "",
+    //   }));
+    // } else {
       // case 2 : unchecked (had gpa selected, but now reset `gpa` to empty string "")
       setFormData((prevData) => ({
         ...prevData,
         [name]: !checked,
       }));
-    }
+    // }
   }
 
   const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -324,14 +324,11 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         />
     </div>
   );
-  
-  const renderGpaSection = () => {
-    return (
-      <div>
-        {/* className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5" */}
-        <label className="block mb-2 text-sm font-medium text-gray-900">
-          GPA (N/A if not applicable) <span className="text-red-500">*</span>
-        </label>
+
+  // helper to renderGpaSection
+  const renderGpaCheckbox = () => {
+    return(
+      <div className="absolute top-1/2 transform -translate-y-1/2 right-10 text-xs">
         <label className="flex text-xs">
           <input
             className="mr-2 focus:ring-purple-300 text-purple-600"
@@ -343,12 +340,44 @@ export default function Form({ title, questions, listingId, includeEventsAttende
           />
           N/A
         </label>
+      </div>
+    )    
+  }
+  
+  const renderGpaSection = () => {
+    return (
+      <div className="mb-6">
+        <label className="block mb-2 text-sm font-medium text-gray-900">
+          GPA (N/A if not applicable) <span className="text-red-500">*</span>
+        </label>
         {formData.hasGpa ?
-          <>
-            {renderInput("gpa", "gpa", "number")}
-          </>
+          <div className="relative">
+            <input
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+              id="gpa"
+              type="number"
+              placeholder="gpa"
+              value={formData["gpa"]}
+              onChange={handleChange}
+              required={true}
+              disabled={isSubmitting}
+            />
+            {renderGpaCheckbox()}
+          </div>
           :
-          <div className="mb-10"></div>
+          <div className="relative">
+            <input
+            className="bg-gray-200 border border-gray-500 text-gray-500 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 cursor-auto"
+            id="gpa"
+            type="number"
+            placeholder="gpa"
+            value={formData["gpa"]}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            readOnly
+            />
+            {renderGpaCheckbox()}
+          </div>
         }
       </div>
 
