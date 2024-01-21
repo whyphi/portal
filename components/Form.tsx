@@ -62,7 +62,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const maxWordCount = 200; // Adjust as needed
   
   const checkRequiredFields = () => {
-    const possibleRequiredFields = ['firstName', 'lastName', 'major', 'gradYear', 'email', 'phone', 'resume', 'image'];
+    const possibleRequiredFields = ['firstName', 'lastName', 'major', 'gradMonth', 'gradYear', 'email', 'phone', 'resume', 'image'];
     const requiredFields = formData.hasGpa ? [...possibleRequiredFields, 'gpa'] : possibleRequiredFields 
     const incompleteFields: string[] = [];
     
@@ -73,7 +73,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     });
     
     if (incompleteFields.length > 0) {
-      alert(`Incomplete fields. Please fill in all required fields.`);
+      alert(`Incomplete fields. Please fill in all required fields: ${incompleteFields}`);
       return false;
     } else if (
       formData.responses.length < questions.length ||
