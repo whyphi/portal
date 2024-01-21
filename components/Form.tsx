@@ -273,20 +273,20 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
   const handleHasGpaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-    // if (checked) {
-    //   // case 1 : checked (didn't have gpa, now does -> no change to `gpa`)
-    //   setFormData((prevData) => ({
-    //     ...prevData,
-    //     [name]: !checked,
-    //     gpa : "",
-    //   }));
-    // } else {
+    if (checked) {
+      // case 1 : checked (didn't have gpa, now does -> no change to `gpa`)
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: !checked,
+        gpa : "",
+      }));
+    } else {
       // case 2 : unchecked (had gpa selected, but now reset `gpa` to empty string "")
       setFormData((prevData) => ({
         ...prevData,
         [name]: !checked,
       }));
-    // }
+    }
   }
 
   const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
