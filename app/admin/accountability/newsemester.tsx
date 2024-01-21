@@ -11,7 +11,7 @@ const CreateSemester: React.FC<{
   }> = ({ isOpen, onClose }) => {
     const router = useRouter();
         
-    const semester = useRef<HTMLInputElement>(null);
+    const semester = useRef(null);
     const year = useRef<HTMLInputElement>(null);
     const link = useRef<HTMLInputElement>(null);
 
@@ -24,7 +24,7 @@ const CreateSemester: React.FC<{
                 throw new Error('Please enter a valid year.');
             }
             
-            let fullsemester = yearValue + semester.current!.value;
+            let fullsemester = yearValue + semester.current!;
             const listid = 1;
             const dataToSend = {
             id: listid,
@@ -59,22 +59,33 @@ const CreateSemester: React.FC<{
     <Modal isOpen={isOpen} onRequestClose={onClose}>
         <div className="overlay">
             <form id="modal"onSubmit={submitHandler}>
-                <label>
-                    Semester:
-                    <input type='text' ref={semester} />
-                </label>
+                <div id="input">
+                    <label>
+                        Year: 
+                        <input type='text' size={4} placeholder ="yyyy" ref={year} />
+                    </label>
+                </div>
                 <br></br>
-                <label>
-                    Year:
-                    <input type='text' ref={year} />
-                </label>
+                <div id="input">
+                    <label>
+                        Semester: 
+                        <select ref={semester}>
+                            <option value="Fall">Fall</option>
+                            <option value="Spring">Spring</option>
+                        </select>
+                    </label>
+                </div>
                 <br></br>
-                <label>
-                    Link:
-                    <input type='text' ref={link} />
-                </label>
+                <div id="input">
+                    <label>
+                        Link: 
+                        <input type='text' size={50} ref={link} />
+                    </label>
+                </div>
                 <br></br>
-                <button>Create New Semester</button>
+                <div>
+                    <button>Create</button>
+                </div>
             </form>
         </div>
     </Modal >
