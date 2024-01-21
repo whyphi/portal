@@ -47,7 +47,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  
+  console.log(formData.gpa)
   if (includeEventsAttended) {
     initialValues.events = {
       infoSession1: false,
@@ -328,7 +328,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   // helper to renderGpaSection
   const renderGpaCheckbox = () => {
     return(
-      <div className="absolute top-1/2 transform -translate-y-1/2 right-10 text-xs">
+      <div className="absolute top-1/2 transform -translate-y-1/2 right-6 text-xs">
         <label className="flex text-xs">
           <input
             className="mr-2 focus:ring-purple-300 text-purple-600"
@@ -355,21 +355,22 @@ export default function Form({ title, questions, listingId, includeEventsAttende
             <input
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
               id="gpa"
-              type="number"
+              type="text"
               placeholder="gpa"
               value={formData["gpa"]}
               onChange={handleChange}
               required={true}
               disabled={isSubmitting}
+
             />
             {renderGpaCheckbox()}
           </div>
           :
           <div className="relative">
             <input
-            className="bg-gray-200 border border-gray-500 text-gray-500 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 cursor-auto"
+            className="bg-gray-200 border border-gray-500 text-gray-500 text-sm rounded-lg focus:ring-0 focus:border-gray-500  block w-full p-2.5 cursor-auto focus:outline-none"
             id="gpa"
-            type="number"
+            type="text"
             placeholder="gpa"
             value={formData["gpa"]}
             onChange={handleChange}

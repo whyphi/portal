@@ -20,11 +20,11 @@ export default function Listing({ params }: { params: { listingId: string } }) {
       })
       .catch((error) => console.error("Error fetching listings:", error));
 
-
   }, []);
 
   if (isLoading) return (<Loader />)
 
+  console.log(applicantData)
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Applicants</h1>
