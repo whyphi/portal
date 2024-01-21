@@ -116,9 +116,6 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
             {renderEventsAttended(applicantData.events)}
           </Tabs.Item>) : ("")}
 
-
-
-
         </Tabs.Group>
       </div>
     </div>

@@ -14,6 +14,7 @@ const initialValues: FormData = {
   major: '',
   minor: '',
   gpa: '',
+  hasGpa: true,
   email: '',
   phone: '',
   linkedin: '',
@@ -39,14 +40,14 @@ const initialValues: FormData = {
 };
 
 
-
 export default function Form({ title, questions, listingId, includeEventsAttended }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
+  console.log(formData.gpa, formData.hasGpa)
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
+  
   if (includeEventsAttended) {
     initialValues.events = {
       infoSession1: false,
@@ -57,19 +58,19 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       social2: false
     }
   }
-
+  
   const maxWordCount = 200; // Adjust as needed
-
+  
   const checkRequiredFields = () => {
     const requiredFields = ['firstName', 'lastName', 'major', 'gpa', 'gradYear', 'email', 'phone', 'resume', 'image'];
     const incompleteFields: string[] = [];
-
+    
     Object.entries(formData).forEach(([field, value]) => {
       if (requiredFields.includes(field) && (!value || (typeof value === 'string' && !value.trim()))) {
         incompleteFields.push(field);
       }
     });
-
+    
     if (incompleteFields.length > 0) {
       alert(`Incomplete fields. Please fill in all required fields.`);
       return false;
@@ -185,10 +186,20 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
+    // handle edge case : only update `gpa` if valid
+    if (id === "gpa") {
+      if (Number(value) >= 0 && Number(value) <= 4) {
+        setFormData((prevData) => ({
+          ...prevData,
+          [id]: value,
+        }));
+      }
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [id]: value,
+      }));
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -250,6 +261,24 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }));
   };
 
+  const handleHasGpaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    if (checked) {
+      // case 1 : checked (didn't have gpa, now does -> no change to `gpa`)
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: !checked,
+        gpa : "",
+      }));
+    } else {
+      // case 2 : unchecked (had gpa selected, but now reset `gpa` to empty string "")
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: !checked,
+      }));
+    }
+  }
+
   const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
 
@@ -261,6 +290,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       },
     }) as FormData);
   };
+  
 
   const renderInput = (
     id: keyof FormData,
@@ -270,7 +300,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   ) => (
     <div className="mb-6">
       <label className="block mb-2 text-sm font-medium text-gray-900">
-        {label} {required && <span className="text-red-500">*</span>}
+        {label !== 'gpa' && label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
@@ -281,9 +311,40 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         onChange={handleChange}
         required={required}
         disabled={isSubmitting}
-      />
+        />
     </div>
   );
+  
+  const renderGpaSection = () => {
+    
+    return (
+      <div>
+        {/* className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5" */}
+        <label className="block mb-2 text-sm font-medium text-gray-900">
+          GPA (N/A if not applicable) <span className="text-red-500">*</span>
+        </label>
+        <label className="flex text-xs">
+          <input
+            className="mr-2 focus:ring-purple-300 text-purple-600"
+            type="checkbox"
+            name="hasGpa"
+            checked={!formData.hasGpa}
+            onChange={handleHasGpaChange}
+            disabled={isSubmitting}
+          />
+          N/A
+        </label>
+        {formData.hasGpa ?
+          <>
+            {renderInput("gpa", "gpa", "number")}
+          </>
+          :
+          <div className="mb-10"></div>
+        }
+      </div>
+
+    )
+  }
 
   const renderEventsAttendedSection = () => {
 
@@ -341,7 +402,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       {renderInput("preferredName", "Preferred Name")}
       {renderInput("major", "Major", "text", true)}
       {renderInput("minor", "Minor", "text")}
-      {renderInput("gpa", "GPA (N/A if not applicable)", "text", true)}
+      {renderGpaSection()}
       {renderInput("gradYear", "Expected Graduation Date (Month Year) | (Example: May 2026)", "text", true)}
 
       <label className="block mb-2 text-sm font-medium text-gray-900">College / School <span className="text-red-500">*</span></label>
