@@ -8,6 +8,7 @@ import { Events, FormData, FormProps } from "@/types/form"
 
 const initialValues: FormData = {
   gradYear: '',
+  gradMonth: '',
   firstName: '',
   lastName: '',
   preferredName: '',
@@ -43,7 +44,6 @@ const initialValues: FormData = {
 export default function Form({ title, questions, listingId, includeEventsAttended }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
-  console.log(formData.gpa, formData.hasGpa)
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -62,7 +62,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const maxWordCount = 200; // Adjust as needed
   
   const checkRequiredFields = () => {
-    const requiredFields = ['firstName', 'lastName', 'major', 'gpa', 'gradYear', 'email', 'phone', 'resume', 'image'];
+    const possibleRequiredFields = ['firstName', 'lastName', 'major', 'gradYear', 'email', 'phone', 'resume', 'image'];
+    const requiredFields = formData.hasGpa ? [...possibleRequiredFields, 'gpa'] : possibleRequiredFields 
     const incompleteFields: string[] = [];
     
     Object.entries(formData).forEach(([field, value]) => {
@@ -316,7 +317,6 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   );
   
   const renderGpaSection = () => {
-    
     return (
       <div>
         {/* className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5" */}
@@ -343,6 +343,26 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         }
       </div>
 
+    )
+  }
+
+  const renderGradMonthYear = () => {
+    return(
+      <>
+        <label className="block mb-2 text-sm font-medium text-gray-900">Expected Graduation Date (Month Year) <span className="text-red-500">*</span></label>
+        <div className="flex">
+          <input
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+            id="gradMonth"
+            type="text"
+            placeholder="graduation month"
+            value={formData["gradMonth"]}
+            onChange={handleChange}
+            // required={true}
+            disabled={isSubmitting}
+            />
+        </div>
+      </>
     )
   }
 
