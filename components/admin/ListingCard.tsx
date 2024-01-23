@@ -144,8 +144,8 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
 
 
   return (
-    <div className="flex flex-col cursor-pointer p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-      <Link href={`admin/listing/${listingId}`}>
+    <div className="flex flex-col bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <Link href={`admin/listing/${listingId}`} className="p-6">
         <div className="flex justify-between items-center">
           {renderIndicator(isActive)}
           <ToggleSwitch className="" checked={isActive} label="" onChange={handleToggleSwitchChange} onClick={handleToggleSwitchClick} />
@@ -155,15 +155,14 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
           {renderDateCreatedBadge(dateCreated)}
         </div>
       </Link>
-      <div className="mt-4">
+      <div className="px-6 pb-6">
         <hr className="h-px mb-2 mt-4 bg-gray-200 border-0 dark:bg-gray-700" />
         <div className="flex justify-between items-center">
           {renderDeadline(deadline)}
-          <div className="dropdown-container"> {/* Add a class to identify the dropdown */}
+          <div className="dropdown-container cursor-pointer"> {/* Add a class to identify the dropdown */}
             <Dropdown label="" dismissOnClick={false} renderTrigger={() => <span>{renderSettingsIcon()}</span>}>
-              <Dropdown.Item onClick={() => router.push(`/public/${listingId}`)}>View Public Listing</Dropdown.Item>
-              <Dropdown.Item onClick={() => router.push(`/admin/listing/${listingId}/insights`)}>Insights</Dropdown.Item>
-              <Dropdown.Item onClick={() => router.push(`/admin/settings/${listingId}`)}>Settings</Dropdown.Item>
+              <Dropdown.Item href={`public/${listingId}`}>View Public Listing</Dropdown.Item>
+              <Dropdown.Item href={`admin/settings/${listingId}`}>Settings</Dropdown.Item>
             </Dropdown>
           </div>
         </div>
