@@ -82,7 +82,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
     <div className="flex flex-wrap">
       {/* Left component (ApplicantInfoCard) */}
       <div className="w-full lg:pr-6 lg:w-1/3 overflow-auto lg:sticky top-0 lg:h-screen">
-        <ApplicantInfoCard applicant={applicantData} />
+        {applicantData && <ApplicantInfoCard applicant={applicantData} />}
       </div>
 
       {/* Right component (Tabs and content) */}

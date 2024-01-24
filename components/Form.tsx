@@ -52,10 +52,9 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     initialValues.events = {
       infoSession1: false,
       infoSession2: false,
-      workshop1: false,
-      workshop2: false,
-      social1: false,
-      social2: false
+      resumeWorkshop: false,
+      socialEvent: false,
+      professionalPanel: false
     }
   }
   
@@ -423,10 +422,9 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       const eventIdToName = {
         infoSession1: "Info Session 1",
         infoSession2: "Info Session 2",
-        workshop1: "Workshop 1",
-        workshop2: "Workshop 2",
-        social1: "Social 1",
-        social2: "Social 2"
+        resumeWorkshop: "Resume Workshop",
+        socialEvent: "Social Event",
+        professionalPanel: "Professional Panel"
       };
 
       return eventIdToName[eventId as keyof typeof eventIdToName] || "Unknown Event";

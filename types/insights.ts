@@ -3,11 +3,9 @@ import { Applicant } from "@/types/applicant";
 // Dashboard : interface to store applicant batch data from backend
 export interface Dashboard {
   applicantCount: number | null;
-  avgGpa: number | null;
+  avgGpa: any;
   commonMajor: string;
-  countCommonMajor: number;
-  avgGradYear: number | null;
-  avgResponseLength: number | null;
+  avgGradYear: string;
 }
 
 // Metrics : uses `name` `value` object to easily integrate with `recharts` pie charts (also includes list of Applicants associated with this metric.name --> e.g. colleges[0].applicants)
