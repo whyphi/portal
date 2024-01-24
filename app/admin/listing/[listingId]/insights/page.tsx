@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 import { Dashboard, DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
-import { ResponsiveContainer, PieChart, Pie, Tooltip, Label } from "recharts";
-import { Dropdown, Table, Tabs } from 'flowbite-react';
+import { PieChart, Pie, Tooltip, Label } from "recharts";
+import { Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
 
 import { FlowbiteTabTheme } from "flowbite-react";
