@@ -16,10 +16,9 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     applicantCount: null,
     avgGpa: null,
     commonMajor: "",
-    countCommonMajor: 0,
-    avgGradYear: null,
-    avgResponseLength: null,
+    avgGradYear: "",
   });
+
   // applicantData : list of applicants
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
   // distributionMetrics : object containing frequencies of each metric for all applicants
@@ -32,7 +31,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     linkedin: [],
     website: [],
   });
-  console.log(applicantData)
   // fields : list of all fields being used for analytics
   const fields: string[] = ["colleges", "gpa", "gradYear", "major", "minor", "linkedin", "website"]
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -81,6 +79,57 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
     // create temporary copy of distributionMetrics (update after)
     const updatedMetrics = { ...distributionMetrics };
+
+    // Calculate Summary Metrics
+
+    const getSummaryMetrics = (applicants: Applicant[]) => {
+      console.log("Getting summary metrics");
+
+      // Check if there are applicants
+      if (applicants.length === 0) {
+        console.log("No applicants to analyze");
+        return;
+      }
+
+      // Calculate average GPA
+      const validGpas = applicants.filter(applicant => !isNaN(parseFloat(applicant.gpa))).map(applicant => parseFloat(applicant.gpa));
+      var averageGpa = 0.00;
+      if (validGpas.length > 0) {
+        const totalGpa = validGpas.reduce((sum, gpa) => sum + gpa, 0);
+        averageGpa = totalGpa / validGpas.length;
+      } else {
+        console.log("No valid GPAs to calculate average");
+      }
+
+      // Calculate the most common major
+      const majorCounts = applicants.reduce((counts: any, applicant) => {
+        const major = applicant.major.trim(); // Trim to handle whitespace variations
+        counts[major] = (counts[major] || 0) + 1;
+        return counts;
+      }, {});
+
+      const mostCommonMajor = Object.keys(majorCounts).reduce((a, b) => (majorCounts[a] > majorCounts[b] ? a : b));
+
+      // Calculate the most common graduation year
+      const gradYearCounts = applicants.reduce((counts: any, applicant) => {
+        const gradYear = applicant.gradYear;
+        counts[gradYear] = (counts[gradYear] || 0) + 1;
+        return counts;
+      }, {});
+
+      const mostCommonGradYear = Object.keys(gradYearCounts).reduce((a, b) => (gradYearCounts[a] > gradYearCounts[b] ? a : b));
+
+      setDashboard(prevState => ({
+        ...prevState,
+        applicantCount: applicants.length,
+        avgGpa: averageGpa,
+        commonMajor: mostCommonMajor,
+        avgGradYear: mostCommonGradYear,
+        // Assign other calculated values here (commonMajor, avgGradYear)
+      }));
+    };
+
+    getSummaryMetrics(applicantData);
 
     // map through list of applicants
     applicantData.map((applicant: Applicant) => {
@@ -216,10 +265,10 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       {/* Cards dashboard --> in progress */}
       <h3>Summary</h3>
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        <SummaryCard title="Number of Applicants" value="11" />
-        <SummaryCard title="Average GPA" value="3.23" />
-        <SummaryCard title="Most Common Majors" value="Business Administration" />
-        <SummaryCard title="test" value="test" />
+        <SummaryCard title="Number of Applicants" value={dashboard.applicantCount} />
+        <SummaryCard title="Average GPA" value={dashboard.avgGpa} />
+        <SummaryCard title="Most Common Majors" value={dashboard.commonMajor} />
+        <SummaryCard title="Most Common Grad Year" value={dashboard.avgGradYear}/>
       </div>
 
 

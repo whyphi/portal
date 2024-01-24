@@ -3,7 +3,7 @@ import { Card } from 'flowbite-react';
 
 interface ListingCardProps {
     title: string;
-    value: string
+    value: any;
 }
 
 export default function SummaryCard({ title, value }: ListingCardProps) {
