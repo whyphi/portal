@@ -1,7 +1,7 @@
 'use client'
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from 'flowbite-react';
+import { Button, Select } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
 
 import { Events, FormData, FormProps } from "@/types/form"
@@ -47,7 +47,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  console.log(formData.gpa)
+
   if (includeEventsAttended) {
     initialValues.events = {
       infoSession1: false,
@@ -57,20 +57,20 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       professionalPanel: false
     }
   }
-  
+
   const maxWordCount = 200; // Adjust as needed
-  
+
   const checkRequiredFields = () => {
     const possibleRequiredFields = ['firstName', 'lastName', 'major', 'gradMonth', 'gradYear', 'email', 'phone', 'resume', 'image'];
-    const requiredFields = formData.hasGpa ? [...possibleRequiredFields, 'gpa'] : possibleRequiredFields 
+    const requiredFields = formData.hasGpa ? [...possibleRequiredFields, 'gpa'] : possibleRequiredFields
     const incompleteFields: string[] = [];
-    
+
     Object.entries(formData).forEach(([field, value]) => {
       if (requiredFields.includes(field) && (!value || (typeof value === 'string' && !value.trim()))) {
         incompleteFields.push(field);
       }
     });
-    
+
     if (incompleteFields.length > 0) {
       alert(`Incomplete fields. Please fill in all required fields`);
       return false;
@@ -211,6 +211,14 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }
   };
 
+  const handleDropdownChange = (e: ChangeEvent<HTMLSelectElement>, fieldName: string)=> {
+    const value = e.target.value;
+    setFormData((prevData) => ({
+      ...prevData,
+      [fieldName]: value,
+    }));
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = e.target;
     const file = e.target.files ? e.target.files[0] : null;
@@ -277,7 +285,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       setFormData((prevData) => ({
         ...prevData,
         [name]: !checked,
-        gpa : "",
+        gpa: "",
       }));
     } else {
       // case 2 : unchecked (had gpa selected, but now reset `gpa` to empty string "")
@@ -300,7 +308,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       },
     }) as FormData);
   };
-  
+
 
   const renderInput = (
     id: keyof FormData,
@@ -321,13 +329,13 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         onChange={handleChange}
         required={required}
         disabled={isSubmitting}
-        />
+      />
     </div>
   );
 
   // helper to renderGpaSection
   const renderGpaCheckbox = () => {
-    return(
+    return (
       <div className="absolute top-1/2 transform -translate-y-1/2 right-6 text-xs">
         <label className="flex text-xs">
           <input
@@ -341,9 +349,9 @@ export default function Form({ title, questions, listingId, includeEventsAttende
           N/A
         </label>
       </div>
-    )    
+    )
   }
-  
+
   const renderGpaSection = () => {
     return (
       <div className="mb-6">
@@ -356,7 +364,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
               id="gpa"
               type="text"
-              placeholder="gpa"
+              placeholder="GPA"
               value={formData["gpa"]}
               onChange={handleChange}
               required={true}
@@ -368,14 +376,14 @@ export default function Form({ title, questions, listingId, includeEventsAttende
           :
           <div className="relative">
             <input
-            className="bg-gray-200 border border-gray-500 text-gray-500 text-sm rounded-lg focus:ring-0 focus:border-gray-500  block w-full p-2.5 cursor-auto focus:outline-none"
-            id="gpa"
-            type="text"
-            placeholder="gpa"
-            value={formData["gpa"]}
-            onChange={handleChange}
-            disabled={isSubmitting}
-            readOnly
+              className="bg-gray-200 border border-gray-500 text-gray-500 text-sm rounded-lg focus:ring-0 focus:border-gray-500  block w-full p-2.5 cursor-auto focus:outline-none"
+              id="gpa"
+              type="text"
+              placeholder="GPA"
+              value={formData["gpa"]}
+              onChange={handleChange}
+              disabled={isSubmitting}
+              readOnly
             />
             {renderGpaCheckbox()}
           </div>
@@ -386,30 +394,42 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   }
 
   const renderGradMonthYear = () => {
-    return(
+    return (
       <>
-        <label className="block mb-2 text-sm font-medium text-gray-900">Expected Graduation Date (Month Year) | (Example: May 2026) <span className="text-red-500">*</span></label>
+        <label className="block mb-2 text-sm font-medium text-gray-900">Expected Graduation Date <span className="text-red-500">*</span></label>
         <div className="flex gap-2 mb-6">
-          <input
+          {/* <input
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-1/2 p-2.5"
             id="gradMonth"
             type="text"
-            placeholder="graduation month"
+            placeholder="Month"
             value={formData["gradMonth"]}
             onChange={handleChange}
             // required={true}
             disabled={isSubmitting}
-            />
+          /> */}
+
+          <select
+            id="gradMonth"
+            placeholder="Month"
+            value={formData["gradMonth"]}
+            onChange={(e) => handleDropdownChange(e, "gradMonth")} // Pass the field name to handleChange
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-1/2 p-2.5"
+          >
+            <option value="" disabled>Select Month</option>
+            <option value="January">January</option>
+            <option value="May">May</option>
+          </select>
           <input
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-1/2 p-2.5"
             id="gradYear"
             type="number"
-            placeholder="graduation year"
+            placeholder="Year"
             value={formData["gradYear"]}
             onChange={handleChange}
             // required={true}
             disabled={isSubmitting}
-            />
+          />
         </div>
       </>
     )
