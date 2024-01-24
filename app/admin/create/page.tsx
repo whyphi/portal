@@ -3,18 +3,22 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from 'next/navigation'
+import { Checkbox, Label } from 'flowbite-react';
+
 
 
 interface FormData {
   title: string;
   questions: { [key: string]: string }[]; // Array of objects with string keys
   deadline: Date;
+  includeEventsAttended: boolean;
 }
 
 const initialValues: FormData = {
   title: "",
   questions: [],
   deadline: new Date(),
+  includeEventsAttended: false
 };
 
 export default function Create() {
@@ -31,7 +35,7 @@ export default function Create() {
       dateCreated: currentDate.toISOString(),
       deadline: formattedDeadline,
     };
-  
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/create`, {
         method: "POST",
@@ -40,7 +44,7 @@ export default function Create() {
         },
         body: JSON.stringify(formDataWithDates),
       });
-  
+
       if (response.ok) {
         // The request was successful, you can handle the response here if needed.
         console.log("Request successful!");
@@ -61,6 +65,14 @@ export default function Create() {
     setFormData((prevData) => ({
       ...prevData,
       [id]: value,
+    }));
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, checked } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: checked,
     }));
   };
 
@@ -230,6 +242,24 @@ export default function Create() {
     );
   };
 
+  const renderAdditionalSection = () => {
+    return (
+      <div className="w-full mb-6">
+        <label className="block mb-2 text-md font-medium text-gray-900">
+          Additional
+        </label>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={formData.includeEventsAttended}
+            onChange={handleCheckboxChange}
+            id="includeEventsAttended"
+            className="focus:ring-purple-500 dark:focus:ring-purple-600 text-purple-600" />
+          <Label htmlFor="includeEventsAttended" className="font-light">I want to collect <span className="font-medium underline">Events Attended</span> data</Label>
+        </div>
+      </div>
+    )
+  }
+
   const textStyles = {
     title: "text-4xl font-bold dark:text-white mb-6 mt-4",
     subtitle: "mb-4 text-lg font-normal text-gray-500 dark:text-gray-400",
@@ -247,6 +277,7 @@ export default function Create() {
 
       {renderQuestions()}
       {renderDeadline()}
+      {renderAdditionalSection()}
 
       <button
         type="button"

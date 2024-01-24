@@ -2,10 +2,9 @@
 import { Card } from 'flowbite-react';
 import Image from 'next/image'
 import { Applicant } from '@/types/applicant';
-import { useRouter } from 'next/navigation';
 
 interface ApplicantInfoCardProps {
-  applicant: Applicant | null;
+  applicant: Applicant;
 }
 
 
@@ -20,8 +19,19 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
   return (
     <Card>
       <ul className="space-y-5">
+        <div className="flex justify-center">
+          <Image
+            loader={() => applicant?.image}
+            alt={`${applicant.firstName} ${applicant.lastName} image`}
+            className="mb-3 rounded-full"
+            height={96}
+            src={applicant.image}
+            width={96}
+          />
+        </div>
         <h3 className={textStyles.name}>{`${applicant?.firstName} ${applicant?.lastName}`}</h3>
         <p className={textStyles.major}>Major: {applicant?.major}</p>
+        <p className={textStyles.major}>GPA: {applicant?.gpa}</p>
         {applicant?.minor && <p className={textStyles.major}>Minor: {applicant?.minor}</p>}
         <li className="flex space-x-3">
           <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 18">
