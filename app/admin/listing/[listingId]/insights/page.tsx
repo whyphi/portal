@@ -5,7 +5,8 @@ import Loader from "@/components/Loader";
 import { Dashboard, DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
 import { ResponsiveContainer, PieChart, Pie, Tooltip, Label } from "recharts";
-import { Dropdown, Table } from 'flowbite-react';
+import { Dropdown, Table, Card } from 'flowbite-react';
+import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
@@ -33,32 +34,32 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   });
   console.log(applicantData)
   // fields : list of all fields being used for analytics
-  const fields : string[] = ["colleges", "gpa", "gradYear", "major", "minor", "linkedin", "website"]
+  const fields: string[] = ["colleges", "gpa", "gradYear", "major", "minor", "linkedin", "website"]
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
+
   // selectedItem : used to track which metric plot pie chart for
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  
+
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
-  
+
   console.log(matchingApplicants)
 
   // useRef to track whether parseData has been called
   const parseDataCalled = useRef(false);
-  
+
 
   // Fetch listings data from your /listings API endpoint
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
-    .then((response) => response.json())
-    .then((data: [Applicant]) => {
-      setApplicantData(data)
-      setIsLoading(false);
-      // parseData()
-    })
-    .catch((error) => console.error("Error fetching applicants:", error));
-    
+      .then((response) => response.json())
+      .then((data: [Applicant]) => {
+        setApplicantData(data)
+        setIsLoading(false);
+        // parseData()
+      })
+      .catch((error) => console.error("Error fetching applicants:", error));
+
   }, [])
 
   // Parse data whenever applicantData changes
@@ -80,17 +81,17 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
     // create temporary copy of distributionMetrics (update after)
     const updatedMetrics = { ...distributionMetrics };
-    
+
     // map through list of applicants
     applicantData.map((applicant: Applicant) => {
       // iterate through keys of applicant object (only consider valid ones)
       Object.entries(applicant).forEach(([metric, val]: [string, string | Colleges]) => {
         // valOut : changes to boolean if metric is "linkedin/website" --> otherwise string metric
-        
+
         if (!fields.includes(metric)) {
           // case 1: ignore irrelevant metrics
           return;
-          
+
         } else if (metric == "colleges") {
           // case 2: if colleges -> iterate over object of colleges
           Object.entries(val).forEach(([college, status]: [string, boolean]) => {
@@ -102,13 +103,13 @@ export default function Insights({ params }: { params: { listingId: string } }) 
                 foundCollege.value += 1
                 foundCollege.applicants.push(applicant)
               } else {
-                const newCollege: Metrics = { name: college, value: 1, applicants: [applicant]};
+                const newCollege: Metrics = { name: college, value: 1, applicants: [applicant] };
                 updatedMetrics[metric].push(newCollege);
               }
             }
           })
           return;
-          
+
         } else if (["linkedin", "website"].includes(metric)) {
           // case 3: hasUrl -> true or false depending on if user has linkedin/website
           val = typeof val === 'string' && val.includes("https://www.") ? "True" : "False";
@@ -125,15 +126,15 @@ export default function Insights({ params }: { params: { listingId: string } }) 
           foundMetric.value += 1
           foundMetric.applicants.push(applicant)
         } else {
-          const newMetric: Metrics = { name: typeof val === 'string' && val, value: 1, applicants: [applicant]};
+          const newMetric: Metrics = { name: typeof val === 'string' && val, value: 1, applicants: [applicant] };
           updatedMetrics[metric].push(newMetric);
         }
-        
+
       })
     })
     setDistributionMetrics(updatedMetrics)
   }
-  
+
   // handleDropdownChange : updates title of dropdown...
   const handleDropdownChange = (selectedItem: string) => {
     setSelectedItem(selectedItem);
@@ -213,20 +214,17 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       <h1 className="text-2xl font-bold">Insights</h1>
 
       {/* Cards dashboard --> in progress */}
-      {/* <div className="grid grid-cols-6 gap-4">
-        <div className="col-span-1 bg-blue-500">1</div>
-        <div className="col-span-1 bg-green-500">2</div>
-        <div className="col-span-1 bg-red-500">3</div>
-        <div className="col-span-1 bg-yellow-500">4</div>
-        <div className="col-span-1 bg-purple-500">5</div>
-
-        <div className="col-span-3 bg-orange-500">6 (Span 2)</div>
-        <div className="col-span-3 bg-indigo-500">7 (Span 2.5)</div>
-      </div> */}
+      <h3>Summary</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <SummaryCard title="Number of Applicants" value="11" />
+        <SummaryCard title="Average GPA" value="3.23" />
+        <SummaryCard title="Most Common Majors" value="Business Administration" />
+        <SummaryCard title="test" value="test" />
+      </div>
 
 
 
-      <Dropdown 
+      <Dropdown
         label={selectedItem || 'Select a metric'}
         style={{
           background: 'linear-gradient(to right, #8e5ef9, #6d2bd9)',
@@ -239,47 +237,47 @@ export default function Insights({ params }: { params: { listingId: string } }) 
           </Dropdown.Item>
         ))}
       </Dropdown>
-      
-    {/* center PieChart (IDK HOW TO STYLE THIS... TAE SUNG PLS HELP lol) */}
-    <div className="flex justify-center">
-      <PieChart width={450} height={400}>
-        {selectedItem && distributionMetrics[selectedItem].length > 0 ? 
-          <Pie 
-            data={distributionMetrics[selectedItem]}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            innerRadius={130}
-            outerRadius={160} 
-            fill="#BB9CFF"
-            label
-            onClick={handlePieClick}
-            className="cursor-pointer"
-          > 
-            <Label position="center" >
-              {selectedItem}
-            </Label>
-          </Pie>
-          :
-          <Loader />
-        }
-        <Tooltip />
-      </PieChart>
-    </div>
 
-    {/* display table if metric is selected */}
-    { selectedItem &&
-      <Table hoverable>
-        <Table.Head>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>{selectedItem}</Table.HeadCell>
-        </Table.Head>
-        <Table.Body>
-          {mapMatchingApplicants}
-        </Table.Body>
-      </Table>
-    }
+      {/* center PieChart (IDK HOW TO STYLE THIS... TAE SUNG PLS HELP lol) */}
+      <div className="flex justify-center">
+        <PieChart width={450} height={400}>
+          {selectedItem && distributionMetrics[selectedItem].length > 0 ?
+            <Pie
+              data={distributionMetrics[selectedItem]}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={130}
+              outerRadius={160}
+              fill="#BB9CFF"
+              label
+              onClick={handlePieClick}
+              className="cursor-pointer"
+            >
+              <Label position="center" >
+                {selectedItem}
+              </Label>
+            </Pie>
+            :
+            <Loader />
+          }
+          <Tooltip />
+        </PieChart>
+      </div>
+
+      {/* display table if metric is selected */}
+      {selectedItem &&
+        <Table hoverable>
+          <Table.Head>
+            <Table.HeadCell>Name</Table.HeadCell>
+            <Table.HeadCell>{selectedItem}</Table.HeadCell>
+          </Table.Head>
+          <Table.Body>
+            {mapMatchingApplicants}
+          </Table.Body>
+        </Table>
+      }
     </div>
   )
 }
