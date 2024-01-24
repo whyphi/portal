@@ -153,18 +153,23 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
           <div className="dropdown-container cursor-pointer"> {/* Add a class to identify the dropdown */}
             <Dropdown label="" dismissOnClick={false} renderTrigger={() => <span>{renderSettingsIcon()}</span>}>
               <Dropdown.Item href={`public/${listingId}`}>View Public Listing</Dropdown.Item>
+              <Dropdown.Item href={`admin/listing/${listingId}/insights`}>Insights</Dropdown.Item>
               <Dropdown.Item href={`admin/settings/${listingId}`}>Settings</Dropdown.Item>
             </Dropdown>
           </div>
         </div>
       </div>
-      <Link href={`admin/listing/${listingId}`} className="py-6 px-6 min-h-full flex-grow">
-        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
-        <div className="mt-1">
-          {renderDateCreatedBadge(dateCreated)}
+      <Link href={`admin/listing/${listingId}`} className="py-6 px-6 flex-grow">
+        <div>
+          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
+          <div className="mt-1">
+            {renderDateCreatedBadge(dateCreated)}
+          </div>
         </div>
-        <hr className="h-px mb-2 mt-4 bg-gray-200 border-0 dark:bg-gray-700" />
-        {renderDeadline(deadline)}
+        <div className="mt-auto">
+          <hr className="h-px mb-2 mt-4 bg-gray-200 border-0 dark:bg-gray-700" />
+          {renderDeadline(deadline)}
+        </div>
       </Link>
     </div >
   );
