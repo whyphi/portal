@@ -186,24 +186,17 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     setDistributionMetrics(updatedMetrics)
   }
 
-  // handleDropdownChange : updates title of dropdown...
-  const handleDropdownChange = (selectedItem: string) => {
-    console.log(selectedItem);
-    setSelectedItem(selectedItem);
-    setMatchingApplicants([])
-  };
-  // handleDropdownChange : updates title of dropdown...
-  const numToItem: { [key: number]: string } = {
-    0: "colleges",
-    1: "gpa",
-    2: "gradYear",
-    3: "major",
-    4: "minor",
-    5: "linkedin",
-    6: "website",
-  };
 
   const handleActiveTab = (tab: number) => {
+    const numToItem: { [key: number]: string } = {
+      0: "colleges",
+      1: "gpa",
+      2: "gradYear",
+      3: "major",
+      4: "minor",
+      5: "linkedin",
+      6: "website",
+    };
     setSelectedItem(numToItem[tab]);
     setMatchingApplicants([]);
   };
