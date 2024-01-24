@@ -3,7 +3,7 @@ import { Applicant } from "@/types/applicant";
 // Dashboard : interface to store applicant batch data from backend
 export interface Dashboard {
   applicantCount: number | null;
-  avgGpa: number | null;
+  avgGpa: any;
   commonMajor: string;
   avgGradYear: string;
 }

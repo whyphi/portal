@@ -5,8 +5,10 @@ import Loader from "@/components/Loader";
 import { Dashboard, DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
 import { ResponsiveContainer, PieChart, Pie, Tooltip, Label } from "recharts";
-import { Dropdown, Table, Card } from 'flowbite-react';
+import { Dropdown, Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
+
+import { FlowbiteTabTheme } from "flowbite-react";
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
@@ -36,7 +38,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // selectedItem : used to track which metric plot pie chart for
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<string | null>("colleges");
 
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
@@ -122,7 +124,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       setDashboard(prevState => ({
         ...prevState,
         applicantCount: applicants.length,
-        avgGpa: averageGpa,
+        avgGpa: averageGpa.toFixed(3),
         commonMajor: mostCommonMajor,
         avgGradYear: mostCommonGradYear,
         // Assign other calculated values here (commonMajor, avgGradYear)
@@ -186,9 +188,26 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   // handleDropdownChange : updates title of dropdown...
   const handleDropdownChange = (selectedItem: string) => {
+    console.log(selectedItem);
     setSelectedItem(selectedItem);
     setMatchingApplicants([])
   };
+  // handleDropdownChange : updates title of dropdown...
+  const numToItem: { [key: number]: string } = {
+    0: "colleges",
+    1: "gpa",
+    2: "gradYear",
+    3: "major",
+    4: "minor",
+    5: "linkedin",
+    6: "website",
+  };
+
+  const handleActiveTab = (tab: number) => {
+    setSelectedItem(numToItem[tab]);
+    setMatchingApplicants([]);
+  };
+
 
   const handlePieClick = (data: any) => {
     // error handling (only if metric/selectedItem is valid)
@@ -255,40 +274,76 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     </Table.Row>
   ))
 
+  const customTabTheme: FlowbiteTabTheme = {
+    "base": "flex flex-col gap-2",
+    "tablist": {
+      "base": "flex text-center",
+      "styles": {
+        "default": "flex-wrap border-b border-gray-200 dark:border-gray-700",
+        "underline": "flex-wrap -mb-px border-b border-gray-200 dark:border-gray-700",
+        "pills": "flex-wrap font-medium text-sm text-gray-500 dark:text-gray-400 space-x-2",
+        "fullWidth": "w-full text-sm font-medium divide-x divide-gray-200 shadow grid grid-flow-col dark:divide-gray-700 dark:text-gray-400 rounded-none"
+      },
+      "tabitem": {
+        "base": "flex items-center justify-center p-4 rounded-t-lg text-sm font-medium first:ml-0 disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500 focus:ring-4 focus:ring-purple-300 focus:outline-none",
+        "styles": {
+          "default": {
+            "base": "rounded-t-lg",
+            "active": {
+              "on": "bg-gray-100 text-purple-600 dark:bg-gray-800 dark:text-purple-500",
+              "off": "text-gray-500 hover:bg-gray-50 hover:text-gray-600 dark:text-gray-400 dark:hover:bg-gray-800  dark:hover:text-gray-300"
+            }
+          },
+          "underline": {
+            "base": "rounded-t-lg",
+            "active": {
+              "on": "text-purple-600 rounded-t-lg border-b-2 border-purple-600 active dark:text-purple-500 dark:border-purple-500",
+              "off": "border-b-2 border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300"
+            }
+          },
+          "pills": {
+            "base": "",
+            "active": {
+              "on": "rounded-lg bg-purple-500 text-white",
+              "off": "rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white"
+            }
+          },
+          "fullWidth": {
+            "base": "ml-0 first:ml-0 w-full rounded-none flex",
+            "active": {
+              "on": "p-4 text-gray-900 bg-gray-100 active dark:bg-gray-700 dark:text-white rounded-none",
+              "off": "bg-white hover:text-gray-700 hover:bg-gray-50 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700 rounded-none"
+            }
+          }
+        },
+        "icon": "mr-2 h-5 w-5"
+      }
+    },
+    "tabpanel": "py-3"
+  }
+
   // if applicants data not yet received : produce loading screen
   if (isLoading) return (<Loader />)
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Insights</h1>
+      <h1 className="text-2xl font-bold mb-4">Insights</h1>
 
-      {/* Cards dashboard --> in progress */}
-      <h3>Summary</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="mb-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <SummaryCard title="Number of Applicants" value={dashboard.applicantCount} />
         <SummaryCard title="Average GPA" value={dashboard.avgGpa} />
-        <SummaryCard title="Most Common Majors" value={dashboard.commonMajor} />
-        <SummaryCard title="Most Common Grad Year" value={dashboard.avgGradYear}/>
+        <SummaryCard title="Most Common Major" value={dashboard.commonMajor} />
+        <SummaryCard title="Most Common Grad Year" value={dashboard.avgGradYear} />
       </div>
 
 
-
-      <Dropdown
-        label={selectedItem || 'Select a metric'}
-        style={{
-          background: 'linear-gradient(to right, #8e5ef9, #6d2bd9)',
-          color: 'white',
-        }}
-      >
+      <Tabs.Group style="pills" theme={customTabTheme} aria-label="Tabs with underline" onActiveTabChange={(tab) => handleActiveTab(tab)}>
         {fields.map((field, index) => (
-          <Dropdown.Item key={index} onClick={() => handleDropdownChange(field)}>
-            {field}
-          </Dropdown.Item>
+          <Tabs.Item color="purple" title={field} key={index} />
         ))}
-      </Dropdown>
+      </Tabs.Group>
 
-      {/* center PieChart (IDK HOW TO STYLE THIS... TAE SUNG PLS HELP lol) */}
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center w-full">
         <PieChart width={450} height={400}>
           {selectedItem && distributionMetrics[selectedItem].length > 0 ?
             <Pie
@@ -315,7 +370,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         </PieChart>
       </div>
 
-      {/* display table if metric is selected */}
       {selectedItem &&
         <Table hoverable>
           <Table.Head>
@@ -327,6 +381,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
           </Table.Body>
         </Table>
       }
+
     </div>
   )
 }
