@@ -28,7 +28,6 @@ export default function Listing({ params }: { params: { listingId: string } }) {
       })
       .catch((error) => console.error("Error fetching listings:", error));
 
-
   }, []);
 
   const renderApplicantCardView = () => {
