@@ -212,8 +212,8 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     <div>
       <h1 className="text-2xl font-bold">Insights</h1>
 
-      {/* Dashboard - Cards */}
-      <div className="grid grid-cols-6 gap-4">
+      {/* Cards dashboard --> in progress */}
+      {/* <div className="grid grid-cols-6 gap-4">
         <div className="col-span-1 bg-blue-500">1</div>
         <div className="col-span-1 bg-green-500">2</div>
         <div className="col-span-1 bg-red-500">3</div>
@@ -222,7 +222,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
         <div className="col-span-3 bg-orange-500">6 (Span 2)</div>
         <div className="col-span-3 bg-indigo-500">7 (Span 2.5)</div>
-      </div>
+      </div> */}
 
 
 
