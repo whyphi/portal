@@ -1,8 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
-import AdminLoader from "@/components/AdminLoader";
-import { useSession, signIn, signOut } from "next-auth/react";
+import Loader from "@/components/Loader";
 
 
 interface Listing {
@@ -27,6 +26,12 @@ export default function Admin() {
       })
       .catch((error) => console.error("Error fetching listings:", error));
   }, []);
+
+  if (isLoading) {
+    return (
+      <Loader />
+    )
+  }
 
   return (
     <main className="container mx-auto p-8">

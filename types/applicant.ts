@@ -16,9 +16,14 @@ export interface Applicant {
   major:         string;
   phone:         string;
   preferredName: string;
+  events:        null | { [key: string]: boolean };
 }
 
 export interface Response {
   question: string;
   response: string;
+}
+
+export interface EventsAttended {
+  [key: string]: boolean;
 }

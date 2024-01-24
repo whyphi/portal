@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ToggleSwitch, Dropdown } from 'flowbite-react';
+import Link from "next/link";
 
 interface ListingCardProps {
   listingId: string;
@@ -101,6 +102,8 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
   };
 
   const handleToggleSwitchChange = async (isChecked: boolean) => {
+    
+
     try {
       // Update the local state
       setIsActive(isChecked);
@@ -143,31 +146,31 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
 
 
   return (
-    <div onClick={handleListingCardClick} className="flex flex-col cursor-pointer p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-      <div>
+    <div className="min-h-full flex flex-col bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <div className="flex justify-between items-center py-2 px-6 bg-violet-100 rounded-t-lg">
+        {renderIndicator(isActive)}
         <div className="flex justify-between items-center">
-          {renderIndicator(isActive)}
-          <ToggleSwitch className="" checked={isActive} label="" onChange={handleToggleSwitchChange} onClick={handleToggleSwitchClick} />
-        </div>
-        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
-        <div className="mt-1">
-          {renderDateCreatedBadge(dateCreated)}
-        </div>
-      </div>
-      <div className="mt-4">
-        <hr className="h-px mb-2 mt-4 bg-gray-200 border-0 dark:bg-gray-700" />
-        <div className="flex justify-between items-center">
-          {renderDeadline(deadline)}
-          <div className="dropdown-container"> {/* Add a class to identify the dropdown */}
+          <div className="dropdown-container cursor-pointer"> {/* Add a class to identify the dropdown */}
             <Dropdown label="" dismissOnClick={false} renderTrigger={() => <span>{renderSettingsIcon()}</span>}>
-              <Dropdown.Item onClick={() => router.push(`/public/${listingId}`)}>View Public Listing</Dropdown.Item>
-              <Dropdown.Item onClick={() => router.push(`/admin/settings/${listingId}`)}>Settings</Dropdown.Item>
+              <Dropdown.Item href={`public/${listingId}`}>View Public Listing</Dropdown.Item>
+              <Dropdown.Item href={`admin/listing/${listingId}/insights`}>Insights</Dropdown.Item>
+              <Dropdown.Item href={`admin/settings/${listingId}`}>Settings</Dropdown.Item>
             </Dropdown>
           </div>
         </div>
-
       </div>
+      <Link href={`admin/listing/${listingId}`} className="py-6 px-6 flex-grow">
+        <div>
+          <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
+          <div className="mt-1">
+            {renderDateCreatedBadge(dateCreated)}
+          </div>
+        </div>
+        <div className="mt-auto">
+          <hr className="h-px mb-2 mt-4 bg-gray-200 border-0 dark:bg-gray-700" />
+          {renderDeadline(deadline)}
+        </div>
+      </Link>
     </div >
   );
-
 }
