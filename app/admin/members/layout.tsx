@@ -2,8 +2,7 @@ import '../../globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Accountability',
-    description: "Whyphi's Admin",
+    title: 'Whyphi - Members',
 }
 
 export default function RootLayout({
