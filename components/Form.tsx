@@ -398,17 +398,6 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       <>
         <label className="block mb-2 text-sm font-medium text-gray-900">Expected Graduation Date <span className="text-red-500">*</span></label>
         <div className="flex gap-2 mb-6">
-          {/* <input
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-1/2 p-2.5"
-            id="gradMonth"
-            type="text"
-            placeholder="Month"
-            value={formData["gradMonth"]}
-            onChange={handleChange}
-            // required={true}
-            disabled={isSubmitting}
-          /> */}
-
           <select
             id="gradMonth"
             placeholder="Month"
@@ -571,16 +560,6 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       >
         Submit
       </Button>
-
-      {/* Original button below */}
-      {/* <button
-          type="button"
-          className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          onClick={handleSubmit}>
-          Submit
-        </button> */}
-
-
     </form >
   )
 }
