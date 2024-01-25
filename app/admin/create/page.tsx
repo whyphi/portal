@@ -135,11 +135,12 @@ export default function Create() {
                 <div className="flex justify-end">
                   <svg
                     onClick={() => handleRemoveQuestion(index)}
-                    className="w-4 h-4 text-gray-800 dark:text-white"
+                    className="w-4 h-4 text-gray-800 dark:text-white hover:bg-gray-100"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 20 20"
+                    style={{ cursor: 'pointer' }}
                   >
                     <path
                       stroke="currentColor"
