@@ -46,6 +46,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
+  const [remainingFileSize, setRemainingFileSize] = useState<number>(6);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   if (includeEventsAttended) {
@@ -195,8 +196,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         }));
       }
     } else if (id === "gradYear") {
-      // case 2 : handle grad year (only accept integers)
-      if (Number.isInteger(Number(value))) {
+      // case 2 : handle grad year (only accept positive integers)
+      if (Number.isInteger(Number(value)) && Number(value) >= 0) {
         setFormData((prevData) => ({
           ...prevData,
           [id]: value,
@@ -237,12 +238,14 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }
 
     if (file) {
-      // Perform file validation
+      // Perform file validation (TO-DO: add parameter to for resume/photo for the specific type)
       if (!validateFileType(file)) {
         alert('Invalid file type. Please upload a PDF, JPG, JPEG, or PNG file.');
         return;
       }
 
+      // TO-DO: Perform file size validation
+      console.log("here is the file", file)
       if (id === "resume") {
         setResumeFileName(file.name);
       } else if (id === "image") {
@@ -295,7 +298,6 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       }));
     }
   }
-  console.log()
 
   const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
