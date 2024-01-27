@@ -240,8 +240,10 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
     // Set filename states to "" since cancelling upload makes file in form null
     if (id === "resume") {
+      setResumeFileSize(0);
       setResumeFileName("");
     } else if (id === "image") {
+      setImageFileSize(0);
       setImageFileName("");
     }
 
@@ -258,6 +260,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       if (id === "resume") {
         // handle large files
         if (imageFileSize + fileSize > MAX_FILE_SIZE) {
+          console.log("resume to large")
           alert(`Resume file size of ${fileSize.toFixed(2)} MB is too large.`);
           return;
         }
