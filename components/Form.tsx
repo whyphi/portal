@@ -222,20 +222,30 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }));
   };
 
-  const convertToMB = (bytes: number) => {
-    // 1 megabyte = 1e6 bytes
-    const megabytes = bytes / (1e6);
-    return megabytes;
-  }
-  console.log(resumeFileSize, imageFileSize)
+  
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = e.target;
     const file = e.target.files ? e.target.files[0] : null;
-
+    
+    // ensure id is in correct format
+    if (id !== "resume" && id !== "image") {
+      return;
+    }
+    
+    // File size conversion helper function
+    const convertToMB = (bytes: number) => {
+      // 1 megabyte = 1e6 bytes
+      const megabytes = bytes / (1e6);
+      return megabytes;
+    }
+    
     // File validation helper function
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-    const validateFileType = (selectedFile: File | null): boolean => {
-      return !!selectedFile && allowedTypes.includes(selectedFile.type);
+    const allowedTypes = {
+      resume: ['application/pdf'], 
+      image: ['image/jpeg', 'image/png']
+    }
+    const validateFileType = (selectedFile: File | null, fileId: keyof typeof allowedTypes): boolean => {
+      return !!selectedFile && allowedTypes[fileId].includes(selectedFile.type);
     };
 
     // Set filename states to "" since cancelling upload makes file in form null
@@ -248,9 +258,16 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }
 
     if (file) {
-      // Perform file validation (TO-DO: add parameter to for resume/photo for the specific type)
-      if (!validateFileType(file)) {
-        alert('Invalid file type. Please upload a PDF, JPG, JPEG, or PNG file.');
+      // Perform file validation
+      if (!validateFileType(file, id)) {
+        switch (id) {
+          case "resume":
+            alert('Invalid file type. Please upload a PDF file.');
+            break;
+          case "image":
+            alert('Invalid file type. Please upload a JPG, JPEG, or PNG file.');
+            break;
+          }
         return;
       }
 
@@ -260,7 +277,6 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       if (id === "resume") {
         // handle large files
         if (imageFileSize + fileSize > MAX_FILE_SIZE) {
-          console.log("resume to large")
           alert(`Resume file size of ${fileSize.toFixed(2)} MB is too large.`);
           return;
         }
