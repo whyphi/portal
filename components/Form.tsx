@@ -46,7 +46,9 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
-  const [remainingFileSize, setRemainingFileSize] = useState<number>(6);
+  const [resumeFileSize, setResumeFileSize] = useState<number>(0);
+  const [imageFileSize, setImageFileSize] = useState<number>(0);
+  const MAX_FILE_SIZE = 6
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   if (includeEventsAttended) {
@@ -220,6 +222,12 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }));
   };
 
+  const convertToMB = (bytes: number) => {
+    // 1 megabyte = 1e6 bytes
+    const megabytes = bytes / (1e6);
+    return megabytes;
+  }
+  console.log(resumeFileSize, imageFileSize)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = e.target;
     const file = e.target.files ? e.target.files[0] : null;
@@ -244,11 +252,26 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         return;
       }
 
-      // TO-DO: Perform file size validation
-      console.log("here is the file", file)
+      // Perform file size conversion (bytes -> megabytes)
+      const fileSize = convertToMB(file.size);
+      
       if (id === "resume") {
+        // handle large files
+        if (imageFileSize + fileSize > MAX_FILE_SIZE) {
+          alert(`Resume file size of ${fileSize.toFixed(2)} MB is too large.`);
+          return;
+        }
+
+        setResumeFileSize(fileSize);
         setResumeFileName(file.name);
       } else if (id === "image") {
+        // handle large files
+        if (resumeFileSize + fileSize > MAX_FILE_SIZE) {
+          alert(`Image file size of ${fileSize.toFixed(2)} MB is too large.`);
+          return;
+        }
+
+        setImageFileSize(fileSize);
         setImageFileName(file.name);
       }
       // Read the file as a base64 string
@@ -262,6 +285,14 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       };
       reader.readAsDataURL(file);
     } else {
+
+      // reset file size validation
+      if (id === "resume") {
+        setResumeFileSize(0);
+      } else if (id === "image") {
+        setImageFileSize(0);
+      }
+
       // Clear the file or base64 property if no file is selected
       setFormData((prevData) => ({
         ...prevData,
