@@ -48,7 +48,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const [imageFileName, setImageFileName] = useState<String>("");
   const [resumeFileSize, setResumeFileSize] = useState<number>(0);
   const [imageFileSize, setImageFileSize] = useState<number>(0);
-  const MAX_FILE_SIZE = 6
+  const MAX_FILE_SIZE_BYTES = 6 * 1000 * 1000
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   if (includeEventsAttended) {
@@ -231,12 +231,12 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     if (id !== "resume" && id !== "image") {
       return;
     }
-    
-    // File size conversion helper function
+
+    // File conversion helper function
     const convertToMB = (bytes: number) => {
       // 1 megabyte = 1e6 bytes
       const megabytes = bytes / (1e6);
-      return megabytes;
+      return megabytes.toFixed(2);
     }
     
     // File validation helper function
@@ -271,13 +271,13 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         return;
       }
 
-      // Perform file size conversion (bytes -> megabytes)
-      const fileSize = convertToMB(file.size);
+      // extract fileSize from file object
+      const fileSize = file.size
       
       if (id === "resume") {
         // handle large files
-        if (imageFileSize + fileSize > MAX_FILE_SIZE) {
-          alert(`Resume file size of ${fileSize.toFixed(2)} MB is too large.`);
+        if (imageFileSize + fileSize > MAX_FILE_SIZE_BYTES) {
+          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES-imageFileSize)} MB available.`);
           return;
         }
 
@@ -285,8 +285,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         setResumeFileName(file.name);
       } else if (id === "image") {
         // handle large files
-        if (resumeFileSize + fileSize > MAX_FILE_SIZE) {
-          alert(`Image file size of ${fileSize.toFixed(2)} MB is too large.`);
+        if (resumeFileSize + fileSize > MAX_FILE_SIZE_BYTES) {
+          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES-resumeFileSize)} MB available.`);
           return;
         }
 
