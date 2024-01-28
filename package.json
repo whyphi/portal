@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@types/react-datepicker": "^4.15.0",
+    "@types/react-modal": "^3.16.3",
     "raw-loader": "^4.0.2"
   }
 }
