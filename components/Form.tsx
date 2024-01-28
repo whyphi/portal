@@ -48,7 +48,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const [imageFileName, setImageFileName] = useState<String>("");
   const [resumeFileSize, setResumeFileSize] = useState<number>(0);
   const [imageFileSize, setImageFileSize] = useState<number>(0);
-  const MAX_FILE_SIZE_BYTES = 6 * 1000 * 1000
+  const MAX_FILE_SIZE_BYTES = 6 * 1000 * 1000 - 1
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   if (includeEventsAttended) {
