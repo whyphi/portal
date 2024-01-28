@@ -60,6 +60,47 @@ export default function Create() {
     }
   };
 
+  function flattenQuestions(questions: { [key: string]: string }[]): { [key: string]: string } {
+    // Flatten the 'questions' array into a flat object
+    const flattenedQuestions = questions.reduce(
+      (acc, question, index) => {
+        Object.keys(question).forEach((key) => {
+          acc[`questions[${index}].${key}`] = question[key];
+        });
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
+    return flattenedQuestions;
+  }
+
+  const handlePreview = async () => {
+    const currentDate = new Date();
+    const formattedDeadline = selectedDate.toISOString();
+    const formDataWithDates = {
+      ...formData,
+      dateCreated: currentDate.toISOString(),
+      deadline: formattedDeadline,
+    };
+
+    // Encode the form data into a query parameter string
+    const { questions, includeEventsAttended, ...formDataStringsOnly } = formDataWithDates;
+    const flattenedQuestions = flattenQuestions(formData.questions)
+    const includeEventsAttendedString = includeEventsAttended.toString()
+
+
+    const formDataQueryString = new URLSearchParams({
+      ...formDataStringsOnly,
+      ...flattenedQuestions,
+      'includeEventsAttended': includeEventsAttendedString
+    });
+
+    // Open a new tab and navigate to the preview route with form data as query parameters
+    window.open(`/admin/create/preview/listing?${formDataQueryString}`, '_blank');
+
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -286,6 +327,14 @@ export default function Create() {
         onClick={handleSubmit}
       >
         Submit
+      </button>
+
+      <button
+        type="button"
+        className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        onClick={handlePreview}
+      >
+        Preview
       </button>
     </form>
   );
