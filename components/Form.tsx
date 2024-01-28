@@ -46,6 +46,9 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
+  const [resumeFileSize, setResumeFileSize] = useState<number>(0);
+  const [imageFileSize, setImageFileSize] = useState<number>(0);
+  const MAX_FILE_SIZE_BYTES = 6 * 1000 * 1000 - 1
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   if (includeEventsAttended) {
@@ -195,8 +198,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         }));
       }
     } else if (id === "gradYear") {
-      // case 2 : handle grad year (only accept integers)
-      if (Number.isInteger(Number(value))) {
+      // case 2 : handle grad year (only accept positive integers)
+      if (Number.isInteger(Number(value)) && Number(value) >= 0) {
         setFormData((prevData) => ({
           ...prevData,
           [id]: value,
@@ -219,33 +222,75 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }));
   };
 
+  
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = e.target;
     const file = e.target.files ? e.target.files[0] : null;
+    
+    // ensure id is in correct format
+    if (id !== "resume" && id !== "image") {
+      return;
+    }
 
+    // File conversion helper function
+    const convertToMB = (bytes: number) => {
+      // 1 megabyte = 1e6 bytes
+      const megabytes = bytes / (1e6);
+      return megabytes.toFixed(2);
+    }
+    
     // File validation helper function
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-    const validateFileType = (selectedFile: File | null): boolean => {
-      return !!selectedFile && allowedTypes.includes(selectedFile.type);
+    const allowedTypes = {
+      resume: ['application/pdf'], 
+      image: ['image/jpeg', 'image/png']
+    }
+    const validateFileType = (selectedFile: File | null, fileId: keyof typeof allowedTypes): boolean => {
+      return !!selectedFile && allowedTypes[fileId].includes(selectedFile.type);
     };
 
     // Set filename states to "" since cancelling upload makes file in form null
     if (id === "resume") {
+      setResumeFileSize(0);
       setResumeFileName("");
     } else if (id === "image") {
+      setImageFileSize(0);
       setImageFileName("");
     }
 
     if (file) {
       // Perform file validation
-      if (!validateFileType(file)) {
-        alert('Invalid file type. Please upload a PDF, JPG, JPEG, or PNG file.');
+      if (!validateFileType(file, id)) {
+        switch (id) {
+          case "resume":
+            alert('Invalid file type. Please upload a PDF file.');
+            break;
+          case "image":
+            alert('Invalid file type. Please upload a JPG, JPEG, or PNG file.');
+            break;
+          }
         return;
       }
 
+      // extract fileSize from file object
+      const fileSize = file.size
+      
       if (id === "resume") {
+        // handle large files
+        if (imageFileSize + fileSize > MAX_FILE_SIZE_BYTES) {
+          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES-imageFileSize)} MB available.`);
+          return;
+        }
+
+        setResumeFileSize(fileSize);
         setResumeFileName(file.name);
       } else if (id === "image") {
+        // handle large files
+        if (resumeFileSize + fileSize > MAX_FILE_SIZE_BYTES) {
+          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES-resumeFileSize)} MB available.`);
+          return;
+        }
+
+        setImageFileSize(fileSize);
         setImageFileName(file.name);
       }
       // Read the file as a base64 string
@@ -259,6 +304,14 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       };
       reader.readAsDataURL(file);
     } else {
+
+      // reset file size validation
+      if (id === "resume") {
+        setResumeFileSize(0);
+      } else if (id === "image") {
+        setImageFileSize(0);
+      }
+
       // Clear the file or base64 property if no file is selected
       setFormData((prevData) => ({
         ...prevData,
@@ -295,7 +348,6 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       }));
     }
   }
-  console.log()
 
   const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
