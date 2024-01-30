@@ -1,7 +1,7 @@
 'use client'
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Select } from 'flowbite-react';
+import { Button, Label } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
 
 import { Events, FormData, FormProps } from "@/types/form"
@@ -51,6 +51,10 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const MAX_FILE_SIZE_BYTES = 6 * 1000 * 1000 - 1
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  // Confirmation Checkboxes
+  const [confirmUndergraduate, setConfirmUndergraduate] = useState(false);
+  const [confirmNotStudyingAbroad, setConfirmNotStudyingAbroad] = useState(false);
+
   if (includeEventsAttended) {
     initialValues.events = {
       infoSession1: false,
@@ -93,6 +97,12 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       })
     ) {
       alert(`One or more responses are over the maximum word count. Please edit your response.`);
+      return false;
+    } else if (!confirmUndergraduate) {
+      alert(`Sorry, you are ineligible to apply to Phi Chi Theta, Zeta Chapter. Please ensure that you are currently a BU undergraduate student and not studying abroad.`);
+      return false;
+    } else if (!confirmNotStudyingAbroad) {
+      alert(`Sorry, you are ineligible to apply to Phi Chi Theta, Zeta Chapter. Please ensure that you are currently a BU undergraduate student and not studying abroad.`);
       return false;
     }
     return true;
@@ -214,7 +224,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }
   };
 
-  const handleDropdownChange = (e: ChangeEvent<HTMLSelectElement>, fieldName: string)=> {
+  const handleDropdownChange = (e: ChangeEvent<HTMLSelectElement>, fieldName: string) => {
     const value = e.target.value;
     setFormData((prevData) => ({
       ...prevData,
@@ -222,11 +232,11 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }));
   };
 
-  
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = e.target;
     const file = e.target.files ? e.target.files[0] : null;
-    
+
     // ensure id is in correct format
     if (id !== "resume" && id !== "image") {
       return;
@@ -238,10 +248,10 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       const megabytes = bytes / (1e6);
       return megabytes.toFixed(2);
     }
-    
+
     // File validation helper function
     const allowedTypes = {
-      resume: ['application/pdf'], 
+      resume: ['application/pdf'],
       image: ['image/jpeg', 'image/png']
     }
     const validateFileType = (selectedFile: File | null, fileId: keyof typeof allowedTypes): boolean => {
@@ -267,17 +277,17 @@ export default function Form({ title, questions, listingId, includeEventsAttende
           case "image":
             alert('Invalid file type. Please upload a JPG, JPEG, or PNG file.');
             break;
-          }
+        }
         return;
       }
 
       // extract fileSize from file object
       const fileSize = file.size
-      
+
       if (id === "resume") {
         // handle large files
         if (imageFileSize + fileSize > MAX_FILE_SIZE_BYTES) {
-          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES-imageFileSize)} MB available.`);
+          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES - imageFileSize)} MB available.`);
           return;
         }
 
@@ -286,7 +296,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       } else if (id === "image") {
         // handle large files
         if (resumeFileSize + fileSize > MAX_FILE_SIZE_BYTES) {
-          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES-resumeFileSize)} MB available.`);
+          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES - resumeFileSize)} MB available.`);
           return;
         }
 
@@ -602,6 +612,33 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       {includeEventsAttended && renderEventsAttendedSection()}
 
       {questions && renderResponseInputs()}
+
+
+      <div className="flex items-center mb-2">
+        <input
+          className="mr-2 focus:ring-purple-300 text-purple-600"
+          type="checkbox"
+          checked={confirmUndergraduate}
+          onChange={() => setConfirmUndergraduate(prevValue => !prevValue)}
+          required={true}
+          disabled={isSubmitting}
+        />
+        <Label>Please confirm that you are currently a BU undergraduate student.</Label>
+      </div>
+
+      <div className="flex items-center mb-8">
+        <input
+          className="mr-2 focus:ring-purple-300 text-purple-600"
+          type="checkbox"
+          checked={confirmNotStudyingAbroad}
+          onChange={() => setConfirmNotStudyingAbroad(prevValue => !prevValue)}
+          required={true}
+          disabled={isSubmitting}
+        />
+        <Label>Please confirm that you are currently NOT studying abroad.</Label>
+      </div>
+
+
       <Button
         fullSized
         onClick={handleSubmit}
