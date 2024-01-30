@@ -1,10 +1,9 @@
 export interface Events {
   infoSession1: boolean;
   infoSession2: boolean;
-  workshop1: boolean;
-  workshop2: boolean;
-  social1: boolean;
-  social2: boolean;
+  resumeWorkshop: boolean;
+  socialEvent: boolean;
+  professionalPanel: boolean;
 }
 
 export interface FormData {
@@ -14,7 +13,9 @@ export interface FormData {
   major: string;
   minor: string;
   gpa: string;
+  hasGpa: boolean;
   gradYear: string;
+  gradMonth: string;
   email: string;
   phone: string;
   linkedin: string;

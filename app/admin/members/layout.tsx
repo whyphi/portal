@@ -2,8 +2,7 @@ import '../../globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Whyphi - Accountability',
-    description: "Whyphi's Admin",
+    title: 'Whyphi - Members',
 }
 
 export default function RootLayout({
@@ -12,8 +11,11 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
+
         <div className="flex flex-col mx-auto justify-center max-w-screen-lg">
             {children}
         </div>
+
+
     )
 }

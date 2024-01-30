@@ -18,6 +18,7 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
     .filter(college => colleges[college])
     .map(college => `${college}`); // Modify 
 
+  // WILL : need to change this line of code in order for data-analytics to work properly (gradYear should just be the year...)
   const gradYear = applicant.gradYear.split(' ').pop();
 
   return (
