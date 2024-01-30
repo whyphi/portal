@@ -49,7 +49,6 @@ export default function previewListing() {
     const title = searchParams.get('title') ?? ''
     const includeEventsAttended = searchParams.get('includeEventsAttended') == "true"  // boof as hell
 
-    // BUG this keeps going forever and ever and ever
     setListingData({
       deadline: deadline,
       dateCreated: dateCreated,
@@ -58,7 +57,7 @@ export default function previewListing() {
       includeEventsAttended: includeEventsAttended
     })
 
-  })
+  }, [])
 
 
 
