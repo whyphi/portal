@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
 import Loader from "@/components/Loader";
 
-
 interface Listing {
   listingId: string;
   title: string;

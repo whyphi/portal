@@ -1,32 +1,25 @@
-'use client'
 import '../globals.css'
-import NavSidebar from "@/components/admin/NavSidebar";
-import { useSession, signIn } from "next-auth/react"
-import Loader from '@/components/Loader';
+import AdminSessionProvider from '../providers';
+import { Metadata } from 'next';
+import NavSidebar from '@/components/admin/NavSidebar';
+
+export const metadata: Metadata = {
+  title: 'Whyphi - Admin',
+}
+
 
 export default function RootLayout({
   children
 }: {
   children: React.ReactNode,
 }) {
-  const { data: session, status } = useSession()
-
-  if (status === "loading") {
-    return <Loader />
-  }
-
-  if (status === "unauthenticated") {
-    signIn('google')
-    return
-  }
 
   return (
-    <>
+    <AdminSessionProvider>
       <NavSidebar />
       <div className="p-8 sm:ml-64 mt-14">
         {children}
       </div>
-    </>
-
+    </AdminSessionProvider>
   )
 }
