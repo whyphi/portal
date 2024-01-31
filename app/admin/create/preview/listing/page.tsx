@@ -2,12 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import Form from "@/components/Form"
-import Loader from "@/components/Loader";
 import { ReadonlyURLSearchParams, useRouter, useSearchParams } from "next/navigation";
+
+
+interface Question {
+  question: string;
+  context: string;
+}
 
 interface PreviewListingData {
   title: string;
-  questions: [] | { question: string, context: string }[];
+  questions: [] | Question[];
   deadline: string;
   includeEventsAttended: boolean;
   dateCreated: string;
@@ -26,7 +31,7 @@ export default function previewListing() {
     includeEventsAttended: false
   });
 
-  function unflattenQuestions(urlSearchParams: ReadonlyURLSearchParams): { question: string, context: string }[] {
+  function unflattenQuestions(urlSearchParams: ReadonlyURLSearchParams): Question[] {
     // Extract parameters with names starting with 'questions'
     const questionParams = Array.from(urlSearchParams.entries())
       .filter(([paramName]) => paramName.startsWith('questions'))
@@ -35,9 +40,9 @@ export default function previewListing() {
         if (!acc[index]) {
           acc[index] = { question: "", context: "" };
         }
-        acc[index][key] = paramValue;
+        acc[index][key as keyof Question] = paramValue;
         return acc;
-      }, [] as { question: string, context: string }[]);
+      }, [] as Question[]);
 
     return questionParams;
   }
