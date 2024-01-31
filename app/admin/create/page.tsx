@@ -16,7 +16,7 @@ interface FormData {
 
 const initialValues: FormData = {
   title: "",
-  questions: [],
+  questions: [] as { question: string; context: string }[], // Specify the type here
   deadline: new Date(),
   includeEventsAttended: false
 };
@@ -135,12 +135,20 @@ export default function Create() {
 
   const handleQuestionChange = (index: number, field: string, value: string) => {
     const updatedQuestions = [...formData.questions];
-    updatedQuestions[index][field] = value;
-    setFormData((prevData) => ({
-      ...prevData,
-      questions: updatedQuestions,
-    }));
+    const questionObj = updatedQuestions[index];
+  
+    if (questionObj) {
+      // Ensure questionObj is defined
+      questionObj[field as keyof typeof questionObj] = value;
+  
+      setFormData((prevData) => ({
+        ...prevData,
+        questions: updatedQuestions,
+      }));
+    }
   };
+  
+  
 
   const renderInput = (
     id: keyof FormData,
