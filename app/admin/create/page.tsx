@@ -321,21 +321,24 @@ export default function Create() {
       {renderDeadline()}
       {renderAdditionalSection()}
 
-      <button
-        type="button"
-        className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        onClick={handleSubmit}
-      >
-        Submit
-      </button>
+      <div className="flex gap-4">
+        <button
+          type="button"
+          className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          onClick={handleSubmit}
+        >
+          Submit
+        </button>
 
-      <button
-        type="button"
-        className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        onClick={handlePreview}
-      >
-        Preview
-      </button>
+        <button
+          type="button"
+          className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          onClick={handlePreview}
+        >
+          Preview
+        </button>
+      </div>
+
     </form>
   );
 }
