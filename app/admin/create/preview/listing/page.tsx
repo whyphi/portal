@@ -7,8 +7,7 @@ import { ReadonlyURLSearchParams, useRouter, useSearchParams } from "next/naviga
 
 interface PreviewListingData {
   title: string;
-  // questions: { [key: string]: string }[];
-  questions: [] | [{ question: string, context: string }];
+  questions: [] | { question: string, context: string }[];
   deadline: string;
   includeEventsAttended: boolean;
   dateCreated: string;
@@ -27,18 +26,18 @@ export default function previewListing() {
     includeEventsAttended: false
   });
 
-  function unflattenQuestions(urlSearchParams: ReadonlyURLSearchParams): { [key: string]: string }[] {
+  function unflattenQuestions(urlSearchParams: ReadonlyURLSearchParams): { question: string, context: string }[] {
     // Extract parameters with names starting with 'questions'
     const questionParams = Array.from(urlSearchParams.entries())
       .filter(([paramName]) => paramName.startsWith('questions'))
       .reduce((acc, [paramName, paramValue]) => {
         const [index, key] = (paramName.match(/\[(\d+)\]\.(.+)/)?.slice(1) || []) as [number, string];
         if (!acc[index]) {
-          acc[index] = {};
+          acc[index] = { question: "", context: "" };
         }
         acc[index][key] = paramValue;
         return acc;
-      }, [] as { [key: string]: string }[]);
+      }, [] as { question: string, context: string }[]);
 
     return questionParams;
   }

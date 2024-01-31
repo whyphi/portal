@@ -9,7 +9,7 @@ import { Checkbox, Label } from 'flowbite-react';
 
 interface FormData {
   title: string;
-  questions: { [key: string]: string }[]; // Array of objects with string keys
+  questions: [] | { question: string, context: string }[];
   deadline: Date;
   includeEventsAttended: boolean;
 }
@@ -120,7 +120,7 @@ export default function Create() {
   const handleAddQuestion = () => {
     setFormData((prevData) => ({
       ...prevData,
-      questions: [...prevData.questions, { question: "", additional: "" }],
+      questions: [...prevData.questions, { question: "", context: "" }],
     }));
   };
 
@@ -216,9 +216,9 @@ export default function Create() {
                     id={`additional-${index}`} // Set a unique id for each additional input
                     type="text"
                     placeholder="Add any additional text that explains the question here"
-                    value={questionObj.additional}
+                    value={questionObj.context}
                     onChange={(e) =>
-                      handleQuestionChange(index, "additional", e.target.value)
+                      handleQuestionChange(index, "context", e.target.value)
                     }
                   />
                 </div>
