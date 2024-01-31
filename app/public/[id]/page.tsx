@@ -56,7 +56,7 @@ export default function Listing({ params }: { params: { id: string } }) {
           if (!isNaN(deadline.getTime())) {
             const now = new Date();
             const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
-            
+
             if (estNow > deadline) {
               router.push("/error");
               return;
@@ -91,6 +91,7 @@ export default function Listing({ params }: { params: { id: string } }) {
         questions={listingData.questions}
         listingId={listingData.listingId}
         includeEventsAttended={listingData.includeEventsAttended}
+        isPreview={false}
       />
     </main>
   );
