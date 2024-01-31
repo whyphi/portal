@@ -9,7 +9,7 @@ import { Checkbox, Label } from 'flowbite-react';
 
 interface FormData {
   title: string;
-  questions: { [key: string]: string }[]; // Array of objects with string keys
+  questions: [] | { question: string, context: string }[];
   deadline: Date;
   includeEventsAttended: boolean;
 }
@@ -60,6 +60,47 @@ export default function Create() {
     }
   };
 
+  function flattenQuestions(questions: { [key: string]: string }[]): { [key: string]: string } {
+    // Flatten the 'questions' array into a flat object
+    const flattenedQuestions = questions.reduce(
+      (acc, question, index) => {
+        Object.keys(question).forEach((key) => {
+          acc[`questions[${index}].${key}`] = question[key];
+        });
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
+    return flattenedQuestions;
+  }
+
+  const handlePreview = async () => {
+    const currentDate = new Date();
+    const formattedDeadline = selectedDate.toISOString();
+    const formDataWithDates = {
+      ...formData,
+      dateCreated: currentDate.toISOString(),
+      deadline: formattedDeadline,
+    };
+
+    // Encode the form data into a query parameter string
+    const { questions, includeEventsAttended, ...formDataStringsOnly } = formDataWithDates;
+    const flattenedQuestions = flattenQuestions(formData.questions)
+    const includeEventsAttendedString = includeEventsAttended.toString()
+
+
+    const formDataQueryString = new URLSearchParams({
+      ...formDataStringsOnly,
+      ...flattenedQuestions,
+      'includeEventsAttended': includeEventsAttendedString
+    });
+
+    // Open a new tab and navigate to the preview route with form data as query parameters
+    window.open(`/admin/create/preview/listing?${formDataQueryString}`, '_blank');
+
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -79,7 +120,7 @@ export default function Create() {
   const handleAddQuestion = () => {
     setFormData((prevData) => ({
       ...prevData,
-      questions: [...prevData.questions, { question: "", additional: "" }],
+      questions: [...prevData.questions, { question: "", context: "" }],
     }));
   };
 
@@ -135,11 +176,12 @@ export default function Create() {
                 <div className="flex justify-end">
                   <svg
                     onClick={() => handleRemoveQuestion(index)}
-                    className="w-4 h-4 text-gray-800 dark:text-white"
+                    className="w-4 h-4 text-gray-800 dark:text-white hover:bg-gray-100"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 20 20"
+                    style={{ cursor: 'pointer' }}
                   >
                     <path
                       stroke="currentColor"
@@ -174,9 +216,9 @@ export default function Create() {
                     id={`additional-${index}`} // Set a unique id for each additional input
                     type="text"
                     placeholder="Add any additional text that explains the question here"
-                    value={questionObj.additional}
+                    value={questionObj.context}
                     onChange={(e) =>
-                      handleQuestionChange(index, "additional", e.target.value)
+                      handleQuestionChange(index, "context", e.target.value)
                     }
                   />
                 </div>
@@ -279,13 +321,24 @@ export default function Create() {
       {renderDeadline()}
       {renderAdditionalSection()}
 
-      <button
-        type="button"
-        className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        onClick={handleSubmit}
-      >
-        Submit
-      </button>
+      <div className="flex gap-4">
+        <button
+          type="button"
+          className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          onClick={handleSubmit}
+        >
+          Submit
+        </button>
+
+        <button
+          type="button"
+          className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          onClick={handlePreview}
+        >
+          Preview
+        </button>
+      </div>
+
     </form>
   );
 }

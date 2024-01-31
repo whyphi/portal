@@ -41,7 +41,7 @@ const initialValues: FormData = {
 };
 
 
-export default function Form({ title, questions, listingId, includeEventsAttended }: FormProps) {
+export default function Form({ title, questions, listingId, includeEventsAttended, isPreview }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
@@ -156,7 +156,6 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     }
   };
 
-
   const handleResponseChange = (index: number, value: string) => {
     const responsesCopy = [...formData.responses];
     responsesCopy[index] = value;
@@ -186,6 +185,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 h-32"
           value={formData.responses[index]}
           onChange={(e) => handleResponseChange(index, e.target.value)}
+          placeholder={((e) => e.target.value === '') ? question.context : ''}
           disabled={isSubmitting}
         />
         <p className="text-sm text-gray-500">
@@ -613,7 +613,6 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
       {questions && renderResponseInputs()}
 
-
       <div className="flex items-center mb-2">
         <input
           className="mr-2 focus:ring-purple-300 text-purple-600"
@@ -638,17 +637,17 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         <Label>Please confirm that you are currently NOT studying abroad.</Label>
       </div>
 
-
       <Button
         fullSized
         onClick={handleSubmit}
         gradientMonochrome="purple"
         isProcessing={isSubmitting}
         processingSpinner={<AiOutlineLoading className="h-6 w-6 animate-spin" />}
-        disabled={isSubmitting}
+        disabled={isSubmitting || isPreview}
       >
         Submit
       </Button>
+
     </form >
   )
 }
