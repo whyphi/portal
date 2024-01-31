@@ -1,0 +1,36 @@
+name: Next.js Build Check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - staging
+      - dev/*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 14
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Next.js App
+        run: npm run build
+
+      - name: Check for Build Errors
+        run: |
+          if [ -d ".next" ]; then
+            echo "Build successful"
+          else
+            echo "Build failed. Check your code for errors."
+            exit 1
+          fi
