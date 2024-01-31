@@ -185,7 +185,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 h-32"
           value={formData.responses[index]}
           onChange={(e) => handleResponseChange(index, e.target.value)}
-          placeholder={((e) => e.target.value === '') ? question.context : ''}
+          placeholder={question.context}
           disabled={isSubmitting}
         />
         <p className="text-sm text-gray-500">
