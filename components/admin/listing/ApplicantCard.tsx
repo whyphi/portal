@@ -31,7 +31,6 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
           alt={`${applicant.firstName} ${applicant.lastName} image`}
           className="w-24 h-24 mb-3 shadow-lg relative mx-auto rounded-full overflow-hidden object-cover"
           src={applicant.image}
-          object-cover
         />
         <h5 className="mb-1 text-lg font-medium text-gray-900 dark:text-white">
           {`${applicant.firstName} ${applicant.lastName}`}
