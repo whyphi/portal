@@ -25,13 +25,13 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
     <Card className="cursor-pointer" onClick={() => router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`)}>
       <div className="flex flex-col items-center mb-1">
         <Image
-          height={96}
           width={96}
+          height={96}
           loader={() => applicant.image}
           alt={`${applicant.firstName} ${applicant.lastName} image`}
-          className="w-24 h-24 mb-3 shadow-lg relative mx-auto rounded-full overflow-hidden"
+          className="w-24 h-24 mb-3 shadow-lg relative mx-auto rounded-full overflow-hidden object-cover"
           src={applicant.image}
-          layout="fixed"
+          object-cover
         />
         <h5 className="mb-1 text-lg font-medium text-gray-900 dark:text-white">
           {`${applicant.firstName} ${applicant.lastName}`}
