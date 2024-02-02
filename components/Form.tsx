@@ -140,13 +140,17 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       });
 
       if (response.ok) {
-        // Handle successful response here, e.g., show a success message or redirect
         router.push(`/public/success`);
       } else {
-        // Handle error response here, e.g., show an error message
+        const code = response.status;
+        if (code == 410) {
+          const responseText = await response.text();
+          alert(`Error submitting form: ${responseText}`)
+        } else {
+          console.error('Error submitting form');
+          alert(`Error submitting form. Please contact PCT with a screenshot of the error!`);
+        }
         setIsSubmitting(false);
-        console.error('Error submitting form');
-        alert(`Error submitting form. Please contact PCT with a screenshot of the error!`);
       }
     } catch (error) {
       // Handle any unexpected errors here
