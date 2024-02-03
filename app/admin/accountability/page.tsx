@@ -5,7 +5,7 @@ import CreateSemester from './newsemester';
 import SemesterList from './semesterList';
 
 interface Semester {
-  id: number;
+  id: string;
   semester: string;
   link: string;
 }
@@ -48,11 +48,12 @@ const fetchSemesterPoints = async (semesterLink: string, setPoints: React.Dispat
 };
 
 export default function Accountability(){
-  const [semesterList, setSemesterList] = useState<Semester[]>([]);
   const [selectedSemester, setSelectedSemester] = useState<string>('');
   const [pointsData, setPointsData] = useState<Points[]>([]);
   const [isFormOpen, setFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const semesterList = SemesterList();
+  
 
   const openForm = () => {
     setFormOpen(true);
@@ -76,11 +77,13 @@ return(
         <div id="semester">
           <ul>
             <li>
-              <a href="#">SEMESTER</a>
+              <a>SEMESTER</a>
               <ul>
-                {semesterList.map((semester) => (
-                  <li key={semester.id} onClick={() => handleSemesterClick(semester.link)}>
-                    {semester.semester}
+                {semesterList.map((Semester: Semester) => (
+                  <li key={Semester.id}>
+                    <button onClick={() => handleSemesterClick(Semester.link)}>
+                      {Semester.semester}
+                    </button>
                   </li>
                 ))}
                 <li>

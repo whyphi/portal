@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 interface SemesterForm {
-    id: number;
-    name: string;
+    id: string;
+    semester: string;
     link: string;
 }
 
@@ -13,7 +13,7 @@ const SemesterList = () => {
     useEffect(() => {
         const fetchSemesterList = async () => {
             try {
-                const response = await fetch(`/semester/list`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/semester/list`);
 
                 if (!response.ok) {
                     throw new Error("Failed to fetch semester list");
@@ -31,7 +31,9 @@ const SemesterList = () => {
         fetchSemesterList();
     }, []);
 
-    return { semesters };
+
+
+    return  (semesters) ;
 };
 
 export default SemesterList;
