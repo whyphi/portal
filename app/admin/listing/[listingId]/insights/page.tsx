@@ -22,7 +22,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   });
 
   // applicantData : list of applicants
-  const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
+  const [applicantData, setApplicantData] = useState<[] | Applicant[]>([]);
   // distributionMetrics : object containing frequencies of each metric for all applicants
   const [distributionMetrics, setDistributionMetrics] = useState<DistributionMetricsState>({
     colleges: [],
@@ -54,7 +54,14 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
       .then((response) => response.json())
       .then((data: [Applicant]) => {
-        setApplicantData(data)
+        const cleanedData: Applicant[] = data.map((applicant: Applicant) => {
+          return {
+            ...applicant,
+            major: applicant.major.toLowerCase(),
+            minor: applicant.minor.toLowerCase(),
+          };
+        });
+        setApplicantData(cleanedData)
         setIsLoading(false);
         // parseData()
       })
