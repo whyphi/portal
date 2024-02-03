@@ -526,6 +526,43 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       </>
     )
   };
+  console.log(resumeFileName)
+
+  const renderFileInput = (
+    id: keyof FormData,
+    label: string,
+    type: string = "file",
+    required: boolean = false
+  ) => (
+    <div className="flex flex-col mb-6">
+      <label className="block mb-4 text-sm font-medium text-gray-900">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <div className="relative">
+        <input
+          className="absolute inset-0 opacity-0 z-10"
+          id={id}
+          type={type}
+          name={id}
+          onChange={handleFileChange}
+          required={required}
+          disabled={isSubmitting}
+        />
+        <button
+          className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2"
+          disabled={isSubmitting}
+        >
+          Upload {id}
+        </button>
+        {/* render either resume or image depending on id */}
+        {id === 'resume' ?
+          resumeFileName && <p className="text-gray-500 text-xs mt-1">{resumeFileName}</p>
+        :
+          imageFileName  && <p className="text-gray-500 text-xs mt-1">{imageFileName}</p>
+        }
+      </div>
+    </div>
+  );
 
 
   const textStyles = {
@@ -570,48 +607,9 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       {renderInput("phone", "Phone Number (xxx-xxx-xxxx)", "text", true)}
       {renderInput("linkedin", "LinkedIn Profile", "text")}
       {renderInput("website", "Website / Portfolio", "text")}
+      {renderFileInput("resume", "Upload Your Resume (PDF)", "file", true)}
+      {renderFileInput("image", "Upload Profile Picture (PNG/JPG/JPEG)", "file", true)}
 
-      <div className="flex flex-col mb-6">
-        <label className="block mb-4 text-sm font-medium text-gray-900">Upload your resume (PDF) <span className="text-red-500">*</span></label>
-        <div className="relative">
-          <input
-            type="file"
-            id="resume"
-            name="resume"
-            className="absolute inset-0 opacity-0 z-10"
-            onChange={handleFileChange}
-            disabled={isSubmitting}
-          />
-          <button
-            className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2"
-            disabled={isSubmitting}
-          >
-            Upload Resume
-          </button>
-          {resumeFileName && <p className="text-gray-500 text-xs mt-1">{resumeFileName}</p>}
-        </div>
-      </div>
-
-      <div className="flex flex-col mb-6">
-        <label className="block mb-4 text-sm font-medium text-gray-900">Upload a picture of yourself (JPG/JPEG/PNG) <span className="text-red-500">*</span></label>
-        <div className="relative">
-          <input
-            type="file"
-            id="image"
-            name="image"
-            className="absolute inset-0 opacity-0 z-10"
-            onChange={handleFileChange}
-            disabled={isSubmitting}
-          />
-          <button
-            className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2"
-            disabled={isSubmitting}
-          >
-            Upload Image
-          </button>
-          {imageFileName && <p className="text-gray-500 text-xs mt-1">{imageFileName}</p>}
-        </div>
-      </div>
 
       {includeEventsAttended && renderEventsAttendedSection()}
 
