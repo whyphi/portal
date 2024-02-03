@@ -1,10 +1,10 @@
 'use client'
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Label } from 'flowbite-react';
+import { Button, Label, Alert } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
 
-import { Events, FormData, FormProps } from "@/types/form"
+import { FormData, FormProps } from "@/types/form"
 
 const initialValues: FormData = {
   gradYear: '',
@@ -50,6 +50,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const [imageFileSize, setImageFileSize] = useState<number>(0);
   const MAX_FILE_SIZE_BYTES = 6 * 1000 * 1000 - 1
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
 
   // Confirmation Checkboxes
   const [confirmUndergraduate, setConfirmUndergraduate] = useState(false);
@@ -145,7 +147,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         const code = response.status;
         if (code == 410) {
           const responseText = await response.text();
-          alert(`Error submitting form: ${responseText}`)
+          setErrorMsg(responseText);
+          setIsError(true);
         } else {
           console.error('Error submitting form');
           alert(`Error submitting form. Please contact PCT with a screenshot of the error!`);
@@ -527,6 +530,23 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     )
   };
 
+  const renderErrorAlert = () => {
+    return (
+      <div className="fixed max-w-screen-sm w-full mt-4 z-50">
+        <Alert
+          className="z-1 shadow-md"
+          color="failure"
+          withBorderAccent
+          onDismiss={() => {
+            setIsError(false);
+            setErrorMsg("");
+          }}
+        >
+          <span className="font-medium">Error:</span> {errorMsg}
+        </Alert>
+      </div>
+    );
+  };
 
   const textStyles = {
     title: "text-4xl font-bold dark:text-white mb-6 mt-4 text-purple-800",
@@ -536,6 +556,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   return (
 
     <form onSubmit={handleSubmit} className="flex flex-col mb-8 w-full">
+      {isError && renderErrorAlert()}
+
       <div>
         <h1 className={textStyles.title}>{title}</h1>
       </div>
