@@ -575,25 +575,26 @@ export default function Form({ title, questions, listingId, includeEventsAttende
           resumeFileName && 
           <div className="flex items-center gap-5">
             <p className="text-gray-500 text-xs mt-1">{resumeFileName}</p>
-            <button
-              className="z-30 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2"
+            <Button 
+              className="h-6 text-white bg-red-500 hover:red-600 focus:ring-4 focus:outline-none rounded-lg !text-xs text-center"
               onClick={(e) => clearFileInput(e)}
               disabled={isSubmitting}
-            >
-              Clear {id}
-            </button>
+              >
+              remove
+            </Button>
+
           </div>
         :
           imageFileName && 
             <div className="flex items-center gap-5">
               <p className="text-gray-500 text-xs mt-1">{imageFileName}</p>
-              <button
-                className="z-30 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-xs px-5 py-2.5 text-center mr-2 mb-2"
+              <Button 
+                className="h-6 text-white bg-red-500 hover:red-600 focus:ring-4 focus:outline-none rounded-lg !text-xs text-center"
                 onClick={(e) => clearFileInput(e)}
                 disabled={isSubmitting}
-              >
-                Clear {id}
-              </button>
+                >
+                remove
+              </Button>
             </div>
         }
       </div>
