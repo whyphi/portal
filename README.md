@@ -1,5 +1,7 @@
 # Portal
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/8415168e-51b6-49e3-a655-1f195b484c48/deploy-status)](https://app.netlify.com/sites/why-phi/deploys)
+
 Ensure that you have Node.js [downloaded](https://nodejs.org/en/download) and your node version `v20.x.x`.
 
 ## Prerequisites
