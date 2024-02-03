@@ -3,6 +3,8 @@ import { useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Label } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
+import { HiOutlineX } from "react-icons/hi";
+
 
 import { Events, FormData, FormProps } from "@/types/form"
 
@@ -489,9 +491,9 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       </>
     )
   }
-  
+
   const renderEventsAttendedSection = () => {
-    
+
     // Helper function to convert id to name
     const renderEventName = (eventId: string) => {
       const eventIdToName = {
@@ -501,10 +503,10 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         socialEvent: "Social Event",
         professionalPanel: "Professional Panel"
       };
-      
+
       return eventIdToName[eventId as keyof typeof eventIdToName] || "Unknown Event";
     };
-    
+
     return (
       <>
         <label className="block mb-2 text-sm font-medium text-gray-900">Events Attended <span className="text-red-500">*</span></label>
@@ -518,7 +520,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
                 checked={isChecked}
                 onChange={handleEventsAttendedChange}
                 disabled={isSubmitting}
-                />
+              />
               {renderEventName(event)}
             </label>
           ))}
@@ -577,30 +579,25 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         </div>
         {/* render either resume or image depending on id */}
         {id === 'resume' ?
-          resumeFileName && 
-          <div className="flex items-center gap-5">
-            <p className="text-gray-500 text-xs mt-1">{resumeFileName}</p>
-            <Button 
-              className="h-6 text-white bg-red-500 hover:red-600 focus:ring-4 focus:outline-none rounded-lg !text-xs text-center"
-              onClick={(e) => clearFileInput(e)}
+          resumeFileName &&
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-gray-500 text-xs">{resumeFileName}</p>
+            <HiOutlineX
+              className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
+              onClick={(e: any) => clearFileInput(e)}
               disabled={isSubmitting}
-              >
-              remove
-            </Button>
-
+            />
           </div>
-        :
-          imageFileName && 
-            <div className="flex items-center gap-5">
-              <p className="text-gray-500 text-xs mt-1">{imageFileName}</p>
-              <Button 
-                className="h-6 text-white bg-red-500 hover:red-600 focus:ring-4 focus:outline-none rounded-lg !text-xs text-center"
-                onClick={(e) => clearFileInput(e)}
-                disabled={isSubmitting}
-                >
-                remove
-              </Button>
-            </div>
+          :
+          imageFileName &&
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-gray-500 text-xs">{imageFileName}</p>
+            <HiOutlineX
+              className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
+              onClick={(e: any) => clearFileInput(e)}
+              disabled={isSubmitting}
+            />
+          </div>
         }
       </div>
     );
