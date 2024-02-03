@@ -489,10 +489,9 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       </>
     )
   }
-  console.log(imageFileSize, resumeFileSize)
-
+  
   const renderEventsAttendedSection = () => {
-
+    
     // Helper function to convert id to name
     const renderEventName = (eventId: string) => {
       const eventIdToName = {
@@ -502,10 +501,10 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         socialEvent: "Social Event",
         professionalPanel: "Professional Panel"
       };
-
+      
       return eventIdToName[eventId as keyof typeof eventIdToName] || "Unknown Event";
     };
-
+    
     return (
       <>
         <label className="block mb-2 text-sm font-medium text-gray-900">Events Attended <span className="text-red-500">*</span></label>
@@ -519,7 +518,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
                 checked={isChecked}
                 onChange={handleEventsAttendedChange}
                 disabled={isSubmitting}
-              />
+                />
               {renderEventName(event)}
             </label>
           ))}
@@ -542,6 +541,12 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       console.log("clearing file")
       e.stopPropagation();
       if (fileInputRef.current) {
+        // update resume/image name variables
+        if (fileInputRef.current.id === "resume") {
+          setResumeFileName("")
+        } else if (fileInputRef.current.id === "image") {
+          setImageFileName("")
+        }
         fileInputRef.current.value = '';  // Clear the input value
         handleFileChange({ target: { id, files: null } } as ChangeEvent<HTMLInputElement>);
       }
