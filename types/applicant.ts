@@ -11,6 +11,8 @@ export interface Applicant {
   minor:         string;
   image:         string;
   gpa:           string;
+  hasGpa:        boolean;
+  gradMonth:     string;
   gradYear:      string;
   resume:        string;
   major:         string;
