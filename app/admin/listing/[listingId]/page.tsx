@@ -3,12 +3,14 @@ import React, { useState, useEffect, useRef } from "react";
 import Loader from "@/components/Loader";
 import ApplicantCard from "@/components/admin/listing/ApplicantCard";
 import { Applicant } from "@/types/applicant";
+import { useRouter } from "next/navigation";
 import { Tabs, TabsRef, Table } from 'flowbite-react';
 import { HiOutlineCollection, HiOutlineTable } from 'react-icons/hi';
 
 
 
 export default function Listing({ params }: { params: { listingId: string } }) {
+  const router = useRouter();
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -60,7 +62,16 @@ export default function Listing({ params }: { params: { listingId: string } }) {
 
               <Table.Row
                 key={index}
-                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
+                onClick={(event) => {
+                  if (event.metaKey) {
+                    // Cmd + click (on macOS) or Ctrl + click (on Windows/Linux)
+                    window.open(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`, '_blank');
+                  } else {
+                    // Regular click
+                    router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`);
+                  }
+                }}
               >
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   {applicant.firstName} {applicant.lastName}
@@ -74,12 +85,6 @@ export default function Listing({ params }: { params: { listingId: string } }) {
                     .join(', ')}
                 </Table.Cell>
                 <Table.Cell>{applicant.major}</Table.Cell>
-                <a href={`/admin/listing/${applicant.listingId}/${applicant.applicantId}`}>
-
-                  <Table.Cell className="font-medium text-purple-600 hover:underline dark:text-purple-500">
-                    View
-                  </Table.Cell>
-                </a>
               </Table.Row>
 
             ))}
