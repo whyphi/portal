@@ -39,6 +39,7 @@ const fetchSemesterPoints = async (semesterLink: string, setPoints: React.Dispat
     }
 
     const data = await response.json();
+    console.log(data)
     setPoints(data);
   } catch (error) {
     console.error('Error fetching data:', error);

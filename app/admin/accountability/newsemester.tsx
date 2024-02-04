@@ -11,7 +11,7 @@ const CreateSemester: React.FC<{
   }> = ({ isOpen, onClose }) => {
     const router = useRouter();
         
-    const semester = useRef(null);
+    const [semester, setSemester] = React.useState('Fall');
     const year = useRef<HTMLInputElement>(null);
     const link = useRef<HTMLInputElement>(null);
 
@@ -24,7 +24,7 @@ const CreateSemester: React.FC<{
                 throw new Error('Please enter a valid year.');
             }
             
-            let fullsemester = yearValue + semester.current!;
+            let fullsemester = yearValue + semester;
             const listid = 1;
             const dataToSend = {
             id: listid,
@@ -69,7 +69,7 @@ const CreateSemester: React.FC<{
                 <div id="input">
                     <label>
                         Semester: 
-                        <select ref={semester}>
+                        <select value={semester} onChange={(e) => setSemester(e.target.value)}>
                             <option value="Fall">Fall</option>
                             <option value="Spring">Spring</option>
                         </select>
