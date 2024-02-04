@@ -2,6 +2,14 @@
 import { Card } from 'flowbite-react';
 import Image from 'next/image'
 import { Applicant } from '@/types/applicant';
+import { HiOutlinePhone, HiOutlineMail } from "react-icons/hi";
+import { AiFillLinkedin } from "react-icons/ai";
+import { MdWeb } from "react-icons/md";
+
+import Link from 'next/link'
+
+
+
 
 interface ApplicantInfoCardProps {
   applicant: Applicant;
@@ -12,16 +20,24 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
 
   const textStyles = {
     name: "text-xl font-bold dark:text-white",
-    major: "text-md font-extralight text-gray-700"
-
+    college: "text-md font-extralight text-gray-700 pt-2",
+    major: "text-md font-extralight text-gray-700",
+    gpa: "text-md font-extralight text-gray-700 pb-2",
+    link: "text-base font-normal leading-tight text-blue-500 dark:text-gray-400 underline",
+    gradDate: "text-sm font-extralight text-gray-600 pb-3"
   }
+
+  // Filter the colleges that are true and format them with year
+  const trueColleges = Object.keys(applicant.colleges)
+    .filter(college => applicant.colleges[college])
+    .map(college => `${college}`); // Modify 
 
   return (
     <Card>
-      <ul className="space-y-5">
+      <ul className="space-y-2">
         <div className="flex justify-center">
           <Image
-            loader={() => applicant?.image}
+            loader={() => applicant.image}
             alt={`${applicant.firstName} ${applicant.lastName} image`}
             className="mb-3 rounded-full"
             height={96}
@@ -29,26 +45,47 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
             width={96}
           />
         </div>
-        <h3 className={textStyles.name}>{`${applicant?.firstName} ${applicant?.lastName}`}</h3>
+        <h3 className={textStyles.name}>{`${applicant.firstName} ${applicant.lastName}`}</h3>
+        {applicant.preferredName == "" ? (<></>) : (<h5 className="pb-2 text-sm text-gray-500">({applicant.preferredName})</h5>)}
+        <p className={textStyles.gradDate}>{`${applicant.gradMonth} ${applicant.gradYear}`}</p>
+
+        <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
+
+        <p className={textStyles.college}>College(s): {trueColleges.join(', ')}</p>
         <p className={textStyles.major}>Major: {applicant?.major}</p>
-        <p className={textStyles.major}>GPA: {applicant?.gpa}</p>
-        {applicant?.minor && <p className={textStyles.major}>Minor: {applicant?.minor}</p>}
-        <li className="flex space-x-3">
-          <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 18">
-            <path d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z" />
-          </svg>
+        {applicant.minor && <p className={textStyles.major}>Minor: {applicant.minor}</p>}
+        <p className={textStyles.gpa}>GPA: {applicant.hasGpa ? applicant?.gpa : "N/A"}</p>
+
+        <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
+
+        <li className="flex space-x-3 items-center pt-2">
+          <HiOutlinePhone className="text-gray-500" />
           <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
             {applicant?.phone}
           </span>
         </li>
-        <li className="flex space-x-3">
-          <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
-          </svg>
+        <li className="flex space-x-3 items-center">
+          <HiOutlineMail className="text-gray-500" />
           <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
             {applicant?.email}
           </span>
         </li>
+        {applicant.linkedin != "" ?
+          (<li className="flex space-x-3 items-center">
+            <AiFillLinkedin className="text-gray-500" />
+            <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
+              <Link className={textStyles.link} href={applicant.linkedin} rel="noopener noreferrer" target="_blank">Click Here</Link>
+            </span>
+          </li>) :
+          (<></>)}
+        {applicant.website != "" ?
+          (<li className="flex space-x-3 items-center">
+            <MdWeb className="text-gray-500" />
+            <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
+              <Link className={textStyles.link} href={applicant.website} rel="noopener noreferrer" target="_blank">Click Here</Link>
+            </span>
+          </li>) :
+          (<></>)}
       </ul>
 
     </Card>
