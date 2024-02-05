@@ -6,15 +6,9 @@ import { HiOutlinePhone, HiOutlineMail } from "react-icons/hi";
 import { AiFillLinkedin } from "react-icons/ai";
 import { MdWeb } from "react-icons/md";
 
-import Link from 'next/link'
-
-
-
-
 interface ApplicantInfoCardProps {
   applicant: Applicant;
 }
-
 
 export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps) {
 
@@ -74,7 +68,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
           (<li className="flex space-x-3 items-center">
             <AiFillLinkedin className="text-gray-500" />
             <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-              <Link className={textStyles.link} href={applicant.linkedin} rel="noopener noreferrer" target="_blank">Click Here</Link>
+              <a className={textStyles.link} href={applicant.linkedin} rel="noopener noreferrer" target="_blank">Click Here</a>
             </span>
           </li>) :
           (<></>)}
@@ -82,7 +76,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
           (<li className="flex space-x-3 items-center">
             <MdWeb className="text-gray-500" />
             <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-              <Link className={textStyles.link} href={applicant.website} rel="noopener noreferrer" target="_blank">Click Here</Link>
+              <a className={textStyles.link} href={applicant.website} rel="noopener noreferrer" target="_blank">Click Here</a>
             </span>
           </li>) :
           (<></>)}
