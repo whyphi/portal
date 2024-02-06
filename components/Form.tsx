@@ -567,7 +567,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
           <br />
           <br />
           
-          <span className="font-medium">For Assistance:</span> In case of technical difficulties during submission, please email pct.bostonu@gmail.com with a PDF containing all required application elements (outlined in the website), your photo and updated resume.
+          <span className="font-medium">For Assistance:</span> In case of technical difficulties during submission, please email <span className="underline">pct.bostonu@gmail.com</span> with a PDF containing all required application elements (outlined in the website), your photo and updated resume before the deadline.
         </Alert>
       </div>
     );
