@@ -170,7 +170,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
         } else if (["linkedin", "website"].includes(metric)) {
           // case 3: hasUrl -> true or false depending on if user has linkedin/website
-          val = typeof val === 'string' && val.includes("https://www.") ? "True" : "False";
+          val = typeof val === 'string' ? "True" : "False";
 
         } else if (val == "") {
           // case 4: val is empty string (missing value)
