@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 import { Dashboard, DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
-import { PieChart, Pie, Tooltip, Label } from "recharts";
+import { PieChart, Pie, Tooltip, Label, PolarGrid } from "recharts";
 import { Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
 
@@ -42,8 +42,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
-
-  console.log(matchingApplicants)
 
   // useRef to track whether parseData has been called
   const parseDataCalled = useRef(false);
@@ -168,15 +166,16 @@ export default function Insights({ params }: { params: { listingId: string } }) 
           })
           return;
 
-        } else if (["linkedin", "website"].includes(metric)) {
+        } else if (["linkedin", "website"].includes(metric) && val !== "") {
           // case 3: hasUrl -> true or false depending on if user has linkedin/website
-          val = typeof val === 'string' ? "True" : "False";
+          val = "True"
 
         } else if (val == "") {
           // case 4: val is empty string (missing value)
           val = "None"
         }
 
+        
         // handle remaining metric updates
         const foundMetric = updatedMetrics[metric].find(metricObject => metricObject?.name === val);
 
@@ -239,7 +238,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       return <Table.Cell>{colleges}</Table.Cell>
     } else if (["linkedin", "website"].includes(selectedItem)) {
       // case 2: handle url status
-      const hasURL = typeof val === 'string' && val.includes("https://www.") ? (
+      const hasURL = typeof val === 'string' && val !== "" ? (
         <a
           href={val}
           target="_blank"
