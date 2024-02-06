@@ -68,7 +68,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
           (<li className="flex space-x-3 items-center">
             <AiFillLinkedin className="text-gray-500" />
             <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-              <a className={textStyles.link} href={applicant.linkedin} rel="noopener noreferrer" target="_blank">Click Here</a>
+              <a className={textStyles.link} href={`${applicant.linkedin}`} rel="noopener noreferrer" target="_blank">Click Here</a>
             </span>
           </li>) :
           (<></>)}
@@ -76,12 +76,11 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
           (<li className="flex space-x-3 items-center">
             <MdWeb className="text-gray-500" />
             <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-              <a className={textStyles.link} href={applicant.website} rel="noopener noreferrer" target="_blank">Click Here</a>
+              <a className={textStyles.link} href={`${applicant.website}`} rel="noopener noreferrer" target="_blank">Click Here</a>
             </span>
           </li>) :
           (<></>)}
       </ul>
-
     </Card>
   )
 }
