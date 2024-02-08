@@ -13,6 +13,9 @@ import { FlowbiteTabTheme } from "flowbite-react";
 
 export default function Insights({ params }: { params: { listingId: string } }) {
   const router = useRouter();
+  // applicantData : list of applicants
+  const [applicantData, setApplicantData] = useState<[] | Applicant[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   // dashboard : object containing data from backend (# applicants, average gpa, #1 major, avg gradYear, avg response length)
   const [dashboard, setDashboard] = useState<Dashboard>({
     applicantCount: null,
@@ -20,9 +23,9 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     commonMajor: "",
     avgGradYear: "",
   });
+  const [DashIsLoading, setDashIsLoading] = useState<boolean>(true);
 
-  // applicantData : list of applicants
-  const [applicantData, setApplicantData] = useState<[] | Applicant[]>([]);
+
   // distributionMetrics : object containing frequencies of each metric for all applicants
   const [distributionMetrics, setDistributionMetrics] = useState<DistributionMetricsState>({
     colleges: [],
@@ -35,7 +38,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   });
   // fields : list of all fields being used for analytics
   const fields: string[] = ["colleges", "gpa", "gradYear", "major", "minor", "linkedin", "website"]
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // selectedItem : used to track which metric plot pie chart for
   const [selectedItem, setSelectedItem] = useState<string | null>("colleges");
@@ -43,7 +45,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
 
-  console.log(matchingApplicants)
 
   // useRef to track whether parseData has been called
   const parseDataCalled = useRef(false);
@@ -68,7 +69,21 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       .catch((error) => console.error("Error fetching applicants:", error));
 
   }, [])
+  
+  // Fetch insights data from your /listings API endpoint
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/insights/listing/${params.listingId}`)
+      .then((response) => response.json())
+      .then((data: Dashboard) => {
+        setDashboard(data)
+        setDashIsLoading(false);
+        // parseData()
+      })
+      .catch((error) => console.error("Error fetching applicants:", error));
 
+  }, [])
+
+  
   // Parse data whenever applicantData changes
   useEffect(() => {
     try {
@@ -323,7 +338,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   }
 
   // if applicants data not yet received : produce loading screen
-  if (isLoading) return (<Loader />)
+  if (isLoading || DashIsLoading) return (<Loader />)
 
   return (
     <div>
