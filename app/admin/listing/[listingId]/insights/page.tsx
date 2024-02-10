@@ -52,7 +52,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       .then((data: [Applicant]) => {
         setApplicantData(data)
         setIsLoading(false);
-        // parseData()
       })
       .catch((error) => console.error("Error fetching applicants:", error));
 
@@ -63,13 +62,10 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/insights/listing/${params.listingId}`)
       .then((response) => response.json())
-      .then((data) => {
-        const dashboard: Dashboard = data[0]
-        const distribution: DistributionMetricsState = data[1]
+      .then(([dashboard, distribution]: [Dashboard, DistributionMetricsState]) => {
         setDashboard(dashboard);
         setDistributionMetrics(distribution)
         setInsightsIsLoading(false);
-        // parseData()
       })
       .catch((error) => console.error("Error fetching applicants:", error));
 
