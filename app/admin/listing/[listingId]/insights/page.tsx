@@ -50,20 +50,15 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
       .then((response) => response.json())
       .then((data: [Applicant]) => {
-        const cleanedData: Applicant[] = data.map((applicant: Applicant) => {
-          return {
-            ...applicant,
-            major: applicant.major.toLowerCase(),
-            minor: applicant.minor.toLowerCase(),
-          };
-        });
-        setApplicantData(cleanedData)
+        setApplicantData(data)
         setIsLoading(false);
         // parseData()
       })
       .catch((error) => console.error("Error fetching applicants:", error));
 
   }, [])
+
+  console.log(applicantData)
   
   // Fetch insights data from your /listings API endpoint
   useEffect(() => {
