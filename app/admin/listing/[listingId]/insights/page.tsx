@@ -58,7 +58,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   }, [])
 
-  console.log(applicantData)
   
   // Fetch insights data from your /listings API endpoint
   useEffect(() => {
@@ -69,8 +68,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         const distribution: DistributionMetricsState = data[1]
         setDashboard(dashboard);
         setDistributionMetrics(distribution)
-        console.log("fetching -> ", dashboard, distribution)
-        console.log("done fetching")
         setInsightsIsLoading(false);
         // parseData()
       })
