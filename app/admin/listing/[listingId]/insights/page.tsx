@@ -67,7 +67,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         setDistributionMetrics(distribution)
         setInsightsIsLoading(false);
       })
-      .catch((error) => console.error("Error fetching applicants:", error));
+      .catch((error) => console.error("Error fetching data analytics:", error));
 
   }, [])
 
