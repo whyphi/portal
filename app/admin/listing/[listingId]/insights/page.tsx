@@ -86,6 +86,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     setMatchingApplicants([]);
   };
 
+  console.log(distributionMetrics)
 
   const handlePieClick = (data: any) => {
     // error handling (only if metric/selectedItem is valid)
@@ -117,7 +118,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       return <Table.Cell>{colleges}</Table.Cell>
     } else if (["linkedin", "website"].includes(selectedItem)) {
       // case 2: handle url status
-      const hasURL = typeof val === 'string' && val.includes("https://www.") ? (
+      const hasURL = typeof val === 'string' ? (
         <a
           href={val}
           target="_blank"
