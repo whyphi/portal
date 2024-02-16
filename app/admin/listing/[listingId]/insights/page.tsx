@@ -21,7 +21,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     applicantCount: null,
     avgGpa: null,
     commonMajor: "",
-    avgGradYear: "",
+    commonGradYear: "",
   });
   const [insightsLoading, setInsightsIsLoading] = useState<boolean>(true);
 
@@ -212,7 +212,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         <SummaryCard title="Number of Applicants" value={dashboard.applicantCount} />
         <SummaryCard title="Average GPA" value={dashboard.avgGpa} />
         <SummaryCard title="Most Common Major" value={dashboard.commonMajor} />
-        <SummaryCard title="Average Grad Year" value={dashboard.avgGradYear} />
+        <SummaryCard title="Most Common Grad Year" value={dashboard.commonGradYear} />
       </div>
 
 
