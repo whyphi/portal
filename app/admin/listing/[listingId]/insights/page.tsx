@@ -13,9 +13,6 @@ import { FlowbiteTabTheme } from "flowbite-react";
 
 export default function Insights({ params }: { params: { listingId: string } }) {
   const router = useRouter();
-  // applicantData : list of applicants
-  const [applicantData, setApplicantData] = useState<[] | Applicant[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   // dashboard : object containing data from backend (# applicants, average gpa, #1 major, avg gradYear, avg response length)
   const [dashboard, setDashboard] = useState<Dashboard>({
     applicantCount: null,
@@ -44,19 +41,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
-
-  // Fetch listings data from your /listings API endpoint
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
-      .then((response) => response.json())
-      .then((data: [Applicant]) => {
-        setApplicantData(data)
-        setIsLoading(false);
-      })
-      .catch((error) => console.error("Error fetching applicants:", error));
-
-  }, [])
-
   
   // Fetch insights data from your /listings API endpoint
   useEffect(() => {
@@ -202,7 +186,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   }
 
   // if applicants data not yet received : produce loading screen
-  if (isLoading || insightsLoading) return (<Loader />)
+  if (insightsLoading) return (<Loader />)
 
   return (
     <div>
