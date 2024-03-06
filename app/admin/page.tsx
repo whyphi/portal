@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
 import Loader from "@/components/Loader";
+import { useAuth } from "../contexts/AuthContext";
+
+
 
 interface Listing {
   listingId: string;
@@ -13,17 +16,25 @@ interface Listing {
 }
 
 export default function Admin() {
+  const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data: Listing[]) => {
         setListings(data)
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching listings:", error));
+
   }, []);
 
   if (isLoading) {

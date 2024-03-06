@@ -182,7 +182,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         "icon": "mr-2 h-5 w-5"
       }
     },
-    "tabpanel": "py-3"
+    "tabpanel": "py-3",
   }
 
   // if applicants data not yet received : produce loading screen

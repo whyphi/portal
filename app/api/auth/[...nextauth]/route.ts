@@ -49,7 +49,22 @@ const authOptions: AuthOptions = {
       }
       return true
     },
+    async jwt({ token, account, profile }) {
+      // Persist the OAuth access_token and or the user id to the token right after signin
+      // if (account) {
+      //   token.accessToken = account.access_token
+      //   token.id = profile.id
+      // }
+      console.log("jwt")
+      console.log(token)
+      console.log(account)
+      console.log(profile)
+      console.log("---")
+      token.test = "sdmfksmk"
+      return token
+    },
     async session({ session, user, token }) {
+      session.token = token;
       return session
     },
 
