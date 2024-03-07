@@ -19,7 +19,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     getSession().then((session: Session | null) => {
-      if (session) {
+      if (session && session.token) {
         const signedToken = jwt.sign(session.token, `${process.env.NEXT_PUBLIC_JWT_SECRET}`, {
           algorithm: 'HS256',
         });
