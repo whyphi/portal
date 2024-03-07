@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Listing } from "@/types/listing";
 import { Button, Modal } from 'flowbite-react';
 import CustomAlert from "@/components/admin/settings/CustomAlert";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 
 interface FormData {
@@ -22,6 +23,7 @@ const initialValues: FormData = {
 };
 
 export default function ListingSettings({ params }: { params: { listingId: string } }) {
+  const { token } = useAuth();
   const router = useRouter();
   const [openModal, setOpenModal] = useState(false);
   const [listingData, setListingData] = useState<Listing | null>(null);
@@ -37,7 +39,13 @@ export default function ListingSettings({ params }: { params: { listingId: strin
 
   useEffect(() => {
     // Fetch listing data from your /listings API endpoint
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.listingId}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.listingId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data: Listing) => {
         // Set the form data with the fetched listing data

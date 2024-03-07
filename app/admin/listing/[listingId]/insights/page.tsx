@@ -7,11 +7,13 @@ import { Applicant } from "@/types/applicant";
 import { PieChart, Pie, Tooltip, Label } from "recharts";
 import { Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 import { FlowbiteTabTheme } from "flowbite-react";
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
+  const { token } = useAuth();
   const router = useRouter();
   // dashboard : object containing data from backend (# applicants, average gpa, #1 major, avg gradYear, avg response length)
   const [dashboard, setDashboard] = useState<Dashboard>({
@@ -41,10 +43,16 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
-  
+
   // Fetch insights data from your /listings API endpoint
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/insights/listing/${params.listingId}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/insights/listing/${params.listingId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then(([dashboard, distribution]: [Dashboard, DistributionMetricsState]) => {
         setDashboard(dashboard);
@@ -182,7 +190,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         "icon": "mr-2 h-5 w-5"
       }
     },
-    "tabpanel": "py-3"
+    "tabpanel": "py-3",
   }
 
   // if applicants data not yet received : produce loading screen
