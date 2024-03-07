@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from 'next/navigation'
 import { Checkbox, Label } from 'flowbite-react';
+import { useAuth } from "@/app/contexts/AuthContext";
 
 
 
@@ -22,6 +23,7 @@ const initialValues: FormData = {
 };
 
 export default function Create() {
+  const { token } = useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -40,6 +42,7 @@ export default function Create() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/create`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formDataWithDates),
@@ -136,19 +139,19 @@ export default function Create() {
   const handleQuestionChange = (index: number, field: string, value: string) => {
     const updatedQuestions = [...formData.questions];
     const questionObj = updatedQuestions[index];
-  
+
     if (questionObj) {
       // Ensure questionObj is defined
       questionObj[field as keyof typeof questionObj] = value;
-  
+
       setFormData((prevData) => ({
         ...prevData,
         questions: updatedQuestions,
       }));
     }
   };
-  
-  
+
+
 
   const renderInput = (
     id: keyof FormData,

@@ -1,15 +1,23 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { Table, Progress } from 'flowbite-react';
+import { Table } from 'flowbite-react';
 import { Member } from "@/types/admin/members";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 export default function Members() {
 
   const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
+    const { token } = useAuth();
     // Fetch listings data from your /listings API endpoint
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/members`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/members`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data: Member[]) => {
         setMembers(data);
