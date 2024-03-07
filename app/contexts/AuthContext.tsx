@@ -1,6 +1,9 @@
+"use client"
+
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { getSession } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
+import { Session } from 'next-auth';
 
 interface AuthContextProps {
   token: string | null;
@@ -15,12 +18,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getSession().then((session) => {
+    getSession().then((session: Session | null) => {
       if (session) {
-        const signedToken = jwt.sign(session.token, `${process.env.NEXT_PUBLIC_JWT_SECRET}`, {
-          algorithm: 'HS256',
-        });
-        setToken(signedToken);
+        // Use type assertion to add the 'token' property
+        const sessionWithToken = session as Session & { token?: string };
+  
+        if (sessionWithToken.token) {
+          const signedToken = jwt.sign(sessionWithToken.token, `${process.env.NEXT_PUBLIC_JWT_SECRET}`, {
+            algorithm: 'HS256',
+          });
+          setToken(signedToken);
+        }
       }
       setIsLoading(false);
     });

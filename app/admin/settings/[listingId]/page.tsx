@@ -59,7 +59,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching listing:", error));
-  }, [params.listingId]); // Include params.listingId in the dependency array
+  }, [params.listingId, token]); // Include params.listingId in the dependency array
 
   useEffect(() => {
     if (showAlert) {

@@ -19,7 +19,7 @@ interface PreviewListingData {
 }
 
 
-export default function previewListing() {
+export default function PreviewListing() {
   // const router = useRouter();
   const searchParams = useSearchParams();
   // const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -62,7 +62,7 @@ export default function previewListing() {
       includeEventsAttended: includeEventsAttended
     })
 
-  }, [])
+  }, [searchParams])
 
   return (
     <main className="flex flex-col mx-auto justify-center items-center max-w-screen-sm px-5 py-2.5">
