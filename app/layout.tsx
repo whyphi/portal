@@ -13,9 +13,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-w-screen">
         <SessionProvider>
-          <AuthProvider>
             {children}
-          </AuthProvider>
         </SessionProvider>
       </body>
     </html >

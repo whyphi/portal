@@ -30,12 +30,12 @@ export default function Admin() {
     })
       .then((response) => response.json())
       .then((data: Listing[]) => {
-        setListings(data)
+        setListings(data);
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching listings:", error));
-
   }, [token]);
+
 
   if (isLoading) {
     return (

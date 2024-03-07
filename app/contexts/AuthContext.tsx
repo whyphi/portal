@@ -1,3 +1,5 @@
+"use client"
+
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { getSession } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
