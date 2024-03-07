@@ -1,8 +1,8 @@
 "use client"
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
-import { Dashboard, DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
+import { Dashboard, DistributionMetricsState } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
 import { PieChart, Pie, Tooltip, Label } from "recharts";
 import { Table, Tabs } from 'flowbite-react';
@@ -61,7 +61,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       })
       .catch((error) => console.error("Error fetching data analytics:", error));
 
-  }, [])
+  }, [params.listingId, token])
 
 
   const handleActiveTab = (tab: number) => {
@@ -188,6 +188,15 @@ export default function Insights({ params }: { params: { listingId: string } }) 
           }
         },
         "icon": "mr-2 h-5 w-5"
+      },
+    },
+    "tabitemcontainer": {
+      "base": "",
+      "styles": {
+        "default": "",
+        "underline": "",
+        "pills": "",
+        "fullWidth": ""
       }
     },
     "tabpanel": "py-3",

@@ -29,7 +29,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
       })
       .catch((error) => console.error("Error fetching listings:", error));
 
-  }, []);
+  }, [params.applicantId, token]);
 
 
   const renderResponses = () => {

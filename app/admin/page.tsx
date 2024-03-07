@@ -35,7 +35,7 @@ export default function Admin() {
       })
       .catch((error) => console.error("Error fetching listings:", error));
 
-  }, []);
+  }, [token]);
 
   if (isLoading) {
     return (
