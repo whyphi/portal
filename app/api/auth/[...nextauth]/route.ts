@@ -59,8 +59,8 @@ const authOptions: AuthOptions = {
       return token
     },
     async session({ session, user, token }) {
-      session.token = token;
-      return session
+      (session as any).token = token; // Type assertion
+      return session;
     },
 
   },
