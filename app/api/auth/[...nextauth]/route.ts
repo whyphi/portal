@@ -55,11 +55,6 @@ const authOptions: AuthOptions = {
       //   token.accessToken = account.access_token
       //   token.id = profile.id
       // }
-      console.log("jwt")
-      console.log(token)
-      console.log(account)
-      console.log(profile)
-      console.log("---")
       token.test = "sdmfksmk"
       return token
     },
