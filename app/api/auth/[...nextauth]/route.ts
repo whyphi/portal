@@ -15,16 +15,31 @@ const client = new MongoClient(uri, {
   }
 });
 
+
+
 async function isValidUser(email: string) {
   await client.connect();
   const db = client.db("vault");
   const user = await db.collection('users').findOne({ email: email });
   try {
-    if (user) return true;
-    else return false;
+    return !!user;
   } catch (error) {
     console.error('Error checking email:', error);
     return false;
+  } finally {
+    await client.close();
+  }
+}
+
+async function getUserInfo(email: string) {
+  await client.connect();
+  const db = client.db("vault");
+  const user = await db.collection('users').findOne({ email: email });
+  try {
+    return user || null;
+  } catch (error) {
+    console.error('Error checking email:', error);
+    return null;
   } finally {
     await client.close();
   }
@@ -50,13 +65,21 @@ const authOptions: AuthOptions = {
       return true
     },
     async jwt({ token, account, profile }) {
-      // Persist the OAuth access_token and or the user id to the token right after signin
-      // if (account) {
-      //   token.accessToken = account.access_token
-      //   token.id = profile.id
-      // }
-      token.test = "sdmfksmk"
-      return token
+      if (profile) {
+        const userInfo = await getUserInfo(profile.email ?? '');
+
+        // Destructure userInfo and add its properties to the top level of the token
+        if (userInfo) {
+          const { _id, name, email, isNewUser, role } = userInfo;
+          token._id = _id;
+          token.name = name;
+          token.email = email;
+          token.isNewUser = isNewUser;
+          token.role = role;
+        }
+      }
+      console.log(token);
+      return token;
     },
     async session({ session, user, token }) {
       (session as any).token = token; // Type assertion
