@@ -78,7 +78,6 @@ const authOptions: AuthOptions = {
           token.role = role;
         }
       }
-      console.log(token);
       return token;
     },
     async session({ session, user, token }) {
