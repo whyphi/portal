@@ -1,14 +1,34 @@
 "use client"
-import React, { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { useRouter } from 'next/navigation'
-import { Checkbox, Label } from 'flowbite-react';
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { getSession } from 'next-auth/react';
 
 
 export default function Onboarding() {
- 
+  const [name, setName] = useState<string>("");
+  const [currStep, setCurrStep] = useState<number>(0);
+
+  useEffect(() => {
+    getSession().then((session: any) => {
+      if (session) {
+        setName(session?.user?.name)
+      }
+
+    });
+  }, []);
+
+  const StepOne = () => {
+    return (
+      <div>
+        <h1>Hi, {name}!</h1>
+      </div>
+    )
+  }
+
+  if (currStep === 0) {
+    return (StepOne())
+  }
+
   return (
     <div>
       test
