@@ -107,14 +107,14 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Applicants</h1>
-      <Tabs.Group aria-label="Default tabs" style="default" ref={tabsRef}>
+      <Tabs aria-label="Default tabs" style="default" ref={tabsRef}>
         <Tabs.Item active title="Card" icon={HiOutlineCollection}>
           {renderApplicantCardView()}
         </Tabs.Item>
         <Tabs.Item title="Table" icon={HiOutlineTable}>
           {renderApplicantTableView()}
         </Tabs.Item>
-      </Tabs.Group>
+      </Tabs>
     </div>
 
 
