@@ -31,7 +31,7 @@ export default function Onboarding() {
         <h1 className={AdminTextStyles.title}>Hi {name}!</h1>
 
         <p className={AdminTextStyles.subparagraph}>To get you started on WhyPhi,</p>
-        <p className={AdminTextStyles.paragraph}>We're going to be asking some questions.</p>
+        <p className={AdminTextStyles.paragraph}>{`We're going to be asking some questions.`}</p>
 
         <Timeline>
           <Timeline.Item>
@@ -80,7 +80,7 @@ export default function Onboarding() {
         </div>
         <div>
           <h2 className={AdminTextStyles.subtitle}>Personal Details</h2>
-          <p className={AdminTextStyles.subparagraph}>We're asking these details so other members can get more information about you through our database!</p>
+          <p className={AdminTextStyles.subparagraph}>{`We're asking these details so other members can get more information about you through our database!`}</p>
           <div className="mt-4"></div>
           <FloatingLabel variant="standard" label="College" />
           <FloatingLabel variant="standard" label="Graduation Year" />
