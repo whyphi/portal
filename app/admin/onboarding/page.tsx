@@ -5,6 +5,8 @@ import { getSession } from 'next-auth/react';
 import { Timeline, Button, FloatingLabel, Label, Select, TextInput } from 'flowbite-react';
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { HiOutlineArrowLeft } from 'react-icons/hi';
+import { QRCodeSVG } from 'qrcode.react';
+import { useRouter } from "next/navigation";
 
 
 interface UserInfo {
@@ -13,6 +15,7 @@ interface UserInfo {
   class: string;
   team: string;
   family: string;
+  isEboard: string;
 }
 
 const initUserInfo: UserInfo = {
@@ -20,18 +23,22 @@ const initUserInfo: UserInfo = {
   graduationYear: "",
   class: "",
   team: "",
-  family: ""
+  family: "",
+  isEboard: ""
 }
 
 export default function Onboarding() {
+  const router = useRouter()
   const [name, setName] = useState<string>("");
   const [currStep, setCurrStep] = useState<number>(0);
+  const [userId, setUserId] = useState<string>("");
   const [userInfo, setUserInfo] = useState<UserInfo>(initUserInfo);
 
   useEffect(() => {
     getSession().then((session: any) => {
       if (session) {
-        setName(session?.user?.name)
+        setName(session?.user?.name);
+        setUserId(session.token._id);
       }
     });
   }, []);
@@ -70,13 +77,19 @@ export default function Onboarding() {
     )
   }
 
+  const handleUserOnboarding = () => {
+    // TODO: API call to update user info
+    console.log("test")
+    router.push("/admin");
+  }
+
   const StepZero = () => {
     return (
       <div>
         <h1 className={AdminTextStyles.title}>Hi {name}!</h1>
 
         <p className={AdminTextStyles.subparagraph}>To get you started on WhyPhi,</p>
-        <p className={AdminTextStyles.paragraph}>We're going to be asking some questions.</p>
+        <p className={AdminTextStyles.paragraph}>{`We're going to be asking some questions.`}</p>
 
         <Timeline>
           <Timeline.Item>
@@ -123,7 +136,7 @@ export default function Onboarding() {
         {previousButton()}
         <div>
           <h2 className={AdminTextStyles.subtitle}>Personal Details</h2>
-          <p className={AdminTextStyles.subparagraph}>We're asking these details so other members can get more information about you through our database!</p>
+          <p className={AdminTextStyles.subparagraph}>{`We're asking these details so other members can get more information about you through our database!`}</p>
           <div className="mt-4"></div>
           <div className="max-w-md">
             <div className="mb-2 block">
@@ -221,14 +234,53 @@ export default function Onboarding() {
               onChange={handleInputchange}
             />
 
+            <div className="max-w-md mt-4 mb-2 block">
+              <Label htmlFor="isEboard" value="Are you part of the Executive Board?" />
+            </div>
+            <Select id="isEboard" required onChange={handleSelectChange} value={userInfo.isEboard}>
+              <option value="">-- Select yes/no</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </Select>
+
           </div>
           <div className="flex flex-row justify-end mt-8">
             <Button
               className="w-28"
               color="purple"
               onClick={nextStep}
-              disabled={userInfo.class === "" || userInfo.team === "" || userInfo.family === ""}
+              disabled={userInfo.class === "" || userInfo.team === "" || userInfo.family === "" || userInfo.isEboard === ""}
             >Next</Button>
+          </div>
+        </div>
+      </div >
+    )
+  }
+
+  const StepThree = () => {
+    return (
+      <div>
+        {previousButton()}
+        <div>
+          <h2 className={AdminTextStyles.subtitle}>Check-in QR-Code and Next Steps</h2>
+          <p className={AdminTextStyles.subparagraph}>{`This will be your QR-Code to checking in to PCT-related events. You should able to find this QR-Code on the sidebar of the WhyPhi website ☺️`}</p>
+          <div className="mt-4"></div>
+          <div className="max-w-md">
+
+            {/* https://github.com/zpao/qrcode.react */}
+            <QRCodeSVG value={userId} size={256} />
+
+
+          </div>
+
+          <p className={AdminTextStyles.subtext}>{`If you have any questions, feel free to reach out to the tech team anytime!`}</p>
+          <div className="flex flex-row justify-end mt-8">
+            <Button
+              className="w-28"
+              color="purple"
+              onClick={() => handleUserOnboarding()}
+              disabled={userInfo.class === "" || userInfo.team === "" || userInfo.family === ""}
+            >Get Started</Button>
           </div>
         </div>
       </div >
@@ -240,6 +292,7 @@ export default function Onboarding() {
       {currStep === 0 ? (StepZero()) : (<></>)}
       {currStep === 1 ? (StepOne()) : (<></>)}
       {currStep === 2 ? (StepTwo()) : (<></>)}
+      {currStep === 3 ? (StepThree()) : (<></>)}
     </div>
   );
 }
