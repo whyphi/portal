@@ -94,7 +94,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
 
       {/* Right component (Tabs and content) */}
       <div className="w-full lg:w-2/3 overflow-auto lg:pl-6">
-        <Tabs.Group
+        <Tabs
           className=""
           aria-label="Tabs with underline"
           style="underline"
@@ -123,7 +123,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
             {renderEventsAttended(applicantData.events)}
           </Tabs.Item>) : ("")}
 
-        </Tabs.Group>
+        </Tabs>
       </div>
     </div>
   );

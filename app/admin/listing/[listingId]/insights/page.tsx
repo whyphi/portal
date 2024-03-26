@@ -9,7 +9,7 @@ import { Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
 import { useAuth } from "@/app/contexts/AuthContext";
 
-import { FlowbiteTabTheme } from "flowbite-react";
+import { CustomFlowbiteTheme } from "flowbite-react";
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
@@ -145,7 +145,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     </Table.Row>
   ))
 
-  const customTabTheme: FlowbiteTabTheme = {
+  const customTabTheme: CustomFlowbiteTheme['tabs'] = {
     "base": "flex flex-col gap-2",
     "tablist": {
       "base": "flex text-center",
@@ -217,11 +217,11 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       </div>
 
 
-      <Tabs.Group style="pills" theme={customTabTheme} aria-label="Tabs with underline" onActiveTabChange={(tab) => handleActiveTab(tab)}>
+      <Tabs style="pills" theme={customTabTheme} aria-label="Tabs with underline" onActiveTabChange={(tab) => handleActiveTab(tab)}>
         {fields.map((field, index) => (
           <Tabs.Item color="purple" title={field} key={index} />
         ))}
-      </Tabs.Group>
+      </Tabs>
 
       <div className="flex flex-col items-center w-full">
         <PieChart width={450} height={400}>
