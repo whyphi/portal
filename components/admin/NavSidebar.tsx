@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Dropdown, Avatar } from "flowbite-react";
+import { HiOutlineQrcode } from "react-icons/hi";
+
 
 export default function NavSidebar() {
   const { data: session } = useSession();
@@ -136,6 +138,15 @@ export default function NavSidebar() {
                   <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                 </svg>
                 <span className="flex-1 ml-3 whitespace-nowrap">Accountability</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="/admin/qr"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <HiOutlineQrcode className="w-5 h-5 text-gray-800 dark:text-white" />
+                <span className="flex-1 ml-3 whitespace-nowrap">{`QR Code (Check-in)`}</span>
               </a>
             </li>
             <li>
