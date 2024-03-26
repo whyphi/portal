@@ -2,20 +2,20 @@ import '../../globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Whyphi - QR',
+  title: 'Whyphi - QR',
 }
 
 export default function RootLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode
+  children: React.ReactNode
 }) {
-    return (
+  return (
 
-        <div className="flex flex-col mx-auto justify-center max-w-screen-lg">
-            {children}
-        </div>
+    <div className="flex flex-col mx-auto justify-center max-w-screen-lg">
+      {children}
+    </div>
 
 
-    )
+  )
 }
