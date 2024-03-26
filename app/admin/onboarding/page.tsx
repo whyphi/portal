@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { Timeline, Button, FloatingLabel, Label, Select, TextInput } from 'flowbite-react';
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { HiOutlineArrowLeft } from 'react-icons/hi';
@@ -29,6 +29,9 @@ const initUserInfo: UserInfo = {
 
 export default function Onboarding() {
   const router = useRouter()
+  const { token } = useAuth();
+  const { data: session, status, update } = useSession()
+
   const [name, setName] = useState<string>("");
   const [currStep, setCurrStep] = useState<number>(0);
   const [userId, setUserId] = useState<string>("");
@@ -77,10 +80,26 @@ export default function Onboarding() {
     )
   }
 
-  const handleUserOnboarding = () => {
-    // TODO: API call to update user info
-    console.log("test")
-    router.push("/admin");
+  const handleUserOnboarding = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/members/onboard/${userId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userInfo)
+      });
+      if (response.ok) {
+        console.log('User info updated successfully');
+        update();
+        router.push("/admin");
+      } else {
+        console.error('Failed to update user info');
+      }
+    } catch (error) {
+      console.error('Error updating user info:', error);
+    }
   }
 
   const StepZero = () => {

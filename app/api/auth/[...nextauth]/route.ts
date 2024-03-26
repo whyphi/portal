@@ -64,7 +64,20 @@ const authOptions: AuthOptions = {
       }
       return true
     },
-    async jwt({ token, account, profile }) {
+    async jwt({ token, trigger, account, profile, session }) {
+      if (trigger === "update" && token) {
+        const userInfo = await getUserInfo(token.email ?? '');
+        // Destructure userInfo and add its properties to the top level of the token
+        if (userInfo) {
+          const { _id, name, email, isNewUser, role } = userInfo;
+          token._id = _id;
+          token.name = name;
+          token.email = email;
+          token.isNewUser = isNewUser;
+          token.role = role;
+        }
+      }
+
       if (profile) {
         const userInfo = await getUserInfo(profile.email ?? '');
 
