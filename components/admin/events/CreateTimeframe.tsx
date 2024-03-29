@@ -2,18 +2,23 @@
 
 import React, { useState, useEffect } from 'react';
 import { HiOutlineUserGroup } from "react-icons/hi";
-import { Label, TextInput, Button } from 'flowbite-react';
+import { Label, TextInput, Button, Select } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
+import { Timeframe } from "@/types/admin/events";
 
 interface CreateTimeframeProps {
+  timeframes: Timeframe[];
   onClose: () => void; // Prop for close button click handler
 }
 
-const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose }) => {
+const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }) => {
   const { token } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [translateX, setTranslateX] = useState<string>('0');
   const [timeframeName, setTimeframeName] = useState<string>("");
+
+  const [selectedTimeframeIndex, setSelectedTimeframeIndex] = useState<number>(0);
+  const [eventName, setEventName] = useState<string>("");
 
   useEffect(() => {
     setTranslateX(isOpen ? '0' : '100%'); // Set initial translateX value
@@ -26,6 +31,10 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose }) => {
 
   const handleInputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTimeframeName(e.target.value)
+  };
+
+  const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEventName(e.target.value)
   };
 
   const handleCreateTimeframe = async () => {
@@ -47,6 +56,28 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose }) => {
       console.error(error);
     }
   };
+
+  const handleCreateEvent = async () => {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex]._id}/events`;
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   return (
     <div
@@ -85,10 +116,44 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose }) => {
           color="purple"
           onClick={handleCreateTimeframe}
           disabled={timeframeName === ""}
-        >Create</Button>
+        >Create Timeframe</Button>
+      </div>
+      <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+      <div>
+        <h5 id="drawer-label" className="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400">
+          NEW EVENT
+        </h5>
+        <div className="mb-4">
+          <div className="mb-2 block">
+            <Label htmlFor="graduationYear" value="Choose Timeframe" />
+          </div>
+          <Select id="timeframe" required value={selectedTimeframeIndex} onChange={(e) => setSelectedTimeframeIndex(parseInt(e.target.value))}>
+            {timeframes.map((timeframe, index) => (
+              <option key={index} value={index}>{timeframe.name}</option>
+            ))}
+          </Select>
+          <div className="mt-6 mb-2 block">
+            <Label htmlFor="graduationYear" value="Event Name" />
+          </div>
+          <TextInput
+            key="eventName"
+            required
+            id="eventName"
+            type="text"
+            value={eventName}
+            onChange={handleEventNameChange}
+          />
+        </div>
+        <Button
+          className="w-full"
+          color="purple"
+          onClick={handleCreateEvent}
+          disabled={eventName === ""}
+        >Create Event</Button>
       </div>
     </div>
   );
 };
 
 export default CreateTimeframe;
+

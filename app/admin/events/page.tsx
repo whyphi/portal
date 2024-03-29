@@ -8,15 +8,10 @@ import { HiOutlineCog, HiPlus } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import CreateTimeframe from "@/components/admin/events/CreateTimeframe";
 import { useAuth } from "@/app/contexts/AuthContext";
-
-interface Timeframe {
-  name: string;
-  dateCreated: string;
-}
+import { Timeframe } from "@/types/admin/events";
 
 export default function Events() {
   const { token } = useAuth();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [timeframes, setTimeframes] = useState<Timeframe[]>([]);
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>("");
@@ -43,8 +38,6 @@ export default function Events() {
     fetchData();
   }, []);
 
-
-
   const handleCreateButtonClick = () => {
     setIsCreateTimeframeVisible(true);
   };
@@ -66,7 +59,7 @@ export default function Events() {
         <div className="flex"> {/* Container for buttons */}
           <Button className="h-12 mr-2" onClick={handleCreateButtonClick}>
             <HiPlus className="mr-1 h-5 w-5" />
-            Create Timeframe
+            Create
           </Button>
           <Button className="">
             <HiOutlineCog className="h-5 w-5" />
@@ -83,7 +76,7 @@ export default function Events() {
       </Select>
 
       {/* Drawer component */}
-      {isCreateTimeframeVisible && <CreateTimeframe onClose={handleCloseButtonClick} />}
+      {isCreateTimeframeVisible && <CreateTimeframe timeframes={timeframes} onClose={handleCloseButtonClick} />}
 
     </div>
   );
