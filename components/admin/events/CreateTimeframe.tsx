@@ -3,14 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { Label, TextInput, Button } from 'flowbite-react';
+import { useAuth } from "@/app/contexts/AuthContext";
 
 interface CreateTimeframeProps {
   onClose: () => void; // Prop for close button click handler
 }
 
 const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose }) => {
+  const { token } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [translateX, setTranslateX] = useState<string>('0');
+  const [timeframeName, setTimeframeName] = useState<string>("");
 
   useEffect(() => {
     setTranslateX(isOpen ? '0' : '100%'); // Set initial translateX value
@@ -19,6 +22,30 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose }) => {
   const handleCloseButtonClick = () => {
     setIsOpen(false);
     setTimeout(onClose, 200); // Call onClose after transition duration (300ms)
+  };
+
+  const handleInputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTimeframeName(e.target.value)
+  };
+
+  const handleCreateTimeframe = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: timeframeName })
+      });
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      onClose();
+    } catch (error) {
+      // TODO: handle error
+      console.error(error);
+    }
   };
 
   return (
@@ -45,19 +72,19 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose }) => {
             <Label htmlFor="graduationYear" value="Name" />
           </div>
           <TextInput
-            key="graduationYearInput"
+            key="timeframeName"
             required
-            id="graduationYear"
+            id="timeframeName"
             type="text"
-            value={""}
-            onChange={() => console.log("lol")}
+            value={timeframeName}
+            onChange={handleInputchange}
           />
         </div>
         <Button
           className="w-full"
           color="purple"
-        // onClick={nextStep}
-        // disabled={userInfo.college === "" || userInfo.graduationYear === ""}
+          onClick={handleCreateTimeframe}
+          disabled={timeframeName === ""}
         >Create</Button>
       </div>
     </div>

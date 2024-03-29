@@ -7,31 +7,43 @@ import { Button, Select, Label } from "flowbite-react";
 import { HiOutlineCog, HiPlus } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import CreateTimeframe from "@/components/admin/events/CreateTimeframe";
+import { useAuth } from "@/app/contexts/AuthContext";
+
+interface Timeframe {
+  name: string;
+  dateCreated: string;
+}
 
 export default function Events() {
+  const { token } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [timeframes, setTimeframes] = useState<Timeframe[]>([]);
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>("");
   const [isCreateTimeframeVisible, setIsCreateTimeframeVisible] = useState<boolean>(false);
 
 
-  useEffect(() => {
+  const fetchData = () => {
     setIsLoading(true);
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTimeframes(data.sort((a: { dateCreated: string }, b: { dateCreated: string }) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()))
+        setSelectedTimeframe(data[0].name);
+        setIsLoading(false);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  };
 
-    setTimeout(() => {
-      const dummyData = [
-        { name: "Fall 2023", dateCreated: new Date("2024-03-22T14:31:54.916Z") },
-        { name: "Spring 2024", dateCreated: new Date("2024-03-28T14:31:54.916Z") }
-      ];
-
-      // Sort dummyData by dateCreated in descending order
-      dummyData.sort((a, b) => b.dateCreated.getTime() - a.dateCreated.getTime());
-
-      setSelectedTimeframe(dummyData[0]?.name);
-
-      setIsLoading(false);
-    }, 1000); // Simulated delay for demonstration
+  useEffect(() => {
+    fetchData();
   }, []);
+
+
 
   const handleCreateButtonClick = () => {
     setIsCreateTimeframeVisible(true);
@@ -39,6 +51,10 @@ export default function Events() {
 
   const handleCloseButtonClick = () => {
     setIsCreateTimeframeVisible(false);
+    // TODO: disable re-render when X button is clicked
+    if (isCreateTimeframeVisible) {
+      fetchData();
+    }
   };
 
   if (isLoading) return <Loader />;
@@ -61,8 +77,9 @@ export default function Events() {
         <Label htmlFor="timeframe" value="Select your timeframe" />
       </div>
       <Select id="timeframe" required value={selectedTimeframe} onChange={(e) => setSelectedTimeframe(e.target.value)}>
-        <option value="Spring 2024">Spring 2024</option>
-        <option value="Fall 2023">Fall 2023</option>
+        {timeframes.map((timeframe) => (
+          <option key={timeframe.name} value={timeframe.name}>{timeframe.name}</option>
+        ))}
       </Select>
 
       {/* Drawer component */}
