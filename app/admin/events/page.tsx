@@ -9,12 +9,13 @@ import { useRouter } from "next/navigation";
 import CreateTimeframe from "@/components/admin/events/CreateTimeframe";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
+import EventsList from "@/components/admin/events/EventsList";
 
 export default function Events() {
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [timeframes, setTimeframes] = useState<Timeframe[]>([]);
-  const [selectedTimeframe, setSelectedTimeframe] = useState<string>("");
+  const [selectedTimeframeIndex, setSelectedTimeframeIndex] = useState<number>(0);
   const [isCreateTimeframeVisible, setIsCreateTimeframeVisible] = useState<boolean>(false);
 
 
@@ -28,7 +29,7 @@ export default function Events() {
       .then((response) => response.json())
       .then((data) => {
         setTimeframes(data.sort((a: { dateCreated: string }, b: { dateCreated: string }) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()))
-        setSelectedTimeframe(data[0].name);
+        setSelectedTimeframeIndex(0);
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching data:", error));
@@ -69,11 +70,16 @@ export default function Events() {
       <div className="mb-2 block">
         <Label htmlFor="timeframe" value="Select your timeframe" />
       </div>
-      <Select id="timeframe" required value={selectedTimeframe} onChange={(e) => setSelectedTimeframe(e.target.value)}>
-        {timeframes.map((timeframe) => (
+      <Select id="timeframe" required value={timeframes[selectedTimeframeIndex]?.name} onChange={(e) => {
+        const selectedTimeframeIndex = timeframes.findIndex((timeframe) => timeframe?.name === e.target.value);
+        setSelectedTimeframeIndex(selectedTimeframeIndex);
+      }}>
+        {timeframes.map((timeframe, i) => (
           <option key={timeframe.name} value={timeframe.name}>{timeframe.name}</option>
         ))}
       </Select>
+
+      {timeframes[selectedTimeframeIndex] && <EventsList events={timeframes[selectedTimeframeIndex].events} />}
 
       {/* Drawer component */}
       {isCreateTimeframeVisible && <CreateTimeframe timeframes={timeframes} onClose={handleCloseButtonClick} />}
@@ -81,3 +87,5 @@ export default function Events() {
     </div>
   );
 }
+
+
