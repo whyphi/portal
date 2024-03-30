@@ -62,7 +62,7 @@ export default function Events() {
             <HiPlus className="mr-1 h-5 w-5" />
             Create
           </Button>
-          <Button className="">
+          <Button disabled className="">
             <HiOutlineCog className="h-5 w-5" />
           </Button>
         </div>
