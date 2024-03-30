@@ -10,4 +10,11 @@ export interface Event {
   name: string;
   dateCreated: string;
   timeframeId: string;
+  usersAttended: UserInEvent[];
+}
+
+export interface UserInEvent{
+  name: string;
+  userId: string;
+  dateCheckedIn: string;
 }

@@ -65,7 +65,7 @@ export default function Event({ params }: { params: { eventId: string } }) {
             </a>
           </li>
           <li>
-            <a href="#" className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+            <a href={`/admin/events/${event._id}/attendance`} className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
               <HiOutlineUserGroup className="w-4 h-4" />
               <span className="flex-1 ms-3 whitespace-nowrap">View Attendance</span>
             </a>

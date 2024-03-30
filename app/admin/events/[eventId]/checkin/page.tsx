@@ -1,25 +1,23 @@
 "use client"
 
 import React, { useState } from 'react';
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Link from "next/link";
-import { HiArrowNarrowLeft, HiOutlineQrcode, HiOutlineUserGroup, HiOutlineTable } from "react-icons/hi";
+import { HiArrowNarrowLeft } from "react-icons/hi";
 import { QrReader } from '@cmdnio/react-qr-reader';
 
 
-export default function CheckIn() {
+export default function CheckInPage() {
   const { token } = useAuth();
-  const [popupCode, setPopupCode] = useState<string | null>(null);
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
+  const [popupCode, setPopupCode] = useState<string | null>(null);
   const searchParams = useSearchParams()
 
-
-  // const eventId = router.query.eventId;
   const eventId = searchParams.get("eventId")
   const eventName = searchParams.get("eventName");
 
-  var blockApiRequests = false;
+  var isProcessing = false;
 
   return (
     <div className="space-y-6">
@@ -34,6 +32,7 @@ export default function CheckIn() {
       <p className="text-sm text-gray-500">Scan your personal QR-Code to get checked in to this event!</p>
       <div>
         <QrReader
+          className="max-w-md mx-auto rounded-lg"
           containerStyle={{
             width: "100%",
             margin: "0 auto",
@@ -47,15 +46,14 @@ export default function CheckIn() {
           }}
           videoStyle={{
             width: "100%",
-            // height: "auto"
             height: "100%"
           }}
           scanDelay={1000}
           onResult={async (result) => {
-            if (result && !blockApiRequests) {
+            if (result && !isProcessing) {
               const userId = result.getText();
 
-              blockApiRequests = true;
+              isProcessing = true;
               try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/${eventId}/checkin`, {
                   method: 'POST',
@@ -66,33 +64,29 @@ export default function CheckIn() {
                   body: JSON.stringify({ userId })
                 });
                 if (!response.ok) {
-                  const data = await response.json();
-                  setPopupCode(data.Code);
-                  throw new Error(data.Message);
+                  const { Message, Code } = await response.json();
+                  setPopupMessage(Message);
+                  setPopupCode(Code);
                 } else {
-                  const data = await response.json();
-                  setPopupMessage(data.message);
+                  const { message } = await response.json();
+                  setPopupMessage(message);
                 }
               } catch (error) {
                 setPopupMessage("" + error);
-                // setPopupCode
               } finally {
                 setTimeout(() => {
-                  blockApiRequests = false
+                  isProcessing = false
                   setPopupMessage(null);
                   setPopupCode(null);
                 }, 2000); // block api requests for 2 seconds
               }
             }
-          }
-          }
-          className={"max-w-md mx-auto rounded-lg"}
+          }}
         />
         {popupMessage && (
           <div
             className={`p-4 mt-4 text-sm ${
-              popupCode === "BadRequestError" ||
-              popupCode === "NotFoundError"
+              popupCode === "NotFoundError" || popupCode === "BadRequestError"
                 ? "bg-red-100 text-red-700"
                 : "bg-green-100 text-green-700"
             } rounded-lg dark:bg-red-200 dark:text-red-800`}
