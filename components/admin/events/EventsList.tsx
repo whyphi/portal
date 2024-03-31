@@ -34,8 +34,11 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
                 </Link>
               </div>
               <div className="flex space-x-2">
-                <Badge color="purple">Tag #1</Badge>
-                <Badge color="purple">Tag #2</Badge>
+                {event.tags?.map((tag) => (
+                  <Badge key={tag} color="purple">
+                    {tag}
+                  </Badge>
+                ))}
               </div>
               <Dropdown label="" dismissOnClick={false} renderTrigger={() => <span><HiDotsVertical /></span>}>
                 <Dropdown.Item
@@ -72,6 +75,8 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
             } finally {
               setOpenDeleteModal(false);
               setSelectedEvent(null);
+              window.location.reload();
+
             }
           }}>Delete</Button>
           <Button color="gray" onClick={() => { setOpenDeleteModal(false); setSelectedEvent(null); }}>

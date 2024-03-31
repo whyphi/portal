@@ -11,6 +11,7 @@ export interface Event {
   dateCreated: string;
   timeframeId: string;
   usersAttended: UserInEvent[];
+  tags: string[];
 }
 
 export interface UserInEvent{

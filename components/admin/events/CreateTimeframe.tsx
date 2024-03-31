@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { HiOutlineUserGroup } from "react-icons/hi";
-import { Label, TextInput, Button, Select } from 'flowbite-react';
+import { HiOutlineUserGroup, HiOutlinePlus, HiOutlineX } from "react-icons/hi";
+import { Label, TextInput, Button, Select, Badge } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
 
@@ -19,6 +19,9 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
 
   const [selectedTimeframeIndex, setSelectedTimeframeIndex] = useState<number>(0);
   const [eventName, setEventName] = useState<string>("");
+
+  const [tagName, setTagName] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
 
   useEffect(() => {
     setTranslateX(isOpen ? '0' : '100%'); // Set initial translateX value
@@ -65,7 +68,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name: eventName })
+      body: JSON.stringify({ name: eventName, tags: tags })
     };
 
     try {
@@ -78,6 +81,34 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
       console.error(error);
     }
   };
+
+  const RenderAddTagButton = () => {
+    const isDisabled = tags.length >= 3 || tagName === '';
+
+    return (
+      <div className="absolute right-6">
+        <label
+          className={`p-2 flex items-center justify-center h-5 text-xs cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors rounded-full border border-gray-200 dark:border-gray-700 ${isDisabled && 'opacity-50 cursor-not-allowed'}`}
+          onClick={() => {
+            if (!isDisabled) {
+              setTags([...tags, tagName]);
+              setTagName('');
+            }
+          }}
+        >
+          <HiOutlinePlus className="mr-1" />
+          <span className="leading-5 ml-1">Add</span>
+        </label>
+      </div>
+    )
+
+
+  }
+
+  const handleRemoveTag = (tag: string) => {
+    setTags(tags.filter((t) => t !== tag));
+  }
+
 
 
   return (
@@ -144,6 +175,43 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
             value={eventName}
             onChange={handleEventNameChange}
           />
+          <div className="mt-6 mb-2 block">
+            <Label htmlFor="graduationYear" value="Add Tags (Max 3)" />
+          </div>
+          <div className="flex items-center">
+            <TextInput
+              key="tags"
+              required
+              id="tags"
+              type="text"
+              value={tagName}
+              onChange={(e) => setTagName(e.target.value)}
+              className="flex-1 rounded-r-0 border-r-0"
+            />
+            {RenderAddTagButton()}
+          </div>
+          {tags.length > 0 && (
+            <div className="flex flex-wrap mt-2">
+              {tags.map((tag, index) => (
+                <div key={index} className="flex items-center mr-2 mb-2">
+                  <div className="flex items-center">
+                    <button
+                      type="button"
+                      className="focus:outline-none p-1"
+                      onClick={() => handleRemoveTag(tag)}
+                    >
+                      <HiOutlineX className="h-4 w-4 text-gray-700 hover:text-gray-500" />
+                    </button>
+                    <Badge color="gray" className="">
+                      {tag}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+
         </div>
         <Button
           className="w-full"
