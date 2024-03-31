@@ -550,7 +550,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     );
   };
 
-  const renderInfoAlert = () => {
+  const RenderInfoAlert = () => {
     return (
       <div className="fixed max-w-screen-sm w-full mt-10 z-50">
         <Alert
@@ -573,7 +573,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     
   };
 
-  const renderFileInput = (
+  const RenderFileInput = (
     id: keyof FormData,
     label: string,
     type: string = "file",
@@ -657,8 +657,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
     <form onSubmit={handleSubmit} className="flex flex-col mb-8 w-full">
 
-      {isInfoAlert && renderInfoAlert()}
-      {isError && renderErrorAlert()}
+      {isInfoAlert && RenderInfoAlert()}
+      {isError && RenderErrorAlert()}
 
       <div>
         <h1 className={textStyles.title}>{title}</h1>
