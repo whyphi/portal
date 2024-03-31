@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 import { Dashboard, DistributionMetricsState } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
-import { PieChart, Pie, Tooltip, Label } from "recharts";
+import { PieChart, Pie, Tooltip, Label, PolarGrid } from "recharts";
 import { Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
 import { useAuth } from "@/app/contexts/AuthContext";
@@ -44,7 +44,11 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
 
-  // Fetch insights data from your /listings API endpoint
+
+  const parseDataCalled = useRef(false);
+
+
+  // Fetch listings data from your /listings API endpoint
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/insights/listing/${params.listingId}`, {
       method: "GET",
@@ -61,7 +65,82 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       })
       .catch((error) => console.error("Error fetching data analytics:", error));
 
+
   }, [params.listingId, token])
+      // Calculate the most common graduation year
+      const gradYearCounts = applicants.reduce((counts: any, applicant) => {
+        const gradYear = applicant.gradYear;
+        counts[gradYear] = (counts[gradYear] || 0) + 1;
+        return counts;
+      }, {});
+
+      const mostCommonGradYear = Object.keys(gradYearCounts).reduce((a, b) => (gradYearCounts[a] > gradYearCounts[b] ? a : b));
+
+      setDashboard(prevState => ({
+        ...prevState,
+        applicantCount: applicants.length,
+        avgGpa: averageGpa.toFixed(3),
+        commonMajor: mostCommonMajor,
+        avgGradYear: mostCommonGradYear,
+        // Assign other calculated values here (commonMajor, avgGradYear)
+      }));
+    };
+
+    getSummaryMetrics(applicantData);
+
+    // map through list of applicants
+    applicantData.map((applicant: Applicant) => {
+      // iterate through keys of applicant object (only consider valid ones)
+      Object.entries(applicant).forEach(([metric, val]: [string, string | Colleges]) => {
+        // valOut : changes to boolean if metric is "linkedin/website" --> otherwise string metric
+
+        if (!fields.includes(metric)) {
+          // case 1: ignore irrelevant metrics
+          return;
+
+        } else if (metric == "colleges") {
+          // case 2: if colleges -> iterate over object of colleges
+          Object.entries(val).forEach(([college, status]: [string, boolean]) => {
+            // only consider `true` colleges
+            if (status) {
+              // search for college in updatedMetrics object
+              const foundCollege = updatedMetrics[metric].find(collegeObject => collegeObject?.name === college);
+              if (foundCollege) {
+                foundCollege.value += 1
+                foundCollege.applicants.push(applicant)
+              } else {
+                const newCollege: Metrics = { name: college, value: 1, applicants: [applicant] };
+                updatedMetrics[metric].push(newCollege);
+              }
+            }
+          })
+          return;
+
+        } else if (["linkedin", "website"].includes(metric) && val !== "") {
+          // case 3: hasUrl -> true or false depending on if user has linkedin/website
+          val = "True"
+
+        } else if (val == "") {
+          // case 4: val is empty string (missing value)
+          val = "None"
+        }
+
+        
+        // handle remaining metric updates
+        const foundMetric = updatedMetrics[metric].find(metricObject => metricObject?.name === val);
+
+        if (foundMetric) {
+          foundMetric.value += 1
+          foundMetric.applicants.push(applicant)
+        } else {
+          const newMetric: Metrics = { name: typeof val === 'string' && val, value: 1, applicants: [applicant] };
+          updatedMetrics[metric].push(newMetric);
+        }
+
+      })
+    })
+    setDistributionMetrics(updatedMetrics)
+  }
 
 
   const handleActiveTab = (tab: number) => {
@@ -110,7 +189,8 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       return <Table.Cell>{colleges}</Table.Cell>
     } else if (["linkedin", "website"].includes(selectedItem)) {
       // case 2: handle url status
-      const hasURL = typeof val === 'string' ? (
+
+      const hasURL = typeof val === 'string' && val !== "" ? (
         <a
           href={val}
           target="_blank"
