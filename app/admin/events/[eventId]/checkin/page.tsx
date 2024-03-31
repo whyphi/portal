@@ -48,6 +48,9 @@ export default function CheckInPage() {
             width: "100%",
             height: "100%"
           }}
+          constraints={{
+            facingMode: "environment"
+          }}
           scanDelay={1000}
           onResult={async (result) => {
             if (result && !isProcessing) {
@@ -85,11 +88,10 @@ export default function CheckInPage() {
         />
         {popupMessage && (
           <div
-            className={`p-4 mt-4 text-sm ${
-              popupCode === "NotFoundError" || popupCode === "BadRequestError"
+            className={`p-4 mt-4 text-sm ${popupCode === "NotFoundError" || popupCode === "BadRequestError"
                 ? "bg-red-100 text-red-700"
                 : "bg-green-100 text-green-700"
-            } rounded-lg dark:bg-red-200 dark:text-red-800`}
+              } rounded-lg dark:bg-red-200 dark:text-red-800`}
             role="alert"
           >
             <span className="font-medium">{popupMessage}</span>
