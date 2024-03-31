@@ -382,7 +382,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   };
 
 
-  const renderInput = (
+  const RenderInput = (
     id: keyof FormData,
     label: string,
     type: string = "text",
@@ -405,8 +405,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     </div>
   );
 
-  // helper to renderGpaSection
-  const renderGpaCheckbox = () => {
+  const RenderGpaCheckbox = () => {
     return (
       <div className="absolute top-1/2 transform -translate-y-1/2 right-6 text-xs">
         <label className="flex text-xs">
@@ -424,7 +423,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     )
   }
 
-  const renderGpaSection = () => {
+  const RenderGpaSection = () => {
     return (
       <div className="mb-6">
         <label className="block mb-2 text-sm font-medium text-gray-900">
@@ -443,7 +442,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
               disabled={isSubmitting}
 
             />
-            {renderGpaCheckbox()}
+            {RenderGpaCheckbox()}
           </div>
           :
           <div className="relative">
@@ -457,7 +456,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
               disabled={isSubmitting}
               readOnly
             />
-            {renderGpaCheckbox()}
+            {RenderGpaCheckbox()}
           </div>
         }
       </div>
@@ -465,7 +464,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     )
   }
 
-  const renderGradMonthYear = () => {
+  const RenderGradMonthYear = () => {
     return (
       <>
         <label className="block mb-2 text-sm font-medium text-gray-900">Expected Graduation Date <span className="text-red-500">*</span></label>
@@ -496,7 +495,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     )
   }
 
-  const renderEventsAttendedSection = () => {
+  const RenderEventsAttendedSection = () => {
 
     // Helper function to convert id to name
     const renderEventName = (eventId: string) => {
@@ -533,7 +532,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     )
   };
 
-  const renderErrorAlert = () => {
+  const RenderErrorAlert = () => {
     return (
       <div className="fixed max-w-screen-sm w-full mt-4 z-50">
         <Alert
@@ -551,7 +550,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     );
   };
 
-  const renderInfoAlert = () => {
+  const RenderInfoAlert = () => {
     return (
       <div className="fixed max-w-screen-sm w-full mt-10 z-50">
         <Alert
@@ -574,7 +573,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     
   };
 
-  const renderFileInput = (
+  const RenderFileInput = (
     id: keyof FormData,
     label: string,
     type: string = "file",
@@ -657,21 +656,22 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   return (
 
     <form onSubmit={handleSubmit} className="flex flex-col mb-8 w-full">
-      {isInfoAlert && renderInfoAlert()}
-      {isError && renderErrorAlert()}
+
+      {isInfoAlert && RenderInfoAlert()}
+      {isError && RenderErrorAlert()}
 
       <div>
         <h1 className={textStyles.title}>{title}</h1>
       </div>
 
-      {renderInput("firstName", "First Name", "text", true)}
-      {renderInput("lastName", "Last Name", "text", true)}
-      {renderInput("preferredName", "Preferred Name")}
-      {renderInput("major", "Major", "text", true)}
-      {renderInput("minor", "Minor", "text")}
-      {renderGpaSection()}
-      {renderGradMonthYear()}
-      {/* {renderInput("gradYear", "Expected Graduation Date (Month Year) | (Example: May 2026)", "text", true)} */}
+      {RenderInput("firstName", "First Name", "text", true)}
+      {RenderInput("lastName", "Last Name", "text", true)}
+      {RenderInput("preferredName", "Preferred Name")}
+      {RenderInput("major", "Major", "text", true)}
+      {RenderInput("minor", "Minor", "text")}
+      {RenderGpaSection()}
+      {RenderGradMonthYear()}
+      {/* {RenderInput("gradYear", "Expected Graduation Date (Month Year) | (Example: May 2026)", "text", true)} */}
 
       <label className="block mb-2 text-sm font-medium text-gray-900">College / School <span className="text-red-500">*</span></label>
       <fieldset className="grid gap-2 grid-cols-4 mb-6">
@@ -690,15 +690,15 @@ export default function Form({ title, questions, listingId, includeEventsAttende
         ))}
       </fieldset>
 
-      {renderInput("email", "Email", "email", true)}
-      {renderInput("phone", "Phone Number (xxx-xxx-xxxx)", "text", true)}
-      {renderInput("linkedin", "LinkedIn Profile", "text")}
-      {renderInput("website", "Website / Portfolio", "text")}
-      {renderFileInput("resume", "Upload Your Resume (PDF)", "file", true)}
-      {renderFileInput("image", "Upload Profile Picture (PNG/JPG/JPEG)", "file", true)}
+      {RenderInput("email", "Email", "email", true)}
+      {RenderInput("phone", "Phone Number (xxx-xxx-xxxx)", "text", true)}
+      {RenderInput("linkedin", "LinkedIn Profile", "text")}
+      {RenderInput("website", "Website / Portfolio", "text")}
+      {RenderFileInput("resume", "Upload Your Resume (PDF)", "file", true)}
+      {RenderFileInput("image", "Upload Profile Picture (PNG/JPG/JPEG)", "file", true)}
 
 
-      {includeEventsAttended && renderEventsAttendedSection()}
+      {includeEventsAttended && RenderEventsAttendedSection()}
 
       {questions && renderResponseInputs()}
 

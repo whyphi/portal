@@ -7,22 +7,24 @@ import { Applicant } from "@/types/applicant";
 import { PieChart, Pie, Tooltip, Label, PolarGrid } from "recharts";
 import { Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
+import { useAuth } from "@/app/contexts/AuthContext";
 
-import { FlowbiteTabTheme } from "flowbite-react";
+import { CustomFlowbiteTheme } from "flowbite-react";
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
   const router = useRouter();
+  const { token } = useAuth();
+
   // dashboard : object containing data from backend (# applicants, average gpa, #1 major, avg gradYear, avg response length)
   const [dashboard, setDashboard] = useState<Dashboard>({
     applicantCount: null,
     avgGpa: null,
     commonMajor: "",
-    avgGradYear: "",
+    commonGradYear: "",
   });
+  const [insightsLoading, setInsightsIsLoading] = useState<boolean>(true);
 
-  // applicantData : list of applicants
-  const [applicantData, setApplicantData] = useState<[] | Applicant[]>([]);
   // distributionMetrics : object containing frequencies of each metric for all applicants
   const [distributionMetrics, setDistributionMetrics] = useState<DistributionMetricsState>({
     colleges: [],
@@ -35,17 +37,12 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   });
   // fields : list of all fields being used for analytics
   const fields: string[] = ["colleges", "gpa", "gradYear", "major", "minor", "linkedin", "website"]
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // selectedItem : used to track which metric plot pie chart for
   const [selectedItem, setSelectedItem] = useState<string | null>("colleges");
 
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
-
-  // useRef to track whether parseData has been called
-  const parseDataCalled = useRef(false);
-
 
   // Fetch listings data from your /listings API endpoint
   useEffect(() => {
@@ -59,8 +56,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
             minor: applicant.minor.toLowerCase(),
           };
         });
-        setApplicantData(cleanedData)
-        setIsLoading(false);
+        setInsightsIsLoading(false);
         // parseData()
       })
       .catch((error) => console.error("Error fetching applicants:", error));
@@ -69,128 +65,24 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   // Parse data whenever applicantData changes
   useEffect(() => {
-    try {
-      // only run parseData once per refresh (useRef ensures this)
-      if (applicantData.length > 0 && !parseDataCalled.current) {
-        parseData();
-        parseDataCalled.current = true; // Set the flag after parsing data
-      }
-    } catch (error) {
-      console.log("error parsing data:", error);
-    }
-  }, [applicantData]);
-
-
-  // parseData : iterates over list of applicantData and obtains distribution of metrics (colleges, gpa, gradYear, major, minor, linkedin, website)
-  const parseData = () => {
-
-    // create temporary copy of distributionMetrics (update after)
-    const updatedMetrics = { ...distributionMetrics };
-
-    // Calculate Summary Metrics
-
-    const getSummaryMetrics = (applicants: Applicant[]) => {
-      console.log("Getting summary metrics");
-
-      // Check if there are applicants
-      if (applicants.length === 0) {
-        console.log("No applicants to analyze");
-        return;
-      }
-
-      // Calculate average GPA
-      const validGpas = applicants.filter(applicant => !isNaN(parseFloat(applicant.gpa))).map(applicant => parseFloat(applicant.gpa));
-      var averageGpa = 0.00;
-      if (validGpas.length > 0) {
-        const totalGpa = validGpas.reduce((sum, gpa) => sum + gpa, 0);
-        averageGpa = totalGpa / validGpas.length;
-      } else {
-        console.log("No valid GPAs to calculate average");
-      }
-
-      // Calculate the most common major
-      const majorCounts = applicants.reduce((counts: any, applicant) => {
-        const major = applicant.major.trim(); // Trim to handle whitespace variations
-        counts[major] = (counts[major] || 0) + 1;
-        return counts;
-      }, {});
-
-      const mostCommonMajor = Object.keys(majorCounts).reduce((a, b) => (majorCounts[a] > majorCounts[b] ? a : b));
-
-      // Calculate the most common graduation year
-      const gradYearCounts = applicants.reduce((counts: any, applicant) => {
-        const gradYear = applicant.gradYear;
-        counts[gradYear] = (counts[gradYear] || 0) + 1;
-        return counts;
-      }, {});
-
-      const mostCommonGradYear = Object.keys(gradYearCounts).reduce((a, b) => (gradYearCounts[a] > gradYearCounts[b] ? a : b));
-
-      setDashboard(prevState => ({
-        ...prevState,
-        applicantCount: applicants.length,
-        avgGpa: averageGpa.toFixed(3),
-        commonMajor: mostCommonMajor,
-        avgGradYear: mostCommonGradYear,
-        // Assign other calculated values here (commonMajor, avgGradYear)
-      }));
-    };
-
-    getSummaryMetrics(applicantData);
-
-    // map through list of applicants
-    applicantData.map((applicant: Applicant) => {
-      // iterate through keys of applicant object (only consider valid ones)
-      Object.entries(applicant).forEach(([metric, val]: [string, string | Colleges]) => {
-        // valOut : changes to boolean if metric is "linkedin/website" --> otherwise string metric
-
-        if (!fields.includes(metric)) {
-          // case 1: ignore irrelevant metrics
-          return;
-
-        } else if (metric == "colleges") {
-          // case 2: if colleges -> iterate over object of colleges
-          Object.entries(val).forEach(([college, status]: [string, boolean]) => {
-            // only consider `true` colleges
-            if (status) {
-              // search for college in updatedMetrics object
-              const foundCollege = updatedMetrics[metric].find(collegeObject => collegeObject?.name === college);
-              if (foundCollege) {
-                foundCollege.value += 1
-                foundCollege.applicants.push(applicant)
-              } else {
-                const newCollege: Metrics = { name: college, value: 1, applicants: [applicant] };
-                updatedMetrics[metric].push(newCollege);
-              }
-            }
-          })
-          return;
-
-        } else if (["linkedin", "website"].includes(metric) && val !== "") {
-          // case 3: hasUrl -> true or false depending on if user has linkedin/website
-          val = "True"
-
-        } else if (val == "") {
-          // case 4: val is empty string (missing value)
-          val = "None"
-        }
-
-        
-        // handle remaining metric updates
-        const foundMetric = updatedMetrics[metric].find(metricObject => metricObject?.name === val);
-
-        if (foundMetric) {
-          foundMetric.value += 1
-          foundMetric.applicants.push(applicant)
-        } else {
-          const newMetric: Metrics = { name: typeof val === 'string' && val, value: 1, applicants: [applicant] };
-          updatedMetrics[metric].push(newMetric);
-        }
-
-      })
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/insights/listing/${params.listingId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     })
-    setDistributionMetrics(updatedMetrics)
-  }
+      .then((response) => response.json())
+      .then(([dashboard, distribution]: [Dashboard, DistributionMetricsState]) => {
+        setDashboard(dashboard);
+        setDistributionMetrics(distribution)
+        setInsightsIsLoading(false);
+      })
+      .catch((error) => console.error("Error fetching data analytics:", error));
+
+
+  }, [params.listingId, token])
+
 
 
   const handleActiveTab = (tab: number) => {
@@ -273,7 +165,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     </Table.Row>
   ))
 
-  const customTabTheme: FlowbiteTabTheme = {
+  const customTabTheme: CustomFlowbiteTheme['tabs'] = {
     "base": "flex flex-col gap-2",
     "tablist": {
       "base": "flex text-center",
@@ -316,13 +208,22 @@ export default function Insights({ params }: { params: { listingId: string } }) 
           }
         },
         "icon": "mr-2 h-5 w-5"
+      },
+    },
+    "tabitemcontainer": {
+      "base": "",
+      "styles": {
+        "default": "",
+        "underline": "",
+        "pills": "",
+        "fullWidth": ""
       }
     },
-    "tabpanel": "py-3"
+    "tabpanel": "py-3",
   }
 
   // if applicants data not yet received : produce loading screen
-  if (isLoading) return (<Loader />)
+  if (insightsLoading) return (<Loader />)
 
   return (
     <div>
@@ -332,15 +233,15 @@ export default function Insights({ params }: { params: { listingId: string } }) 
         <SummaryCard title="Number of Applicants" value={dashboard.applicantCount} />
         <SummaryCard title="Average GPA" value={dashboard.avgGpa} />
         <SummaryCard title="Most Common Major" value={dashboard.commonMajor} />
-        <SummaryCard title="Most Common Grad Year" value={dashboard.avgGradYear} />
+        <SummaryCard title="Most Common Grad Year" value={dashboard.commonGradYear} />
       </div>
 
 
-      <Tabs.Group style="pills" theme={customTabTheme} aria-label="Tabs with underline" onActiveTabChange={(tab) => handleActiveTab(tab)}>
+      <Tabs style="pills" theme={customTabTheme} aria-label="Tabs with underline" onActiveTabChange={(tab) => handleActiveTab(tab)}>
         {fields.map((field, index) => (
           <Tabs.Item color="purple" title={field} key={index} />
         ))}
-      </Tabs.Group>
+      </Tabs>
 
       <div className="flex flex-col items-center w-full">
         <PieChart width={450} height={400}>

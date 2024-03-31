@@ -5,7 +5,7 @@ export interface Dashboard {
   applicantCount: number | null;
   avgGpa: any;
   commonMajor: string;
-  avgGradYear: string;
+  commonGradYear: string;
 }
 
 // Metrics : uses `name` `value` object to easily integrate with `recharts` pie charts (also includes list of Applicants associated with this metric.name --> e.g. colleges[0].applicants)
