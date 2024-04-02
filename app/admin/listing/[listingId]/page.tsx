@@ -46,9 +46,11 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     <div>
       <h1 className="text-2xl font-bold mb-4">Applicants</h1>
       {applicantData.length > 0 ?
-        <div className="flex row-auto">
+        <div className="flex flex-row">
           <ListingSidebar applicantData={applicantData} setApplicantIndex={setApplicantIndex} />
-          <ApplicantPage applicant={applicantData[applicantIndex]}/>
+          <div className="flex-1">
+            <ApplicantPage applicant={applicantData[applicantIndex]}/>
+          </div>
         </div>
         :
         <div>No applicants yet...</div>

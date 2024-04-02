@@ -21,7 +21,7 @@ export default function ListingSidebar({ applicantData, setApplicantIndex }: Lis
 
   const renderApplicantTableView = () => {
     return (
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto w-80">
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell>Name</Table.HeadCell>
