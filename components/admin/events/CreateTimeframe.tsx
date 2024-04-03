@@ -5,6 +5,7 @@ import { HiOutlineUserGroup, HiOutlinePlus, HiOutlineX } from "react-icons/hi";
 import { Label, TextInput, Button, Select, Badge } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
+import { Spinner } from 'flowbite-react';
 
 interface CreateTimeframeProps {
   timeframes: Timeframe[];
@@ -23,9 +24,32 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
   const [tagName, setTagName] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
 
+  const [sheetTabs, setSheetTabs] = useState<string[]>([]);
+  const [selectedSheetTab, setSelectedSheetTab] = useState<string>("");
+  const [isSheetTabLoading, setIsSheetTabLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    setTranslateX(isOpen ? '0' : '100%'); // Set initial translateX value
-  }, [isOpen]);
+    setTranslateX(isOpen ? '0' : '100%');
+    setIsSheetTabLoading(true);
+    const getSheetTabs = async () => {
+
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex]._id}/sheets`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setSheetTabs(data);
+        setIsSheetTabLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getSheetTabs();
+  }, [selectedTimeframeIndex, timeframes, token, isOpen]);
+
+
 
   const handleCloseButtonClick = () => {
     setIsOpen(false);
@@ -210,6 +234,15 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
               ))}
             </div>
           )}
+
+          <div className="mt-6 mb-2 block">
+            <Label htmlFor="graduationYear" value="Select Sheet Tab" />
+          </div>
+          {isSheetTabLoading ? (<Spinner />) : (<Select id="sheetTabs" required value={selectedSheetTab} onChange={(e) => setSelectedSheetTab(e.target.value)}>
+            {sheetTabs && sheetTabs.map((sheetTab) => (
+              <option key={sheetTab} value={sheetTab}>{sheetTab}</option>
+            ))}
+          </Select>)}
 
 
         </div>
