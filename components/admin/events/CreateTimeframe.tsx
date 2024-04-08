@@ -16,7 +16,9 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
   const { token } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [translateX, setTranslateX] = useState<string>('0');
+
   const [timeframeName, setTimeframeName] = useState<string>("");
+  const [spreadsheetId, setSpreadsheetId] = useState<string>("");
 
   const [selectedTimeframeIndex, setSelectedTimeframeIndex] = useState<number>(0);
   const [eventName, setEventName] = useState<string>("");
@@ -64,6 +66,10 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
     setEventName(e.target.value)
   };
 
+  const handleSpreadsheetIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSpreadsheetId(e.target.value)
+  };
+
   const handleCreateTimeframe = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes`, {
@@ -72,7 +78,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: timeframeName })
+        body: JSON.stringify({ name: timeframeName, spreadsheetId: spreadsheetId })
       });
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -166,7 +172,20 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
             value={timeframeName}
             onChange={handleInputchange}
           />
+
+          <div className="mt-4 mb-2 block">
+            <Label htmlFor="spreadsheetId" value="Google Spreadsheet ID" />
+          </div>
+          <TextInput
+            key="spreadsheetId"
+            required
+            id="spreadsheetId"
+            type="text"
+            value={spreadsheetId}
+            onChange={handleSpreadsheetIdChange}
+          />
         </div>
+
         <Button
           className="w-full"
           color="purple"
