@@ -67,8 +67,9 @@ export default function TimeframeSetting({ params }: { params: { timeframeId: st
         </button>
       </Link>
       <div className="flex flex-col justify-between">
-        <h1 className="text-4xl font-bold dark:text-white mb-6 mt-4">Timeframe Settings</h1>
-
+        <h1 className="text-4xl font-bold dark:text-white mt-4">Timeframe Settings</h1>
+        <p className="mt-2 text-gray-500">Name: {timeframe?.name}</p>
+        <p className="mt-1 mb-4 text-gray-500">ID: {params.timeframeId}</p>
 
 
         <div className="flex flex-col border border-red-500 rounded-t-lg mt-6 p-4">
