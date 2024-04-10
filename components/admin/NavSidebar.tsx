@@ -158,7 +158,7 @@ export default function NavSidebar() {
                 <span className="flex-1 ml-3 whitespace-nowrap">Events</span>
               </a>
             </li>
-            <li>
+            {/* <li>
               <a
                 href="/admin/announcements"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -168,8 +168,8 @@ export default function NavSidebar() {
                 </svg>
                 <span className="flex-1 ml-3 whitespace-nowrap">Announcements</span>
               </a>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <a
                 href="/admin/alumni"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -190,7 +190,7 @@ export default function NavSidebar() {
                 </svg>
                 <span className="flex-1 ml-3 whitespace-nowrap">Member Database</span>
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
       </aside>
