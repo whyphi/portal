@@ -5,6 +5,7 @@ import { HiOutlineUserGroup, HiOutlinePlus, HiOutlineX } from "react-icons/hi";
 import { Label, TextInput, Button, Select, Badge } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
+import { Spinner } from 'flowbite-react';
 
 interface CreateTimeframeProps {
   timeframes: Timeframe[];
@@ -15,7 +16,9 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
   const { token } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [translateX, setTranslateX] = useState<string>('0');
+
   const [timeframeName, setTimeframeName] = useState<string>("");
+  const [spreadsheetId, setSpreadsheetId] = useState<string>("");
 
   const [selectedTimeframeIndex, setSelectedTimeframeIndex] = useState<number>(0);
   const [eventName, setEventName] = useState<string>("");
@@ -23,9 +26,32 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
   const [tagName, setTagName] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
 
+  const [sheetTabs, setSheetTabs] = useState<string[]>([]);
+  const [selectedSheetTab, setSelectedSheetTab] = useState<string>("");
+  const [isSheetTabLoading, setIsSheetTabLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    setTranslateX(isOpen ? '0' : '100%'); // Set initial translateX value
-  }, [isOpen]);
+    setTranslateX(isOpen ? '0' : '100%');
+    setIsSheetTabLoading(true);
+    const getSheetTabs = async () => {
+
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex]._id}/sheets`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setSheetTabs(data);
+        setIsSheetTabLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getSheetTabs();
+  }, [selectedTimeframeIndex, timeframes, token, isOpen]);
+
+
 
   const handleCloseButtonClick = () => {
     setIsOpen(false);
@@ -40,6 +66,10 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
     setEventName(e.target.value)
   };
 
+  const handleSpreadsheetIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSpreadsheetId(e.target.value)
+  };
+
   const handleCreateTimeframe = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes`, {
@@ -48,7 +78,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: timeframeName })
+        body: JSON.stringify({ name: timeframeName, spreadsheetId: spreadsheetId })
       });
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -68,7 +98,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name: eventName, tags: tags })
+      body: JSON.stringify({ name: eventName, tags: tags, sheetTab: selectedSheetTab }),
     };
 
     try {
@@ -142,7 +172,20 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
             value={timeframeName}
             onChange={handleInputchange}
           />
+
+          <div className="mt-4 mb-2 block">
+            <Label htmlFor="spreadsheetId" value="Google Spreadsheet ID" />
+          </div>
+          <TextInput
+            key="spreadsheetId"
+            required
+            id="spreadsheetId"
+            type="text"
+            value={spreadsheetId}
+            onChange={handleSpreadsheetIdChange}
+          />
         </div>
+
         <Button
           className="w-full"
           color="purple"
@@ -210,6 +253,15 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
               ))}
             </div>
           )}
+
+          <div className="mt-6 mb-2 block">
+            <Label htmlFor="graduationYear" value="Select Sheet Tab" />
+          </div>
+          {isSheetTabLoading ? (<Spinner />) : (<Select id="sheetTabs" required value={selectedSheetTab} onChange={(e) => setSelectedSheetTab(e.target.value)}>
+            {sheetTabs && sheetTabs.map((sheetTab) => (
+              <option key={sheetTab} value={sheetTab}>{sheetTab}</option>
+            ))}
+          </Select>)}
 
 
         </div>

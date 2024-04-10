@@ -5,13 +5,14 @@ import { getSession } from 'next-auth/react';
 import Loader from "@/components/Loader";
 import { Button, Select, Label } from "flowbite-react";
 import { HiOutlineCog, HiPlus } from "react-icons/hi";
-import { useRouter } from "next/navigation";
 import CreateTimeframe from "@/components/admin/events/CreateTimeframe";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
 import EventsList from "@/components/admin/events/EventsList";
+import { useRouter } from "next/navigation";
 
 export default function Events() {
+  const router = useRouter();
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [timeframes, setTimeframes] = useState<Timeframe[]>([]);
@@ -62,7 +63,7 @@ export default function Events() {
             <HiPlus className="mr-1 h-5 w-5" />
             Create
           </Button>
-          <Button disabled className="">
+          <Button onClick={() => router.push('/admin/events/settings')} className="h-12">
             <HiOutlineCog className="h-5 w-5" />
           </Button>
         </div>

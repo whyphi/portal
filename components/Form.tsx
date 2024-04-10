@@ -629,7 +629,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
             <HiOutlineX
               className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
               onClick={(e: any) => clearFileInput(e)}
-              disabled={isSubmitting}
+              // disabled={isSubmitting}
             />
           </div>
           :
@@ -639,7 +639,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
             <HiOutlineX
               className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
               onClick={(e: any) => clearFileInput(e)}
-              disabled={isSubmitting}
+              // disabled={isSubmitting}
             />
           </div>
         }

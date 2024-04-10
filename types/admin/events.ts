@@ -1,6 +1,7 @@
 export interface Timeframe {
   _id: string;
   name: string;
+  spreadsheetId: string;
   dateCreated: string;
   events: Event[]
 }
