@@ -13,7 +13,6 @@ export default function Accountability() {
   const { token } = useAuth();
   const [accountability, setAccountability] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [page, setPage] = useState<number>(1);
 
   const ProgressBar = ({ currentPoints, required }: { currentPoints: number; required: number }) => {
     return (
@@ -51,7 +50,7 @@ export default function Accountability() {
   ]);
 
 
-  const fetchData = (page: number) => {
+  const fetchData = () => {
     setIsLoading(true);
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accountability?page=0&page_size=100`, {
       headers: {
@@ -67,8 +66,8 @@ export default function Accountability() {
   };
 
   useEffect(() => {
-    fetchData(page);
-  }, [page]);
+    fetchData();
+  }, []);
 
   const textStyles = {
     title: "text-4xl font-bold dark:text-white mb-6 mt-4 ",
@@ -78,12 +77,6 @@ export default function Accountability() {
   if (isLoading) {
     return <Loader />
   }
-
-  const showNextPage = () => {
-    setPage(page + 1);
-  };
-
-  const slicedAccountability = accountability.slice(0, 20 * page);
 
   return (
     <div className="overflow-x-auto">
@@ -100,39 +93,6 @@ export default function Accountability() {
           paginationPageSizeSelector={[10, 20, 25, 50, 100]}
         />
       </div>
-      {/* <Table hoverable>
-        <Table.Head>
-          <Table.HeadCell>Name</Table.HeadCell>
-          <Table.HeadCell>Points</Table.HeadCell>
-          <Table.HeadCell>Progress</Table.HeadCell>
-        </Table.Head>
-        <Table.Body className="divide-y">
-          {slicedAccountability.map((data, index) => (
-            <Table.Row
-              key={index}
-              className={`bg-white dark:border-gray-700 dark:bg-gray-800`}
-            >
-              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                {data.name}
-              </Table.Cell>
-              <Table.Cell>{data.currentPoints}</Table.Cell>
-              <Table.Cell>
-                <Progress
-                  progress={data.currentPoints / data.required * 100}
-                  color={data.currentPoints >= data.required ? "green" : "purple"} // Change color to green if points are 100 or more
-                />
-              </Table.Cell>
-            </Table.Row>
-          ))}
-          {accountability.length > slicedAccountability.length && (
-            <tr>
-              <td colSpan={3} className="text-center">
-                <Button onClick={showNextPage}>Load More</Button>
-              </td>
-            </tr>
-          )}
-        </Table.Body>
-      </Table> */}
     </div>
   );
 }
