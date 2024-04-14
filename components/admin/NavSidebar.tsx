@@ -64,7 +64,7 @@ export default function NavSidebar() {
                   <Dropdown.Divider />
                   <button
                     className="block text-sm w-full"
-                    onClick={() => signOut()}
+                    onClick={() => signOut({ callbackUrl: "/" })}
                   >
                     Sign Out
                   </button>
