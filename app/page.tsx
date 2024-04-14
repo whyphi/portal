@@ -33,7 +33,7 @@ export default function Home() {
             </h1>
 
             <p className="mt-4 leading-relaxed text-gray-500">
-              WhyPhi is Phi Chi Theta Zeta Chapter's one-click dashboard application.
+              {`WhyPhi is Phi Chi Theta Zeta Chapter's one-click dashboard application.`}
             </p>
 
             <div className="col-span-6">
@@ -49,7 +49,7 @@ export default function Home() {
               <a
                 // href={`/admin`}
                 className={`flex justify-center items-center px-4 py-3 mt-4 text-white bg-purple-400 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-full disabled:opacity-50 disabled:cursor-not-allowed`}
-                // disabled // Add disabled attribute
+              // disabled // Add disabled attribute
               >
                 Sign In – PNM
               </a>
