@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Applicant, EventsAttended } from "@/types/applicant";
-import { Badge, Tabs, Table } from "flowbite-react";
+import { Badge, Tabs, Table, Dropdown } from "flowbite-react";
 import { HiMenuAlt1, HiDocumentText, HiUserGroup } from "react-icons/hi";
 import { IoPeople } from "react-icons/io5";
 import ResponseCard from "@/components/admin/listing/ResponseCard";
+import InterviewCard from "@/components/admin/listing/InterviewCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
 import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
 import Loader from "@/components/Loader";
@@ -14,6 +15,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [applicantData, setApplicantData] = useState<null | Applicant>(null);
+  const [interviewTypeSelected, setInterviewTypeSelected] = useState<string>("All");
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicant/${params.applicantId}`, {
@@ -31,54 +33,16 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
       .catch((error) => console.error("Error fetching listings:", error));
   }, [params.applicantId, token]);
 
-  const renderResponses = () => {
-    const mockInterviewResponses = [
-      {
-        question:
-          "Tell us about yourself. What are you passionate about/what motivates you? (200 words max)",
-        answer:
-          "sit amet volutpat consequat mauris nunc congue nisi vitae suscipit tellus mauris a diam maecenas sed enim ut sem viverra aliquet eget sit amet tellus cras adipiscing enim eu turpis egestas pretium aenean pharetra magna ac placerat vestibulum lectus mauris ultrices eros in cursus turpis massa tincidunt",
-        notes: "applicant did a good job of explaining their passions and motivations",
-      },
-    ];
-    return applicantData?.responses.length === 0 ? (
-      <p>None</p>
-    ) : (
-      <div className="">
-        {mockInterviewResponses.map((response, index) => (
-          <ResponseCard
-            key={index}
-            question={response.question}
-            answer={response.answer}
-            notes={response.notes}
-          />
-        ))}
-      </div>
-    );
-  };
+  // TO-DO: Fetch interview responses from Backend. Probably filter out in frontend down below.
+  // useEffect(() => {
+  //   fetch()...
+  // }, [interviewTypeSelected, token]);
 
-  const renderInterviews = () => {
+  const renderResponses = () => {
     return applicantData?.responses.length === 0 ? (
       <p>None</p>
     ) : (
-      <div className="justify-center">
-        <div className="border-2 inline-block p-2 rounded my-4 mx-auto border-slate-500">
-          <p className="font-semibold text-xl">Interview Summary</p>
-          <div className="flex flex-row space-x-10 items-center">
-            <div className="flex flex-col">
-              <p>Case:</p>
-              <p>4.5</p>
-            </div>
-            <div className="flex flex-col">
-              <p>Technical:</p>
-              <p>2</p>
-            </div>
-            <div className="flex flex-col">
-              <p>Behavioral:</p>
-              <p>3</p>
-            </div>
-          </div>
-        </div>
+      <div>
         {applicantData?.responses.map((response, index) => (
           <ResponseCard key={index} question={response.question} answer={response.response} />
         ))}
@@ -116,6 +80,113 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
             ))}
           </Table.Body>
         </Table>
+      </div>
+    );
+  };
+
+  const renderInterviews = () => {
+    const mockInterviewResponses = [
+      {
+        type: "Behavioral",
+        question: "Tell us about yourself. What are you passionate about/what motivates you?",
+        answer: "sit amet volutpat consequat mauris nunc",
+        notes: "applicant did a good job of explaining their passions and motivations",
+        score: 3,
+      },
+      {
+        type: "Behavioral",
+        question:
+          "Describe a situation where you had to overcome a difficult challenge at work or in a project. How did you handle it?",
+        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        notes: "candidate demonstrated resilience and problem-solving skills",
+        score: 3,
+      },
+      {
+        type: "Technical",
+        question: "How many piano tuners are there in New York City?",
+        answer: "Fusce vehicula justo ut urna vestibulum placerat.",
+        notes: "interviewee demonstrated analytical thinking and estimation skills",
+        score: 3,
+      },
+      {
+        type: "Technical",
+        question: "What is the next number in this sequence: 1, 4, 9, 16, 25, ...?",
+        answer: "Maecenas commodo velit nec purus gravida malesuada.",
+        notes: "applicant showed logical reasoning and pattern recognition abilities",
+        score: 3,
+      },
+      {
+        type: "Case",
+        question: "How would you approach increasing market share for a declining product?",
+        answer: "Nullam vitae justo eget purus viverra accumsan.",
+        notes: "interviewee proposed innovative strategies and demonstrated analytical thinking",
+        score: 3,
+      },
+      {
+        type: "Case",
+        question:
+          "Discuss a recent business news article that caught your attention. How does it relate to our industry?",
+        answer: "Integer non lectus sit amet est commodo ultricies.",
+        notes: "candidate displayed a good understanding of industry trends and their implications",
+        score: 3,
+      },
+    ];
+
+    const filteredMockInterviewResponses = mockInterviewResponses?.filter((response) => {
+      return response.type === interviewTypeSelected || interviewTypeSelected === "All";
+    });
+
+    const interviewResults = [
+      {
+        type: "Behavioral",
+        score: 2.5,
+      },
+      {
+        type: "Technical",
+        score: 2.5,
+      },
+      {
+        type: "Case",
+        score: 4,
+      },
+    ];
+    return mockInterviewResponses?.length === 0 ? (
+      <p>None</p>
+    ) : (
+      <div className="justify-center">
+        <div className="border-2 w-full inline-block p-2 rounded my-4 mx-auto border-slate-500">
+          {/* <p className="font-semibold text-xl">Interview Summary</p> */}
+          <div className="flex flex-row justify-between items-center">
+            {interviewResults?.map((response, index) => (
+              <div className="text-center px-5 flex flex-col">
+                <p>{response.type}:</p>
+                <p className="text-4xl font-semibold">{response.score}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <Dropdown label="Filter Interview" placement="bottom" size="sm">
+          <Dropdown.Item onClick={() => setInterviewTypeSelected("All")}>All</Dropdown.Item>
+          <Dropdown.Item onClick={() => setInterviewTypeSelected("Behavioral")}>
+            Behavioral
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => setInterviewTypeSelected("Technical")}>
+            Technical
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => setInterviewTypeSelected("Case")}>Case</Dropdown.Item>
+        </Dropdown>
+        <div className="pt-4">
+          {filteredMockInterviewResponses?.map((response, index) => (
+            <InterviewCard
+              key={index}
+              type={response.type}
+              question={response.question}
+              answer={response.answer}
+              notes={response.notes}
+              score={response.score}
+            />
+          ))}
+        </div>
       </div>
     );
   };

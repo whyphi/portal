@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 interface ResponseCardProp {
   question: string;
   answer: string;
-  notes?: string;
 }
 
 export default function ResponseCard(props: ResponseCardProp) {
@@ -33,18 +32,6 @@ export default function ResponseCard(props: ResponseCardProp) {
         </div>
         <h5 className={textStyles.answer}>{props.answer}</h5>
       </div>
-      {props.notes ? (
-        <div className="p-4 flex flex-row bg-blue-500">
-          <div className="w-24">
-            <span className="w=10 bg-gray-100 text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
-              Notes
-            </span>
-          </div>
-          <h5 className={textStyles.answer}>{props.notes}</h5>
-        </div>
-      ) : (
-        <></>
-      )}
     </div>
   );
 }
