@@ -13,6 +13,23 @@ interface ApplicantInfoCardProps {
 }
 
 export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps) {
+  let statusColor = "bg-yellow-400";
+  if (applicant.status) {
+    switch (applicant.status) {
+      case "Applied":
+        statusColor = "bg-yellow-400";
+        break;
+      case "Interviewing":
+        statusColor = "bg-sky-400";
+        break;
+      case "Rejected":
+        statusColor = "bg-red-500";
+        break;
+      case "Accepted":
+        statusColor = "bg-green-500";
+        break;
+    }
+  }
   const textStyles = {
     name: "text-xl font-bold dark:text-white",
     college: "text-md font-extralight text-gray-700 pt-2",
@@ -20,7 +37,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
     gpa: "text-md font-extralight text-gray-700 pb-2",
     link: "text-base font-normal leading-tight text-blue-500 dark:text-gray-400 underline",
     gradDate: "text-sm font-extralight text-gray-600",
-    applicantStatus: "bg-green-500 px-4 rounded-xl inline-block",
+    applicantStatus: `${statusColor} px-4 py-1 font-semibold text-sm rounded-xl inline-block`,
   };
 
   // Filter the colleges that are true and format them with year
@@ -48,12 +65,14 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
           <h5 className="pb-2 text-sm text-gray-500">({applicant.preferredName})</h5>
         )}
         <p className={textStyles.gradDate}>{`${applicant.gradMonth} ${applicant.gradYear}`}</p>
-        <div className="pb-3">
-          {" "}
-          {/* TODO: fix jank padding*/}
-          <div className={textStyles.applicantStatus}>Interviewing</div>{" "}
-        </div>
-        {/* TODO: add applicant.status and render different colors based on it */}
+        {applicant.status ? (
+          <div className="pb-3">
+            {" "}
+            <div className={textStyles.applicantStatus}>{applicant.status}</div>{" "}
+          </div>
+        ) : (
+          <></>
+        )}
         <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
         <p className={textStyles.college}>College(s): {trueColleges.join(", ")}</p>
         <p className={textStyles.major}>Major: {applicant?.major}</p>

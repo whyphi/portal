@@ -20,7 +20,7 @@ export default function InterviewCard(props: InterviewCardProp) {
   let typeColor;
   switch (props.type) {
     case "Behavioral":
-      typeColor = "bg-emerald-200";
+      typeColor = "bg-emerald-300";
       break;
     case "Technical":
       typeColor = "bg-sky-300";
@@ -30,7 +30,7 @@ export default function InterviewCard(props: InterviewCardProp) {
       break;
   }
   const typeStyle = `w-1 ${typeColor} text-gray-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300`;
-
+  const reviewBoxStyle = `p-4 flex flex-row ${typeColor}`;
   return (
     <div className="flex flex-col max-w-2xl bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mb-4">
       <div className="p-4 flex flex-row items-center bg-slate-50">
@@ -47,30 +47,14 @@ export default function InterviewCard(props: InterviewCardProp) {
         </div>
         <h5 className={textStyles.answer}>{props.answer}</h5>
       </div>
-      {props.score ? (
-        <div className="px-4 pt-4 pb-2 flex flex-row bg-sky-200">
-          <div className="w-24">
-            <span className="w=10 bg-blue-950 text-gray-100 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
-              Score
-            </span>
-          </div>
-          <h5 className={textStyles.notes}>{props.score}</h5>
+      <div className={reviewBoxStyle}>
+        <div className="w-24">
+          <span className="w=10 text-xl font-semibold mr-2 px-2.5 py-0.5 rounded">
+            {props.score} / 5
+          </span>
         </div>
-      ) : (
-        <></>
-      )}
-      {props.notes ? (
-        <div className="px-4 pb-4 pt-2 flex flex-row bg-sky-200">
-          <div className="w-24">
-            <span className="w=10 bg-blue-950 text-gray-100 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
-              Notes
-            </span>
-          </div>
-          <h5 className={textStyles.notes}>{props.notes}</h5>
-        </div>
-      ) : (
-        <></>
-      )}
+        <h5 className={textStyles.notes}>{props.notes}</h5>
+      </div>
     </div>
   );
 }
