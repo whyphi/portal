@@ -1,8 +1,13 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { Table, Progress, Button } from 'flowbite-react';
+import { Progress, Badge } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
+
+import { AgGridReact } from 'ag-grid-react'; // AG Grid Component
+import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
+import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
+
 
 export default function Accountability() {
   const { token } = useAuth();
@@ -10,16 +15,52 @@ export default function Accountability() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
 
+  const ProgressBar = ({ currentPoints, required }: { currentPoints: number; required: number }) => {
+    return (
+      <Progress
+        progress={currentPoints / required * 100}
+        color={currentPoints >= required ? "green" : "purple"} // Change color to green if points are 100 or more
+      />
+    )
+  }
+
+  const BucketMetBadge = ({ bucketMet }: { bucketMet: boolean }) => (
+    <div className="flex flex-row items-center mt-3">
+      <Badge color={bucketMet ? 'success' : 'failure'}>{bucketMet ? 'YES' : 'NO'}</Badge>
+    </div>
+  )
+
+
+  const [colDefs, setColDefs] = useState([
+    { field: "name", flex: 2, filter: true },
+    { field: "currentPoints", flex: 1, },
+    {
+      field: "progress", flex: 4, cellRenderer: (params: any) => (
+        <div className="mt-4">
+          <ProgressBar currentPoints={params.data.currentPoints} required={params.data.required} />
+        </div>
+      )
+    },
+    { field: "Chapter Bucket", flex: 1, cellRenderer: (params: any) => <BucketMetBadge bucketMet={params.data.chapterBucketMet} /> },
+    { field: "Rush Bucket", flex: 1, cellRenderer: (params: any) => <BucketMetBadge bucketMet={params.data.rushBucketMet} /> },
+    { field: "Fundraising Bucket", flex: 1, cellRenderer: (params: any) => <BucketMetBadge bucketMet={params.data.fundraisingBucketMet} /> },
+    { field: "Events Bucket", flex: 1, cellRenderer: (params: any) => <BucketMetBadge bucketMet={params.data.eventsBucketMet} /> },
+    { field: "Teams Bucket", flex: 1, cellRenderer: (params: any) => <BucketMetBadge bucketMet={params.data.teamsBucketMet} /> },
+    { field: "Variable Bucket", flex: 1, cellRenderer: (params: any) => <BucketMetBadge bucketMet={params.data.variableBucketMet} /> },
+    // { field: "electric" }
+  ]);
+
+
   const fetchData = (page: number) => {
     setIsLoading(true);
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accountability`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accountability?page=0&page_size=100`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => response.json())
       .then((data) => {
-        setAccountability((prevState) => [...prevState, ...data]);
+        setAccountability(data);
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching data:", error));
@@ -47,7 +88,19 @@ export default function Accountability() {
   return (
     <div className="overflow-x-auto">
       <h1 className={textStyles.title}>Accountability Tracker</h1>
-      <Table hoverable>
+      <div
+        className="ag-theme-quartz" // applying the grid theme
+        style={{ height: "80vh" }} // the grid will fill the size of the parent container
+      >
+        <AgGridReact
+          rowData={accountability}
+          columnDefs={colDefs}
+          pagination={true}
+          paginationPageSize={20}
+          paginationPageSizeSelector={[10, 20, 25, 50, 100]}
+        />
+      </div>
+      {/* <Table hoverable>
         <Table.Head>
           <Table.HeadCell>Name</Table.HeadCell>
           <Table.HeadCell>Points</Table.HeadCell>
@@ -79,7 +132,7 @@ export default function Accountability() {
             </tr>
           )}
         </Table.Body>
-      </Table>
+      </Table> */}
     </div>
   );
 }
