@@ -6,11 +6,13 @@ import { Applicant } from "@/types/applicant";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsRef, Table } from 'flowbite-react';
 import { HiOutlineCollection, HiOutlineTable } from 'react-icons/hi';
+import { useAuth } from "@/app/contexts/AuthContext";
 
 
 
 export default function Listing({ params }: { params: { listingId: string } }) {
   const router = useRouter();
+  const { token } = useAuth();
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -22,14 +24,20 @@ export default function Listing({ params }: { params: { listingId: string } }) {
 
   useEffect(() => {
     // Fetch listings data from your /listings API endpoint
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data: [Applicant]) => {
         setApplicantData(data)
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching listings:", error));
-  }, []);
+  }, [params.listingId, token]);
 
   const renderApplicantCardView = () => {
     return (
@@ -99,14 +107,14 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Applicants</h1>
-      <Tabs.Group aria-label="Default tabs" style="default" ref={tabsRef}>
+      <Tabs aria-label="Default tabs" style="default" ref={tabsRef}>
         <Tabs.Item active title="Card" icon={HiOutlineCollection}>
           {renderApplicantCardView()}
         </Tabs.Item>
         <Tabs.Item title="Table" icon={HiOutlineTable}>
           {renderApplicantTableView()}
         </Tabs.Item>
-      </Tabs.Group>
+      </Tabs>
     </div>
 
 

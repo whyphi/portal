@@ -7,14 +7,21 @@ import ResponseCard from "@/components/admin/listing/ResponseCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
 import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
 import Loader from "@/components/Loader";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 export default function ApplicantPage({ params }: { params: { applicantId: string } }) {
+  const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [applicantData, setApplicantData] = useState<null | Applicant>(null);
 
   useEffect(() => {
-    // Fetch listings data from your /listings API endpoint
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicant/${params.applicantId}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicant/${params.applicantId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data: Applicant) => {
         setApplicantData(data);
@@ -22,7 +29,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
       })
       .catch((error) => console.error("Error fetching listings:", error));
 
-  }, []);
+  }, [params.applicantId, token]);
 
 
   const renderResponses = () => {
@@ -87,7 +94,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
 
       {/* Right component (Tabs and content) */}
       <div className="w-full lg:w-2/3 overflow-auto lg:pl-6">
-        <Tabs.Group
+        <Tabs
           className=""
           aria-label="Tabs with underline"
           style="underline"
@@ -116,7 +123,7 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
             {renderEventsAttended(applicantData.events)}
           </Tabs.Item>) : ("")}
 
-        </Tabs.Group>
+        </Tabs>
       </div>
     </div>
   );
