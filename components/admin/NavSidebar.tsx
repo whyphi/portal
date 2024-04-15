@@ -43,7 +43,7 @@ export default function NavSidebar() {
               </button>
               <a href="/admin" className="flex ml-2 md:mr-24">
                 <img src="/pct-logo.png" className="h-8 mr-3" alt="PCT Logo" />
-                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Whyphi</span>
+                {/* <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Whyphi</span> */}
               </a>
             </div>
             <div className="flex items-center">
