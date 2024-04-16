@@ -168,18 +168,16 @@ export default function NavSidebar() {
                 <li>
                   <a
                     href="/admin/events"
-                    className="pl-6 flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    className="pl-11 flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
-                    <HiUsers className="w-5 h-5 text-gray-800 dark:text-white" />
-                    <span className="flex-1 ml-3 whitespace-nowrap">PCT Events</span>
+                    <span className="flex-1 ml-3 whitespace-nowrap">Member-related</span>
                   </a>
                 </li>
                 <li>
                   <a
                     href="/admin/rush"
-                    className="pl-6 flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                    className="pl-11 flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
-                    <HiUsers className="w-5 h-5 text-gray-800 dark:text-white" />
                     <span className="flex-1 ml-3 whitespace-nowrap">Rush</span>
                   </a>
                 </li>
