@@ -20,6 +20,7 @@ export default function RushEvents() {
   const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
 
   const [eventName, setEventName] = useState<string>("");
+  const [eventCode, setEventCode] = useState<string>("");
   const [openCreateEventModal, setOpenCreateEventModal] = useState(false);
   const [selectedRushCategory, setSelectedRushCategory] = useState<RushCategory | null>(null);
 
@@ -88,7 +89,7 @@ export default function RushEvents() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ categoryId: selectedRushCategory?._id, name: eventName })
+        body: JSON.stringify({ categoryId: selectedRushCategory?._id, name: eventName, code: eventCode })
       })
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -148,6 +149,12 @@ export default function RushEvents() {
                 <Label htmlFor="eventName" value="Event Name" />
               </div>
               <TextInput id="eventName" type="text" required value={eventName} onChange={(e) => setEventName(e.target.value)} />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="eventCode" value="Event Code" />
+              </div>
+              <TextInput id="eventCode" type="text" required value={eventCode} onChange={(e) => setEventCode(e.target.value)} />
             </div>
             <div className="w-full">
               <Button onClick={handleCreateEvent}>Create Event</Button>
