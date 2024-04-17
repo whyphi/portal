@@ -31,6 +31,28 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
     setTimeout(onClose, 200); // Call onClose after transition duration (300ms)
   };
 
+  const createRushCategoryEvent = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/category`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: categoryName })
+      })
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      onClose();
+      window.location.reload();
+    } catch (error) {
+      // TODO: handle error
+      console.error(error);
+    }
+  }
+
+
 
   return (
     <div
@@ -68,7 +90,7 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
         <Button
           className="w-full"
           color="purple"
-          // onClick={handleCreateTimeframe}
+          onClick={createRushCategoryEvent}
           disabled={categoryName === ""}
         >Create Category</Button>
       </div>

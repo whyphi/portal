@@ -20,3 +20,17 @@ export interface UserInEvent{
   userId: string;
   dateCheckedIn: string;
 }
+
+export interface RushEvent {
+  _id: string;
+  name: string;
+  dateCreated: string;
+}
+
+export interface RushCategory {
+  _id: string;
+  dateCreated: string;
+  name: string;
+  events: RushEvent[]
+}
+

@@ -3,63 +3,90 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
-import { Button, Accordion, Avatar } from "flowbite-react";
+import { Button, Accordion, Avatar, Modal, TextInput, Label } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
 import Image from "next/image";
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
+import { RushCategory, RushEvent } from "@/types/admin/events";
+import { HiOutlinePlusCircle } from "react-icons/hi";
+import { formatMongoDate } from "@/utils/date";
+import Link from "next/link";
 
 
 export default function RushEvents() {
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
 
+  const [eventName, setEventName] = useState<string>("");
+  const [openCreateEventModal, setOpenCreateEventModal] = useState(false);
+  const [selectedRushCategory, setSelectedRushCategory] = useState<RushCategory | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setRushCategories(data);
+        setIsLoading(false);
+      })
+      .catch((err) => console.error(err));
+  }, [token]);
+
+  function onCloseEventModal() {
+    setOpenCreateEventModal(false);
+    setEventName('');
+  }
 
   const handleDrawerOpen = () => setIsDrawerOpen(true);
   const handleDrawerClose = () => setIsDrawerOpen(false);
 
-
-  // if (isLoading) return <Loader />;
-
-  const dummyData = [
-    {
-      "category": "Fall 2024",
-      "events": [
-        { "title": "Info Session 1", "eventDate": "Sept 1, 2024" },
-        { "title": "Info Session 2", "eventDate": "Sept 8, 2024" },
-        { "title": "Social Event", "eventDate": "Sept 15, 2024" },
-        { "title": "Professional Panel", "eventDate": "Sept 22, 2024" },
-      ]
-    },
-    {
-      "category": "Spring 2023",
-      "events": [
-        { "title": "Info Session 1", "eventDate": "Jan 12, 2023" },
-        { "title": "Info Session 2", "eventDate": "Jan 26, 2023" },
-        { "title": "Social Event", "eventDate": "Feb 9, 2023" },
-        { "title": "Professional Panel", "eventDate": "Feb 23, 2023" },
-      ]
-    }
-  ]
-
-  const EventRow = ({ event, index }: { event: any, index: number }) => {
-    const borderTopClass = index === 0 ? '' : 'border-t border-gray-200 dark:border-gray-700';
+  const EventRow = ({ event, index }: { event: RushEvent, index: number }) => {
+    const borderTopClass = 'border-t border-gray-200 dark:border-gray-700';
     return (
-      <div className={`${borderTopClass} group hover:bg-gray-100 dark:hover:bg-gray-800 py-3 sm:py-4 cursor-pointer`}>
-        <div className="flex items-center px-2 space-x-4">
-          <div className="shrink-0">
-            <Avatar placeholderInitials={event.title[0]} rounded />
-
+      <Link href={`/admin/rush/${event._id}`}>
+        <div className={`${borderTopClass} group hover:bg-gray-100 dark:hover:bg-gray-800 py-3 sm:py-4 cursor-pointer`}>
+          <div className="flex items-center px-2 space-x-4">
+            <div className="shrink-0">
+              <Avatar placeholderInitials={event.name[0]} rounded />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{event.name}</p>
+              <p className="truncate text-sm text-gray-500 dark:text-gray-400">{formatMongoDate(event.dateCreated)}</p>
+            </div>
+            {/* <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">$320</div> */}
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{event.title}</p>
-            <p className="truncate text-sm text-gray-500 dark:text-gray-400">{event.eventDate}</p>
-          </div>
-          {/* <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">$320</div> */}
         </div>
-      </div>
+      </Link>
     )
   }
+
+  const handleCreateEvent = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ categoryId: selectedRushCategory?._id, name: eventName })
+      })
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      window.location.reload();
+    } catch (error) {
+      // TODO: handle error
+      console.error(error);
+    }
+  }
+
+
+  if (isLoading) return <Loader />;
 
   return (
     <div className="overflow-x-auto">
@@ -73,12 +100,18 @@ export default function RushEvents() {
         </div>
       </div>
       <div className="mt-4 block">
-        {dummyData.map((data, index) => (
+        {rushCategories.map((data: RushCategory, index) => (
           <Accordion key={index} collapseAll className="mb-2">
-            <Accordion.Panel>
-              <Accordion.Title>{data.category}</Accordion.Title>
+            <Accordion.Panel className="w-32">
+              <Accordion.Title>
+                {data.name}
+              </Accordion.Title>
               <Accordion.Content>
-                {data.events.map((event: any, index: number) => (
+                <div className="flex flex-row items-center w-full mb-4">
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setSelectedRushCategory(data); setOpenCreateEventModal(true) }}>Create Event</Button>
+                  {/* <Button size="xs" color="gray" className="mr-2 w-16">Delete</Button> */}
+                </div>
+                {data.events && data.events.map((event: RushEvent, index: number) => (
                   <EventRow event={event} index={index} />
                 ))}
               </Accordion.Content>
@@ -89,8 +122,27 @@ export default function RushEvents() {
       {/* Drawer component */}
       {isDrawerOpen && <CreateDrawer onClose={handleDrawerClose} />}
 
-    </div>
+      {/* Create Event Component */}
+      <Modal show={openCreateEventModal} size="md" onClose={onCloseEventModal} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Create an Event for {selectedRushCategory?.name}</h3>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="eventName" value="Event Name" />
+              </div>
+              <TextInput id="eventName" type="text" required value={eventName} onChange={(e) => setEventName(e.target.value)} />
+            </div>
+            <div className="w-full">
+              <Button onClick={handleCreateEvent}>Create Event</Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </div >
   );
 }
+
 
 
