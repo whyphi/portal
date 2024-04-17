@@ -51,10 +51,10 @@ export default function CheckInPage() {
           constraints={{
             facingMode: "environment"
           }}
-          scanDelay={1000}
+          scanDelay={500}
           onResult={async (result) => {
             if (result && !isProcessing) {
-              const userId = result.getText();
+              const userData = result.getText();
 
               isProcessing = true;
               try {
@@ -64,7 +64,7 @@ export default function CheckInPage() {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                   },
-                  body: JSON.stringify({ userId })
+                  body: userData
                 });
                 if (!response.ok) {
                   const { Message, Code } = await response.json();
