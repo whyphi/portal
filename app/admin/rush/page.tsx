@@ -128,7 +128,7 @@ export default function RushEvents() {
                   {/* <Button size="xs" color="gray" className="mr-2 w-16">Delete</Button> */}
                 </div>
                 {data.events && data.events.map((event: RushEvent, index: number) => (
-                  <EventRow event={event} index={index} />
+                  <EventRow event={event} index={index} key={index} />
                 ))}
               </Accordion.Content>
             </Accordion.Panel>
