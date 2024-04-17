@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Dropdown, Avatar } from "flowbite-react";
 import { HiOutlineQrcode, HiUsers } from "react-icons/hi";
+import { Sidebar } from "flowbite-react";
+
 
 
 export default function NavSidebar() {
@@ -43,7 +45,7 @@ export default function NavSidebar() {
               </button>
               <a href="/admin" className="flex ml-2 md:mr-24">
                 <img src="/pct-logo.png" className="h-8 mr-3" alt="PCT Logo" />
-                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Whyphi</span>
+                {/* <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Whyphi</span> */}
               </a>
             </div>
             <div className="flex items-center">
@@ -150,14 +152,40 @@ export default function NavSidebar() {
               </a>
             </li>
             <li>
-              <a
-                href="/admin/events"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              <button type="button" className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example"
+                onClick={() => {
+                  const dropdown = document.getElementById('dropdown-example') as HTMLElement
+                  dropdown.classList.toggle('hidden')
+                }}
               >
                 <HiUsers className="w-5 h-5 text-gray-800 dark:text-white" />
-                <span className="flex-1 ml-3 whitespace-nowrap">Events</span>
-              </a>
+                <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Events</span>
+                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                </svg>
+              </button>
+              <ul id="dropdown-example" className="hidden py-2 space-y-2">
+                <li>
+                  <a
+                    href="/admin/events"
+                    className="pl-11 flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <span className="flex-1 ml-3 whitespace-nowrap">Member-related</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/admin/rush"
+                    className="pl-11 flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <span className="flex-1 ml-3 whitespace-nowrap">Rush</span>
+                  </a>
+                </li>
+              </ul>
             </li>
+
+
+
             {/* <li>
               <a
                 href="/admin/announcements"
