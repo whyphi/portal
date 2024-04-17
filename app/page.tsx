@@ -39,21 +39,14 @@ export default function Home() {
             <div className="col-span-6">
               <a
                 href={`/admin`}
-                className="flex justify-center items-center px-4 py-3 mt-6 text-white bg-purple-600 rounded-md shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-full"
+                className="flex justify-center items-center px-4 py-3 mt-6 text-gray-900 bg-transparent border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 w-full"
               >
-                Sign In – Member
+
+                <img className="mr-3 w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo"></img>
+                Sign in with Google
               </a>
             </div>
 
-            <div className="col-span-6">
-              <a
-                // href={`/admin`}
-                className={`flex justify-center items-center px-4 py-3 mt-4 text-white bg-purple-400 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-full disabled:opacity-50 disabled:cursor-not-allowed`}
-              // disabled // Add disabled attribute
-              >
-                Sign In – PNM
-              </a>
-            </div>
 
             <div className="mt-6  col-span-6">
               <p className="text-sm text-gray-500">
