@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const sessionWithToken = session as CustomSession;
 
         // Check if user is a newUser
-        if (sessionWithToken.token?.isNewUser) {
+        if (sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
           router.push("/admin/onboarding");
         } 
   
