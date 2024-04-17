@@ -8,7 +8,7 @@ import { HiPlus } from "react-icons/hi";
 import Image from "next/image";
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
 import { RushCategory, RushEvent } from "@/types/admin/events";
-import { HiOutlinePlusCircle } from "react-icons/hi";
+import { HiLink } from "react-icons/hi";
 import { formatMongoDate } from "@/utils/date";
 import Link from "next/link";
 
@@ -48,20 +48,35 @@ export default function RushEvents() {
   const EventRow = ({ event, index }: { event: RushEvent, index: number }) => {
     const borderTopClass = 'border-t border-gray-200 dark:border-gray-700';
     return (
-      <Link href={`/admin/rush/${event._id}`}>
-        <div className={`${borderTopClass} group hover:bg-gray-100 dark:hover:bg-gray-800 py-3 sm:py-4 cursor-pointer`}>
-          <div className="flex items-center px-2 space-x-4">
-            <div className="shrink-0">
-              <Avatar placeholderInitials={event.name[0]} rounded />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{event.name}</p>
-              <p className="truncate text-sm text-gray-500 dark:text-gray-400">{formatMongoDate(event.dateCreated)}</p>
-            </div>
-            {/* <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">$320</div> */}
+      <div key={index} className={`${borderTopClass} group hover:bg-gray-100 dark:hover:bg-gray-800 py-3 sm:py-4 cursor-pointer`}>
+        <div className="flex flex-row items-center w-full">
+          <div className="flex-1">
+            <Link href={`/admin/rush/${event.eventId}`}>
+              <div className="flex items-center px-2 space-x-4">
+                <div className="shrink-0">
+                  <Avatar placeholderInitials={event.name[0]} rounded />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{event.name}</p>
+                  <p className="truncate text-sm text-gray-500 dark:text-gray-400">{formatMongoDate(event.dateCreated)}</p>
+                </div>
+              </div>
+            </Link>
           </div>
+          <div className="flex-shrink-0 px-2">
+            <a
+              href={`https://rush.why-phi.com/checkin/${event.eventId}`}
+              target="_blank"
+              rel="noopener"
+              className="w-5 h-5 group-hover:text-blue-600"
+            >
+              <HiLink className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600" />
+            </a>
+          </div>
+
         </div>
-      </Link>
+      </div>
+
     )
   }
 

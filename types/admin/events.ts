@@ -22,7 +22,7 @@ export interface UserInEvent{
 }
 
 export interface RushEvent {
-  _id: string;
+  eventId: string;
   name: string;
   dateCreated: string;
 }
