@@ -35,10 +35,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const sessionWithToken = session as CustomSession;
 
         // Check if user is a newUser
-        if (sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
+        if (sessionWithToken.token && (!('isNewUser' in sessionWithToken?.token) || sessionWithToken.token.isNewUser)) {
           router.push("/admin/onboarding");
-        } 
-  
+        }
+
         if (sessionWithToken.token) {
           const signedToken = jwt.sign(sessionWithToken.token, `${process.env.NEXT_PUBLIC_JWT_SECRET}`, {
             algorithm: 'HS256',
