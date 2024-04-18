@@ -36,7 +36,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const sessionWithToken = session as CustomSession;
 
         // Check if user is a newUser
-        if (sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
+        if (sessionWithToken && sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
           
           // To prevent infinite reloads; only redirect if the pathname is not /admin/onboarding
           if (pathname !== "/admin/onboarding") {
