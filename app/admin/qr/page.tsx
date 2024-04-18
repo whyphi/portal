@@ -7,11 +7,13 @@ import Loader from "@/components/Loader";
 export default function Members() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userId, setUserId] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>("")
 
   useEffect(() => {
     getSession().then((session: any) => {
       if (session) {
         setUserId(session.token._id);
+        setUserEmail(session.token.email);
         setIsLoading(false);
       }
     });
@@ -29,7 +31,7 @@ export default function Members() {
       <h1 className={textStyles.title}>{`QR Code (Check-in)`}</h1>
       <p className={textStyles.subtitle}>Not working? Contact PCT Tech Team!</p>
       <div className="flex justify-center mt-12">
-        <QRCodeSVG value={userId} size={320} />
+        <QRCodeSVG value={JSON.stringify({ id: userId, email: userEmail })} size={320} />
       </div>
     </div>
   );
