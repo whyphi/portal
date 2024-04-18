@@ -102,7 +102,7 @@ export default function Onboarding() {
       });
       if (response.ok) {
         console.log('User info updated successfully');
-        update();
+        await update();
         router.push("/admin");
       } else {
         console.error('Failed to update user info');
