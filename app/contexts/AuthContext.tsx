@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { getSession } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { Session } from 'next-auth';
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 
 interface AuthContextProps {
@@ -25,6 +25,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter()
+  const pathname = usePathname();
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -36,9 +37,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         // Check if user is a newUser
         if (sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
-          router.push("/admin/onboarding");
-        } 
-  
+          if (pathname !== "/admin/onboarding") {
+            router.push("/admin/onboarding");
+          }
+        }
+
         if (sessionWithToken.token) {
           const signedToken = jwt.sign(sessionWithToken.token, `${process.env.NEXT_PUBLIC_JWT_SECRET}`, {
             algorithm: 'HS256',
