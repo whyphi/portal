@@ -2,16 +2,19 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { getSession, useSession } from 'next-auth/react';
-import { Timeline, Button, FloatingLabel, Label, Select, TextInput } from 'flowbite-react';
+import { Timeline, Button, Label, Select, TextInput } from 'flowbite-react';
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { HiOutlineArrowLeft } from 'react-icons/hi';
 import { QRCodeSVG } from 'qrcode.react';
 import { useRouter } from "next/navigation";
+import Loader from "@/components/Loader";
 
 
 interface UserInfo {
   college: string;
   graduationYear: string;
+  major: string;
+  minor: string;
   class: string;
   team: string;
   family: string;
@@ -21,6 +24,8 @@ interface UserInfo {
 const initUserInfo: UserInfo = {
   college: "",
   graduationYear: "",
+  major: "",
+  minor: "",
   class: "",
   team: "",
   family: "",
@@ -31,10 +36,13 @@ export default function Onboarding() {
   const router = useRouter()
   const { token } = useAuth();
   const { data: session, status, update } = useSession()
+  console.log(session)
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
   const [currStep, setCurrStep] = useState<number>(0);
   const [userId, setUserId] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>("");
   const [userInfo, setUserInfo] = useState<UserInfo>(initUserInfo);
 
   useEffect(() => {
@@ -42,7 +50,9 @@ export default function Onboarding() {
       if (session) {
         setName(session?.user?.name);
         setUserId(session.token._id);
+        setUserEmail(session.token.email);
       }
+      setIsLoading(false);
     });
   }, []);
 
@@ -159,7 +169,7 @@ export default function Onboarding() {
           <div className="mt-4"></div>
           <div className="max-w-md">
             <div className="mb-2 block">
-              <Label htmlFor="colleges" value="Select your college" />
+              <Label htmlFor="colleges" value="Select your college " /><span className="text-red-500">*</span>
             </div>
             <Select id="college" required onChange={handleSelectChange} value={userInfo.college}>
               <option value="">-- Select College</option>
@@ -177,7 +187,7 @@ export default function Onboarding() {
               <option value="Other">Other</option>
             </Select>
             <div className="mb-2 mt-4 block">
-              <Label htmlFor="graduationYear" value="Enter your graduation year (20XX)" />
+              <Label htmlFor="graduationYear" value="Enter your graduation year (20XX) " /><span className="text-red-500">*</span>
             </div>
             <TextInput
               key="graduationYearInput"
@@ -188,13 +198,35 @@ export default function Onboarding() {
               value={userInfo["graduationYear"]}
               onChange={handleInputchange}
             />
+            <div className="mb-2 mt-4 block">
+              <Label htmlFor="major" value="Major " /><span className="text-red-500">*</span>
+            </div>
+            <TextInput
+              key="majorInput"
+              id="major"
+              type="text"
+              sizing="md"
+              value={userInfo["major"]}
+              onChange={handleInputchange}
+            />
+            <div className="mb-2 mt-4 block">
+              <Label htmlFor="minor" value="Minor" />
+            </div>
+            <TextInput
+              key="minorInput"
+              id="minor"
+              type="text"
+              sizing="md"
+              value={userInfo["minor"]}
+              onChange={handleInputchange}
+            />
           </div>
           <div className="flex flex-row justify-end mt-8">
             <Button
               className="w-28"
               color="purple"
               onClick={nextStep}
-              disabled={userInfo.college === "" || userInfo.graduationYear === ""}
+              disabled={userInfo.college === "" || userInfo.graduationYear === "" || userInfo.major === ""}
             >Next</Button>
           </div>
         </div>
@@ -212,7 +244,7 @@ export default function Onboarding() {
           <div className="mt-4"></div>
           <div className="max-w-md">
             <div className="mb-2 mt-4 block">
-              <Label htmlFor="graduationYear" value="What class did you intiate as?" />
+              <Label htmlFor="graduationYear" value="What class did you intiate as? " /><span className="text-red-500">*</span>
             </div>
             <TextInput
               key="classInput"
@@ -225,7 +257,7 @@ export default function Onboarding() {
             />
 
             <div className="max-w-md mt-4 mb-2 block">
-              <Label htmlFor="team" value="What team are you a part of?" />
+              <Label htmlFor="team" value="What team are you a part of? " /><span className="text-red-500">*</span>
             </div>
             <Select id="team" required onChange={handleSelectChange} value={userInfo.team}>
               <option value="">-- Select your team</option>
@@ -241,7 +273,7 @@ export default function Onboarding() {
             </Select>
 
             <div className="mb-2 mt-4 block">
-              <Label htmlFor="graduationYear" value="What family are you in?" />
+              <Label htmlFor="graduationYear" value="What family are you in? " /><span className="text-red-500">*</span>
             </div>
             <TextInput
               key="familyInput"
@@ -254,7 +286,7 @@ export default function Onboarding() {
             />
 
             <div className="max-w-md mt-4 mb-2 block">
-              <Label htmlFor="isEboard" value="Are you part of the Executive Board?" />
+              <Label htmlFor="isEboard" value="Are you part of the Executive Board? " /><span className="text-red-500">*</span>
             </div>
             <Select id="isEboard" required onChange={handleSelectChange} value={userInfo.isEboard}>
               <option value="">-- Select yes/no</option>
@@ -287,7 +319,7 @@ export default function Onboarding() {
           <div className="max-w-md">
 
             {/* https://github.com/zpao/qrcode.react */}
-            <QRCodeSVG value={userId} size={256} />
+            <QRCodeSVG value={JSON.stringify({ id: userId, email: userEmail })} size={256} />
 
 
           </div>
@@ -305,6 +337,8 @@ export default function Onboarding() {
       </div >
     )
   }
+
+  if (isLoading) return <Loader />;
 
   return (
     <div>

@@ -37,6 +37,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         // Check if user is a newUser
         if (sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
+          
+          // To prevent infinite reloads; only redirect if the pathname is not /admin/onboarding
           if (pathname !== "/admin/onboarding") {
             router.push("/admin/onboarding");
           }
