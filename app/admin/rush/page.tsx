@@ -66,7 +66,10 @@ export default function RushEvents() {
           </div>
           <div className="flex-shrink-0 px-2">
             <a
-              href={`https://rush.why-phi.com/checkin/${event.eventId}`}
+              href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
+                ? `https://staging--whyphi-rush.netlify.app/checkin/${event.eventId}`
+                : `https://rush.why-phi.com/checkin/${event.eventId}`
+              }
               target="_blank"
               rel="noopener"
               className="w-5 h-5 group-hover:text-blue-600"
@@ -75,6 +78,9 @@ export default function RushEvents() {
             </a>
           </div>
 
+
+
+
         </div>
       </div>
 
@@ -82,6 +88,11 @@ export default function RushEvents() {
   }
 
   const handleCreateEvent = async () => {
+    const eventCodeTrimmed = eventCode.trim();
+    if (eventCodeTrimmed !== eventCode) {
+      alert('Event code cannot contain whitespace. Please check that you are not using whitespaces in your event code.');
+      return;
+    }
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush`, {
         method: 'POST',
@@ -89,7 +100,7 @@ export default function RushEvents() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ categoryId: selectedRushCategory?._id, name: eventName, code: eventCode })
+        body: JSON.stringify({ categoryId: selectedRushCategory?._id, name: eventName, code: eventCodeTrimmed })
       })
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -100,6 +111,7 @@ export default function RushEvents() {
       console.error(error);
     }
   }
+
 
 
   if (isLoading) return <Loader />;
@@ -147,17 +159,19 @@ export default function RushEvents() {
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="eventName" value="Event Name" />
+                <span className="text-red-500"> *</span>
               </div>
               <TextInput id="eventName" type="text" required value={eventName} onChange={(e) => setEventName(e.target.value)} />
             </div>
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="eventCode" value="Event Code" />
+                <span className="text-red-500"> *</span>
               </div>
               <TextInput id="eventCode" type="text" required value={eventCode} onChange={(e) => setEventCode(e.target.value)} />
             </div>
             <div className="w-full">
-              <Button onClick={handleCreateEvent}>Create Event</Button>
+              <Button disabled={!eventName || !eventCode} onClick={handleCreateEvent}>Create Event</Button>
             </div>
           </div>
         </Modal.Body>
