@@ -24,7 +24,10 @@ export default function RushEvents() {
   const [openCreateEventModal, setOpenCreateEventModal] = useState(false);
   const [selectedRushCategory, setSelectedRushCategory] = useState<RushCategory | null>(null);
 
+  const [rushCategoriesCodeToggled, setRushCategoriesCodeToggled] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
+    // Fetch all rush categories and events from the API
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -32,11 +35,22 @@ export default function RushEvents() {
     })
       .then((res) => res.json())
       .then((data) => {
+        // Create a new object with the categories and false as their initial code toggle status
+        const categoriesCodeToggled = data.reduce((acc: Record<string, boolean>, category: RushCategory) => {
+          acc[category._id] = false;
+          return acc;
+        }, {} as Record<string, boolean>);
+
+        // Set the categories and their initial code toggle status to state
         setRushCategories(data);
+        setRushCategoriesCodeToggled(categoriesCodeToggled);
+
+        // Stop the loading spinner
         setIsLoading(false);
       })
       .catch((err) => console.error(err));
   }, [token]);
+
 
   function onCloseEventModal() {
     setOpenCreateEventModal(false);
@@ -46,7 +60,7 @@ export default function RushEvents() {
   const handleDrawerOpen = () => setIsDrawerOpen(true);
   const handleDrawerClose = () => setIsDrawerOpen(false);
 
-  const EventRow = ({ event, index }: { event: RushEvent, index: number }) => {
+  const EventRow = ({ event, index, categoryId }: { event: RushEvent, index: number, categoryId: string }) => {
     const borderTopClass = 'border-t border-gray-200 dark:border-gray-700';
     return (
       <div key={index} className={`${borderTopClass} group hover:bg-gray-100 dark:hover:bg-gray-800 py-3 sm:py-4 cursor-pointer`}>
@@ -59,7 +73,8 @@ export default function RushEvents() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{event.name}</p>
-                  <p className="truncate text-sm text-gray-500 dark:text-gray-400">{formatMongoDate(event.dateCreated)}</p>
+                  <p className="truncate text-sm text-gray-500 dark:text-gray-400 mr-1">{formatMongoDate(event.dateCreated)}</p>
+                  <code className="truncate text-sm text-gray-500 dark:text-gray-400">{rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: ••••••••••••••••"}</code>
                 </div>
               </div>
             </Link>
@@ -115,7 +130,7 @@ export default function RushEvents() {
 
 
   if (isLoading) return <Loader />;
-
+  console.log(rushCategoriesCodeToggled)
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">
@@ -137,10 +152,11 @@ export default function RushEvents() {
               <Accordion.Content>
                 <div className="flex flex-row items-center w-full mb-4">
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setSelectedRushCategory(data); setOpenCreateEventModal(true) }}>Create Event</Button>
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>{rushCategoriesCodeToggled[data._id] ? "Hide Code" : "Show Code"}</Button>
                   {/* <Button size="xs" color="gray" className="mr-2 w-16">Delete</Button> */}
                 </div>
                 {data.events && data.events.map((event: RushEvent, index: number) => (
-                  <EventRow event={event} index={index} key={index} />
+                  <EventRow event={event} index={index} key={index} categoryId={data._id} />
                 ))}
               </Accordion.Content>
             </Accordion.Panel>
@@ -179,6 +195,3 @@ export default function RushEvents() {
     </div >
   );
 }
-
-
-
