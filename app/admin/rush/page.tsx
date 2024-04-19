@@ -66,7 +66,10 @@ export default function RushEvents() {
           </div>
           <div className="flex-shrink-0 px-2">
             <a
-              href={`https://rush.why-phi.com/checkin/${event.eventId}`}
+              href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
+                ? `https://staging--whyphi-rush.netlify.app/checkin/${event.eventId}`
+                : `https://rush.why-phi.com/checkin/${event.eventId}`
+              }
               target="_blank"
               rel="noopener"
               className="w-5 h-5 group-hover:text-blue-600"
@@ -74,6 +77,9 @@ export default function RushEvents() {
               <HiLink className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600" />
             </a>
           </div>
+
+
+
 
         </div>
       </div>
