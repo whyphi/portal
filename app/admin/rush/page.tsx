@@ -5,10 +5,9 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
 import { Button, Accordion, Avatar, Modal, TextInput, Label } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
-import Image from "next/image";
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
 import { RushCategory, RushEvent } from "@/types/admin/events";
-import { HiLink } from "react-icons/hi";
+import { HiOutlinePencil, HiLink, HiOutlineTrash } from "react-icons/hi";
 import { formatMongoDate } from "@/utils/date";
 import Link from "next/link";
 
@@ -21,8 +20,15 @@ export default function RushEvents() {
 
   const [eventName, setEventName] = useState<string>("");
   const [eventCode, setEventCode] = useState<string>("");
-  const [openCreateEventModal, setOpenCreateEventModal] = useState(false);
+
+  // States managing the create event modal
+  const [openCreateEventModal, setOpenCreateEventModal] = useState<boolean>(false);
   const [selectedRushCategory, setSelectedRushCategory] = useState<RushCategory | null>(null);
+
+  // States managing the delete event modal
+  const [openDeleteEventModal, setOpenDeleteEventModal] = useState<boolean>(false);
+  const [selectedEventToDelete, setSelectedEventToDelete] = useState<RushEvent | null>(null);
+  const [eventNameInput, setEventNameInput] = useState<string>("");
 
   const [rushCategoriesCodeToggled, setRushCategoriesCodeToggled] = useState<Record<string, boolean>>({});
 
@@ -57,6 +63,10 @@ export default function RushEvents() {
     setEventName('');
   }
 
+  function onCloseDeleteEventModal() {
+    setOpenDeleteEventModal(false);
+  }
+
   const handleDrawerOpen = () => setIsDrawerOpen(true);
   const handleDrawerClose = () => setIsDrawerOpen(false);
 
@@ -74,12 +84,18 @@ export default function RushEvents() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{event.name}</p>
                   <p className="truncate text-sm text-gray-500 dark:text-gray-400 mr-1">{formatMongoDate(event.dateCreated)}</p>
-                  <code className="truncate text-sm text-gray-500 dark:text-gray-400">{rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: ••••••••••••••••"}</code>
+                  <code className="truncate text-sm text-gray-500 dark:text-gray-400">{rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}</code>
                 </div>
               </div>
             </Link>
           </div>
-          <div className="flex-shrink-0 px-2">
+          <div className="flex flex-row flex-shrink-0 px-2">
+            <HiOutlinePencil className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1" />
+            <HiOutlineTrash onClick={(e) => {
+              e.preventDefault();
+              setSelectedEventToDelete(event);
+              setOpenDeleteEventModal(true);
+            }} className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1" />
             <a
               href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
                 ? `https://staging--whyphi-rush.netlify.app/checkin/${event.eventId}`
@@ -150,10 +166,11 @@ export default function RushEvents() {
                 {data.name}
               </Accordion.Title>
               <Accordion.Content>
-                <div className="flex flex-row items-center w-full mb-4">
+                <div className="flex flex-row items-center w-full mb-4 overflow-x-auto">
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setSelectedRushCategory(data); setOpenCreateEventModal(true) }}>Create Event</Button>
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>{rushCategoriesCodeToggled[data._id] ? "Hide Code" : "Show Code"}</Button>
-                  {/* <Button size="xs" color="gray" className="mr-2 w-16">Delete</Button> */}
+                  <Button size="xs" color="gray" className="mr-2" disabled>View Analytics</Button>
+                  <Button size="xs" color="gray" className="mr-2" disabled>Export Data</Button>
                 </div>
                 {data.events && data.events.map((event: RushEvent, index: number) => (
                   <EventRow event={event} index={index} key={index} categoryId={data._id} />
@@ -191,6 +208,31 @@ export default function RushEvents() {
             </div>
           </div>
         </Modal.Body>
+      </Modal>
+
+      <Modal show={openDeleteEventModal} size="md" onClose={onCloseDeleteEventModal} popup>
+        <Modal.Header />
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          if (selectedEventToDelete?.name === eventNameInput) {
+            // deleteEvent(selectedEventToDelete._id);
+          }
+        }}>
+          <Modal.Body>
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Delete {selectedEventToDelete?.name}</h3>
+              <p className="text-gray-500 text-sm">Are you sure you want to delete <b className="underline"><u>{selectedEventToDelete?.name}</u></b>? Deleting this event will permanently remove all data associated with it, including rushee check-in data and analytics. The deleted data is not recoverable so please proceed with caution.</p>
+              <div className="w-full">
+                <Label htmlFor="eventNameInput" value="Type the event name to confirm" />
+                <TextInput id="eventNameInput" type="text" required autoFocus value={eventNameInput} onChange={(e) => setEventNameInput(e.target.value)} />
+              </div>
+              <div className="w-full flex justify-end">
+                <Button color="failure" disabled={!eventNameInput || eventNameInput !== selectedEventToDelete?.name}>Delete Event</Button>
+              </div>
+
+            </div>
+          </Modal.Body>
+        </form>
       </Modal>
     </div >
   );
