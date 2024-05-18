@@ -9,36 +9,37 @@ import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
 import Loader from "@/components/Loader";
 import { useAuth } from "@/app/contexts/AuthContext";
 
-export default function ApplicantPage({ params }: { params: { applicantId: string } }) {
-  const { token } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [applicantData, setApplicantData] = useState<null | Applicant>(null);
+export default function ApplicantPage( applicant: Applicant ) {
+  // const { token } = useAuth();
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicant/${params.applicantId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data: Applicant) => {
-        setApplicantData(data);
-        setIsLoading(false)
-      })
-      .catch((error) => console.error("Error fetching listings:", error));
+  // const [applicantData, setApplicantData] = useState<null | Applicant>(null);
 
-  }, [params.applicantId, token]);
+  // useEffect(() => {
+  //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicant/${params.applicantId}`, {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data: Applicant) => {
+  //       setApplicantData(data);
+  //       setIsLoading(false)
+  //     })
+  //     .catch((error) => console.error("Error fetching listings:", error));
+
+  // }, [params.applicantId, token]);
 
 
   const renderResponses = () => {
     return (
-      applicantData?.responses.length === 0 ? (
+      applicant?.responses.length === 0 ? (
         <p>None</p>
       ) : (
         <div className="">
-          {applicantData?.responses.map((response, index) => (
+          {applicant?.responses.map((response, index) => (
             <ResponseCard
               key={index}
               question={response.question}
@@ -82,14 +83,14 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
     );
   }
 
-  if (isLoading) return <Loader />
+  // if (isLoading) return <Loader />
 
 
   return (
     <div className="flex flex-wrap">
       {/* Left component (ApplicantInfoCard) */}
       <div className="w-full lg:pr-6 lg:w-1/3 overflow-auto lg:sticky top-0 lg:h-screen">
-        {applicantData && <ApplicantInfoCard applicant={applicantData} />}
+        {applicant && <ApplicantInfoCard applicant={applicant} />}
       </div>
 
       {/* Right component (Tabs and content) */}
@@ -110,17 +111,17 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
             icon={HiDocumentText}
             title="Resume"
           >
-            {applicantData && applicantData.resume ? (
-              <ApplicantPDFViewer resumeLink={applicantData.resume} />
+            {applicant && applicant.resume ? (
+              <ApplicantPDFViewer resumeLink={applicant.resume} />
             ) : (
               <p>No resume available.</p>
             )}
           </Tabs.Item>
-          {applicantData?.events ? (<Tabs.Item
+          {applicant?.events ? (<Tabs.Item
             icon={HiUserGroup}
             title="Events Attended"
           >
-            {renderEventsAttended(applicantData.events)}
+            {renderEventsAttended(applicant.events)}
           </Tabs.Item>) : ("")}
 
         </Tabs>

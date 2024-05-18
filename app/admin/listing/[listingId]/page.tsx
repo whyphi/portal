@@ -4,17 +4,18 @@ import Loader from "@/components/Loader";
 import ApplicantCard from "@/components/admin/listing/ApplicantCard";
 import { Applicant } from "@/types/applicant";
 import { useRouter } from "next/navigation";
-import { Tabs, TabsRef, Table } from 'flowbite-react';
+import { Tabs, TabsRef, Table, Button, Pagination } from 'flowbite-react';
 import { HiOutlineCollection, HiOutlineTable } from 'react-icons/hi';
 import { useAuth } from "@/app/contexts/AuthContext";
-
-
+import ApplicantPage from "./[applicantId]/page";
 
 export default function Listing({ params }: { params: { listingId: string } }) {
   const router = useRouter();
   const { token } = useAuth();
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedAppicant, setSelectedApplicant] = useState<Applicant | null>(null);
+  const [selectedApplicantIndex, setSelectedApplicantIndex] = useState<number>(-1);
 
   const tabsRef = useRef<TabsRef>(null);
 
@@ -37,6 +38,8 @@ export default function Listing({ params }: { params: { listingId: string } }) {
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching listings:", error));
+
+      // after fetching listings -> do localstorage stuff to see if we have selected an applicant before refresh
   }, [params.listingId, token]);
 
   const renderApplicantCardView = () => {
@@ -47,6 +50,9 @@ export default function Listing({ params }: { params: { listingId: string } }) {
             <ApplicantCard
               listingId={params.listingId}
               applicant={applicant}
+              index={index}
+              setSelectedApplicant={setSelectedApplicant}
+              setSelectedApplicantIndex={setSelectedApplicantIndex}
             />
           </div>
         ))}
@@ -94,7 +100,6 @@ export default function Listing({ params }: { params: { listingId: string } }) {
                 </Table.Cell>
                 <Table.Cell>{applicant.major}</Table.Cell>
               </Table.Row>
-
             ))}
           </Table.Body>
         </Table>
@@ -102,19 +107,45 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     )
   }
 
+  const viewAllApplicants = () => {
+    setSelectedApplicant(null);
+    setSelectedApplicantIndex(-1);
+  }
+
+  const viewPrevApplicant = () => {
+
+  }
+  
+  const viewNextApplicant = () => {
+
+  }
+
   if (isLoading) return (<Loader />)
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Applicants</h1>
-      <Tabs aria-label="Default tabs" style="default" ref={tabsRef}>
-        <Tabs.Item active title="Card" icon={HiOutlineCollection}>
-          {renderApplicantCardView()}
-        </Tabs.Item>
-        <Tabs.Item title="Table" icon={HiOutlineTable}>
-          {renderApplicantTableView()}
-        </Tabs.Item>
-      </Tabs>
+      {/* either render Tabs (with applicants) OR single applicant view */}
+      {selectedAppicant == null
+        ? 
+        <Tabs aria-label="Default tabs" style="default" ref={tabsRef}>
+          <Tabs.Item active title="Card" icon={HiOutlineCollection}>
+            {renderApplicantCardView()}
+          </Tabs.Item>
+          <Tabs.Item title="Table" icon={HiOutlineTable}>
+            {renderApplicantTableView()}
+          </Tabs.Item>
+        </Tabs>
+        :
+        <div className="flex flex-col gap-5">
+          <div className="flex justify-between">
+            <Button color="gray" onClick={viewAllApplicants}>All applicants</Button>
+            helol
+          </div>
+          {ApplicantPage(selectedAppicant)}
+        </div>
+      }
+      
     </div>
 
 

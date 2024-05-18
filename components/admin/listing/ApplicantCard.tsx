@@ -7,9 +7,12 @@ import { useRouter } from 'next/navigation';
 interface ApplicantCardProps {
   listingId: string;
   applicant: Applicant;
+  index: number;
+  setSelectedApplicant: (applicant: Applicant) => void;
+  setSelectedApplicantIndex: (index: number) => void;
 }
 
-export default function ApplicantCard({ applicant }: ApplicantCardProps) {
+export default function ApplicantCard({ listingId, applicant, index, setSelectedApplicant, setSelectedApplicantIndex }: ApplicantCardProps) {
   const router = useRouter();
   const { colleges } = applicant;
 
@@ -22,7 +25,13 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
   const gradYear = applicant.gradYear.split(' ').pop();
 
   return (
-    <Card className="cursor-pointer" onClick={() => router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`)}>
+    <Card 
+      className="cursor-pointer" 
+      onClick={() => {
+        setSelectedApplicant(applicant);
+        setSelectedApplicantIndex(index);
+        }}
+      >
       <div className="flex flex-col items-center mb-1">
         <Image
           width={96}
