@@ -21,12 +21,10 @@ export default function ListingSidebar({ applicantData, setApplicantIndex }: Lis
 
   const renderApplicantTableView = () => {
     return (
-      <div className="overflow-x-auto w-80">
+      <div className="overflow-y-auto h-full w-60" style={{ maxHeight: "calc(100vh - 100px)" }}>
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell>Name</Table.HeadCell>
-            <Table.HeadCell>Major</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {applicantData.map((applicant, index) => (
@@ -48,7 +46,6 @@ export default function ListingSidebar({ applicantData, setApplicantIndex }: Lis
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   {applicant.firstName} {applicant.lastName}
                 </Table.Cell>
-                <Table.Cell>{applicant.major}</Table.Cell>
               </Table.Row>
 
             ))}

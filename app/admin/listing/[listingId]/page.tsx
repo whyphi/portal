@@ -46,7 +46,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     <div>
       <h1 className="text-2xl font-bold mb-4">Applicants</h1>
       {applicantData.length > 0 ?
-        <div className="flex flex-row">
+        <div className="flex flex-row gap-4">
           <ListingSidebar applicantData={applicantData} setApplicantIndex={setApplicantIndex} />
           <div className="flex-1">
             <ApplicantPage applicant={applicantData[applicantIndex]}/>

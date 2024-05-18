@@ -11,7 +11,7 @@ import { useAuth } from "@/app/contexts/AuthContext";
 
 import { CustomFlowbiteTheme } from "flowbite-react";
 
-
+ 
 export default function Insights({ params }: { params: { listingId: string } }) {
   const { token } = useAuth();
   const router = useRouter();
@@ -23,7 +23,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     commonGradYear: "",
   });
   const [insightsLoading, setInsightsIsLoading] = useState<boolean>(true);
-
 
   // distributionMetrics : object containing frequencies of each metric for all applicants
   const [distributionMetrics, setDistributionMetrics] = useState<DistributionMetricsState>({
