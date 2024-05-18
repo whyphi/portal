@@ -78,13 +78,15 @@ export default function Listing({ params }: { params: { listingId: string } }) {
                 key={index}
                 className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
                 onClick={(event) => {
-                  if (event.metaKey) {
-                    // Cmd + click (on macOS) or Ctrl + click (on Windows/Linux)
-                    window.open(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`, '_blank');
-                  } else {
-                    // Regular click
-                    router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`);
-                  }
+                  setSelectedApplicant(applicant);
+                  setSelectedApplicantIndex(index);
+                  // if (event.metaKey) {
+                  //   // Cmd + click (on macOS) or Ctrl + click (on Windows/Linux)
+                  //   window.open(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`, '_blank');
+                  // } else {
+                  //   // Regular click
+                  //   router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`);
+                  // }
                 }}
               >
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
@@ -120,8 +122,6 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     setSelectedApplicant(applicantData[index]);
     setSelectedApplicantIndex(index);
   };
-
-  console.log(selectedApplicantIndex, applicantData.length)
 
   if (isLoading) return (<Loader />)
 
