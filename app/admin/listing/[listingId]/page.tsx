@@ -112,13 +112,16 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     setSelectedApplicantIndex(-1);
   }
 
-  const viewPrevApplicant = () => {
+  const onPageChange = (page: number) => {
+    const index = page - 1;
+    if (index < 0) {
+      console.error("uh oh, page index out of range", index, applicantData.length)
+    }
+    setSelectedApplicant(applicantData[index]);
+    setSelectedApplicantIndex(index);
+  };
 
-  }
-  
-  const viewNextApplicant = () => {
-
-  }
+  console.log(selectedApplicantIndex, applicantData.length)
 
   if (isLoading) return (<Loader />)
 
@@ -140,7 +143,15 @@ export default function Listing({ params }: { params: { listingId: string } }) {
         <div className="flex flex-col gap-5">
           <div className="flex justify-between">
             <Button color="gray" onClick={viewAllApplicants}>All applicants</Button>
-            helol
+            <Pagination
+              layout="pagination"
+              currentPage={selectedApplicantIndex + 1}
+              totalPages={applicantData.length}
+              onPageChange={onPageChange}
+              previousLabel="Previous"
+              nextLabel="Next"
+              showIcons
+            />
           </div>
           {ApplicantPage(selectedAppicant)}
         </div>
