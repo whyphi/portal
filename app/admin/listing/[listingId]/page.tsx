@@ -3,14 +3,13 @@ import React, { useState, useEffect, useRef } from "react";
 import Loader from "@/components/Loader";
 import ApplicantCard from "@/components/admin/listing/ApplicantCard";
 import { Applicant } from "@/types/applicant";
-import { useRouter } from "next/navigation";
+import { selectedApplicantIdKey } from "@/utils/globals";
 import { Tabs, TabsRef, Table, Button, Pagination } from 'flowbite-react';
 import { HiArrowLeft, HiOutlineCollection, HiOutlineTable } from 'react-icons/hi';
 import { useAuth } from "@/app/contexts/AuthContext";
 import ApplicantPage from "./[applicantId]/page";
 
 export default function Listing({ params }: { params: { listingId: string } }) {
-  // const router = useRouter();
   const { token } = useAuth();
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -39,7 +38,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
         setIsLoading(false);
 
         // after fetching listings -> use localStorage to check if selectedApplicant is defined
-        const selectedApplicantId =localStorage.getItem("selectedApplicantId");
+        const selectedApplicantId =localStorage.getItem(selectedApplicantIdKey);
 
         // check that applicant exists in localStorage
         if (selectedApplicantId) {
@@ -103,7 +102,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
                   setSelectedApplicantIndex(index);
 
                   // push to localStorage
-                  localStorage.setItem("selectedApplicantId", applicant.applicantId);
+                  localStorage.setItem(selectedApplicantIdKey, applicant.applicantId);
                 }}
               >
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
@@ -132,7 +131,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     setSelectedApplicantIndex(-1);
 
     // clear selectedApplicantId from localStorage
-    localStorage.removeItem("selectedApplicantId");
+    localStorage.removeItem(selectedApplicantIdKey);
   }
 
   const onPageChange = (page: number) => {
@@ -148,7 +147,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     setSelectedApplicantIndex(index);
 
     // push to localStorage
-    localStorage.setItem("selectedApplicantId", applicant.applicantId);
+    localStorage.setItem(selectedApplicantIdKey, applicant.applicantId);
   };
 
   // const previousLabel =
