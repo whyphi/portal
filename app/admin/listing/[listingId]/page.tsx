@@ -17,6 +17,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   const [selectedApplicantIndex, setSelectedApplicantIndex] = useState<number>(-1);
 
   const tabsRef = useRef<TabsRef>(null);
+  const applicantRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Need to investigate why tabs are changing state using refs
   // const [activeTab, setActiveTab] = useState(0);
@@ -65,7 +66,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {applicantData.map((applicant, index) => (
-          <div key={index} className="col-span-1">
+          <div key={index} className="col-span-1" ref={(ref) => (applicantRefs.current[index] = ref)}>
             <ApplicantCard
               listingId={params.listingId}
               applicant={applicant}
@@ -132,12 +133,20 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   }
 
   const viewAllApplicants = () => {
+    // grab current selectedApplicantIndex
+    const index = selectedApplicantIndex;
+
     // update state variables
     setSelectedApplicant(null);
     setSelectedApplicantIndex(-1);
 
     // clear selectedApplicantId from localStorage
     localStorage.removeItem(selectedApplicantIdKey);
+
+    // Scroll to that index after state update (ensures scroll occurs in NEXT event-loop-cycle)
+    setTimeout(() => {
+      scrollApplicantIntoView(index);
+    }, 0);
   }
 
   const onPageChange = (page: number) => {
@@ -156,16 +165,15 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     localStorage.setItem(selectedApplicantIdKey, applicant.applicantId);
   };
 
-  // // alternate approach to previousLabel + nextLabel (a bit too clunky)
-  // const previousLabel =
-  //   selectedApplicantIndex > 0
-  //     ? `Previous - ${applicantData[selectedApplicantIndex - 1].firstName} ${applicantData[selectedApplicantIndex - 1].lastName}`
-  //     : "Previous";
-
-  // const nextLabel =
-  //   selectedApplicantIndex < applicantData.length - 1
-  //     ? `Next - ${applicantData[selectedApplicantIndex + 1].firstName} ${applicantData[selectedApplicantIndex + 1].lastName}`
-  //     : "Next";
+  const scrollApplicantIntoView = (index: number) => {
+    const applicantRef = applicantRefs.current[index];
+    if (applicantRef) {
+      applicantRef.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  };
 
   if (isLoading) return (<Loader />)
 

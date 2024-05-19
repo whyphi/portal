@@ -26,7 +26,7 @@ export default function ApplicantCard({ listingId, applicant, index, setSelected
 
   return (
     <Card 
-      className="cursor-pointer" 
+      className="cursor-pointer hover:bg-purple-50" 
       onClick={() => {
         // scroll to top of page
         window.scrollTo({
