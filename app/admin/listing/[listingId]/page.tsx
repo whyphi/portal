@@ -5,7 +5,7 @@ import ApplicantCard from "@/components/admin/listing/ApplicantCard";
 import { Applicant } from "@/types/applicant";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsRef, Table, Button, Pagination } from 'flowbite-react';
-import { HiOutlineCollection, HiOutlineTable } from 'react-icons/hi';
+import { HiArrowLeft, HiOutlineCollection, HiOutlineTable } from 'react-icons/hi';
 import { useAuth } from "@/app/contexts/AuthContext";
 import ApplicantPage from "./[applicantId]/page";
 
@@ -123,6 +123,19 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     setSelectedApplicantIndex(index);
   };
 
+  const previousLabel =
+    // selectedApplicantIndex > 0
+    false
+      ? `Previous - ${applicantData[selectedApplicantIndex - 1].firstName} ${applicantData[selectedApplicantIndex - 1].lastName}`
+      : "Previous";
+
+  const nextLabel =
+    // selectedApplicantIndex < applicantData.length - 1
+    false
+      ? `Next - ${applicantData[selectedApplicantIndex + 1].firstName} ${applicantData[selectedApplicantIndex + 1].lastName}`
+      : "Next";
+
+
   if (isLoading) return (<Loader />)
 
   return (
@@ -142,14 +155,17 @@ export default function Listing({ params }: { params: { listingId: string } }) {
         :
         <div className="flex flex-col gap-5">
           <div className="flex justify-between">
-            <Button color="gray" onClick={viewAllApplicants}>All applicants</Button>
+            <Button color="gray" onClick={viewAllApplicants}>
+              <HiArrowLeft className="mr-2"/>
+              View all
+            </Button>
             <Pagination
-              layout="pagination"
+              layout="navigation"
               currentPage={selectedApplicantIndex + 1}
               totalPages={applicantData.length}
               onPageChange={onPageChange}
-              previousLabel="Previous"
-              nextLabel="Next"
+              previousLabel={previousLabel}
+              nextLabel={nextLabel}
               showIcons
             />
           </div>
