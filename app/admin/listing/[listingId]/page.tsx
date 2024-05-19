@@ -123,17 +123,15 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     setSelectedApplicantIndex(index);
   };
 
-  const previousLabel =
-    // selectedApplicantIndex > 0
-    false
-      ? `Previous - ${applicantData[selectedApplicantIndex - 1].firstName} ${applicantData[selectedApplicantIndex - 1].lastName}`
-      : "Previous";
+  // const previousLabel =
+  //   selectedApplicantIndex > 0
+  //     ? `Previous - ${applicantData[selectedApplicantIndex - 1].firstName} ${applicantData[selectedApplicantIndex - 1].lastName}`
+  //     : "Previous";
 
-  const nextLabel =
-    // selectedApplicantIndex < applicantData.length - 1
-    false
-      ? `Next - ${applicantData[selectedApplicantIndex + 1].firstName} ${applicantData[selectedApplicantIndex + 1].lastName}`
-      : "Next";
+  // const nextLabel =
+  //   selectedApplicantIndex < applicantData.length - 1
+  //     ? `Next - ${applicantData[selectedApplicantIndex + 1].firstName} ${applicantData[selectedApplicantIndex + 1].lastName}`
+  //     : "Next";
 
 
   if (isLoading) return (<Loader />)
@@ -164,8 +162,8 @@ export default function Listing({ params }: { params: { listingId: string } }) {
               currentPage={selectedApplicantIndex + 1}
               totalPages={applicantData.length}
               onPageChange={onPageChange}
-              previousLabel={previousLabel}
-              nextLabel={nextLabel}
+              previousLabel={"Previous"}
+              nextLabel={"Next"}
               showIcons
             />
           </div>
