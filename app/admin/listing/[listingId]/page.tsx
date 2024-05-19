@@ -10,11 +10,11 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import ApplicantPage from "./[applicantId]/page";
 
 export default function Listing({ params }: { params: { listingId: string } }) {
-  const router = useRouter();
+  // const router = useRouter();
   const { token } = useAuth();
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [selectedAppicant, setSelectedApplicant] = useState<Applicant | null>(null);
+  const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
   const [selectedApplicantIndex, setSelectedApplicantIndex] = useState<number>(-1);
 
   const tabsRef = useRef<TabsRef>(null);
@@ -34,12 +34,32 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     })
       .then((response) => response.json())
       .then((data: [Applicant]) => {
+        // update applicantData and loading status
         setApplicantData(data)
         setIsLoading(false);
+
+        // after fetching listings -> use localStorage to check if selectedApplicant is defined
+        const selectedApplicantId =localStorage.getItem("selectedApplicantId");
+
+        // check that applicant exists in localStorage
+        if (selectedApplicantId) {
+          // Find the index of the applicant in the applicantData array
+          const applicantIndex = data.findIndex(applicant => selectedApplicantId == applicant.applicantId);
+
+          // Check if an applicant was found
+          if (applicantIndex !== -1) {
+            const applicant = data[applicantIndex];
+
+            // Check that applicant is still valid
+            if (applicant) {
+              setSelectedApplicant(applicant);
+              setSelectedApplicantIndex(applicantIndex);
+            }
+          }
+        }
       })
       .catch((error) => console.error("Error fetching listings:", error));
 
-      // after fetching listings -> do localstorage stuff to see if we have selected an applicant before refresh
   }, [params.listingId, token]);
 
   const renderApplicantCardView = () => {
@@ -78,15 +98,12 @@ export default function Listing({ params }: { params: { listingId: string } }) {
                 key={index}
                 className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
                 onClick={(event) => {
+                  // update state variables
                   setSelectedApplicant(applicant);
                   setSelectedApplicantIndex(index);
-                  // if (event.metaKey) {
-                  //   // Cmd + click (on macOS) or Ctrl + click (on Windows/Linux)
-                  //   window.open(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`, '_blank');
-                  // } else {
-                  //   // Regular click
-                  //   router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`);
-                  // }
+
+                  // push to localStorage
+                  localStorage.setItem("selectedApplicantId", applicant.applicantId);
                 }}
               >
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
@@ -110,8 +127,12 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   }
 
   const viewAllApplicants = () => {
+    // update state variables
     setSelectedApplicant(null);
     setSelectedApplicantIndex(-1);
+
+    // clear selectedApplicantId from localStorage
+    localStorage.removeItem("selectedApplicantId");
   }
 
   const onPageChange = (page: number) => {
@@ -119,8 +140,15 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     if (index < 0) {
       console.error("uh oh, page index out of range", index, applicantData.length)
     }
-    setSelectedApplicant(applicantData[index]);
+
+    const applicant = applicantData[index]
+
+    // update state variables
+    setSelectedApplicant(applicant);
     setSelectedApplicantIndex(index);
+
+    // push to localStorage
+    localStorage.setItem("selectedApplicantId", applicant.applicantId);
   };
 
   // const previousLabel =
@@ -133,14 +161,13 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   //     ? `Next - ${applicantData[selectedApplicantIndex + 1].firstName} ${applicantData[selectedApplicantIndex + 1].lastName}`
   //     : "Next";
 
-
   if (isLoading) return (<Loader />)
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Applicants</h1>
       {/* either render Tabs (with applicants) OR single applicant view */}
-      {selectedAppicant == null
+      {selectedApplicant == null
         ? 
         <Tabs aria-label="Default tabs" style="default" ref={tabsRef}>
           <Tabs.Item active title="Card" icon={HiOutlineCollection}>
@@ -167,7 +194,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
               showIcons
             />
           </div>
-          {ApplicantPage(selectedAppicant)}
+          {ApplicantPage(selectedApplicant)}
         </div>
       }
       

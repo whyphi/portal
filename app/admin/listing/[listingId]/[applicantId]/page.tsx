@@ -10,28 +10,6 @@ import Loader from "@/components/Loader";
 import { useAuth } from "@/app/contexts/AuthContext";
 
 export default function ApplicantPage( applicant: Applicant ) {
-  // const { token } = useAuth();
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  // const [applicantData, setApplicantData] = useState<null | Applicant>(null);
-
-  // useEffect(() => {
-  //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicant/${params.applicantId}`, {
-  //     method: "GET",
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data: Applicant) => {
-  //       setApplicantData(data);
-  //       setIsLoading(false)
-  //     })
-  //     .catch((error) => console.error("Error fetching listings:", error));
-
-  // }, [params.applicantId, token]);
-
 
   const renderResponses = () => {
     return (

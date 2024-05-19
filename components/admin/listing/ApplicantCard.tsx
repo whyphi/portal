@@ -28,8 +28,12 @@ export default function ApplicantCard({ listingId, applicant, index, setSelected
     <Card 
       className="cursor-pointer" 
       onClick={() => {
+        // update state variables
         setSelectedApplicant(applicant);
         setSelectedApplicantIndex(index);
+
+        // push to localStorage
+        localStorage.setItem("selectedApplicantId", applicant.applicantId);
         }}
       >
       <div className="flex flex-col items-center mb-1">
