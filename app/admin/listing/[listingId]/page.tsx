@@ -21,7 +21,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   // Need to investigate why tabs are changing state using refs
   // const [activeTab, setActiveTab] = useState(0);
 
-
+  
   useEffect(() => {
     // Fetch listings data from your /listings API endpoint
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`, {
@@ -150,6 +150,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     localStorage.setItem(selectedApplicantIdKey, applicant.applicantId);
   };
 
+  // // alternate approach to previousLabel + nextLabel (a bit too clunky)
   // const previousLabel =
   //   selectedApplicantIndex > 0
   //     ? `Previous - ${applicantData[selectedApplicantIndex - 1].firstName} ${applicantData[selectedApplicantIndex - 1].lastName}`
@@ -165,7 +166,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Applicants</h1>
-      {/* either render Tabs (with applicants) OR single applicant view */}
+      {/* either render Tabs (all applicants) OR single applicant view */}
       {selectedApplicant == null
         ? 
         <Tabs aria-label="Default tabs" style="default" ref={tabsRef}>
@@ -198,7 +199,5 @@ export default function Listing({ params }: { params: { listingId: string } }) {
       }
       
     </div>
-
-
   )
 }

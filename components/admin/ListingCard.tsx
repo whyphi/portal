@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ToggleSwitch, Dropdown } from 'flowbite-react';
 import Link from "next/link";
+import { selectedApplicantIdKey } from "@/utils/globals";
 
 interface ListingCardProps {
   listingId: string;
@@ -159,7 +160,7 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
           </div>
         </div>
       </div>
-      <Link href={`admin/listing/${listingId}`} className="py-6 px-6 flex-grow">
+      <Link onClick={() => localStorage.removeItem(selectedApplicantIdKey)} href={`admin/listing/${listingId}`} className="py-6 px-6 flex-grow">
         <div>
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h5>
           <div className="mt-1">
