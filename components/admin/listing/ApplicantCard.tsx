@@ -28,6 +28,12 @@ export default function ApplicantCard({ listingId, applicant, index, setSelected
     <Card 
       className="cursor-pointer" 
       onClick={() => {
+        // scroll to top of page
+        window.scrollTo({
+          top: 0,
+          // behavior: 'smooth', // change 'smooth' to 'auto' if you don't want a smooth scroll
+        });
+
         // update state variables
         setSelectedApplicant(applicant);
         setSelectedApplicantIndex(index);

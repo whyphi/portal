@@ -21,7 +21,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   // Need to investigate why tabs are changing state using refs
   // const [activeTab, setActiveTab] = useState(0);
 
-  
+
   useEffect(() => {
     // Fetch listings data from your /listings API endpoint
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`, {
@@ -97,6 +97,12 @@ export default function Listing({ params }: { params: { listingId: string } }) {
                 key={index}
                 className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
                 onClick={(event) => {
+                  // scroll to top of page
+                  window.scrollTo({
+                    top: 0,
+                    // behavior: 'smooth', // change 'smooth' to 'auto' if you don't want a smooth scroll
+                  });
+
                   // update state variables
                   setSelectedApplicant(applicant);
                   setSelectedApplicantIndex(index);
