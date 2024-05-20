@@ -1,13 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
 import { Applicant, EventsAttended } from "@/types/applicant";
 import { Badge, Tabs, Table } from 'flowbite-react';
 import { HiMenuAlt1, HiDocumentText, HiUserGroup } from 'react-icons/hi';
 import ResponseCard from "@/components/admin/listing/ResponseCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
 import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
-import Loader from "@/components/Loader";
-import { useAuth } from "@/app/contexts/AuthContext";
 
 interface ApplicantPageProps {
   applicant: Applicant;

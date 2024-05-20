@@ -7,7 +7,7 @@ import { selectedApplicantIdKey } from "@/utils/globals";
 import { Tabs, TabsRef, Table, Button, Pagination } from 'flowbite-react';
 import { HiArrowLeft, HiOutlineCollection, HiOutlineTable } from 'react-icons/hi';
 import { useAuth } from "@/app/contexts/AuthContext";
-import ApplicantPage from "./[applicantId]/page";
+import ApplicantPage from "../../../../components/admin/listing/ApplicantPage";
 
 export default function Listing({ params }: { params: { listingId: string } }) {
   const { token } = useAuth();
