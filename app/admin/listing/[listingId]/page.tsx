@@ -193,20 +193,25 @@ export default function Listing({ params }: { params: { listingId: string } }) {
         </Tabs>
         :
         <div className="flex flex-col gap-5">
-          <div className="flex justify-between">
-            <Button color="gray" onClick={viewAllApplicants}>
-              <HiArrowLeft className="mr-2"/>
-              View all
-            </Button>
-            <Pagination
-              layout="navigation"
-              currentPage={selectedApplicantIndex + 1}
-              totalPages={applicantData.length}
-              onPageChange={onPageChange}
-              previousLabel={"Previous"}
-              nextLabel={"Next"}
-              showIcons
-            />
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between">
+              <Button color="gray" onClick={viewAllApplicants}>
+                <HiArrowLeft className="mr-2"/>
+                View all
+              </Button>
+              <Pagination
+                layout="navigation"
+                currentPage={selectedApplicantIndex + 1}
+                totalPages={applicantData.length}
+                onPageChange={onPageChange}
+                previousLabel={"Previous"}
+                nextLabel={"Next"}
+                showIcons
+              />
+            </div>
+            <div className="flex justify-end text-gray-500 text-sm">
+              <div className="">({selectedApplicantIndex + 1} of {applicantData.length} applicants)</div>
+            </div>
           </div>
           {ApplicantPage(selectedApplicant)}
         </div>
