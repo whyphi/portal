@@ -7,9 +7,12 @@ import { useRouter } from 'next/navigation';
 interface ApplicantCardProps {
   listingId: string;
   applicant: Applicant;
+  index: number;
+  setSelectedApplicant: (applicant: Applicant) => void;
+  setSelectedApplicantIndex: (index: number) => void;
 }
 
-export default function ApplicantCard({ applicant }: ApplicantCardProps) {
+export default function ApplicantCard({ listingId, applicant, index, setSelectedApplicant, setSelectedApplicantIndex }: ApplicantCardProps) {
   const router = useRouter();
   const { colleges } = applicant;
 
@@ -22,7 +25,23 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
   const gradYear = applicant.gradYear.split(' ').pop();
 
   return (
-    <Card className="cursor-pointer" onClick={() => router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`)}>
+    <Card 
+      className="cursor-pointer hover:bg-purple-50" 
+      onClick={() => {
+        // scroll to top of page
+        window.scrollTo({
+          top: 0,
+          // behavior: 'smooth', // change 'smooth' to 'auto' if you don't want a smooth scroll
+        });
+
+        // update state variables
+        setSelectedApplicant(applicant);
+        setSelectedApplicantIndex(index);
+
+        // push to localStorage
+        localStorage.setItem("selectedApplicantId", applicant.applicantId);
+        }}
+      >
       <div className="flex flex-col items-center mb-1">
         <Image
           width={96}
