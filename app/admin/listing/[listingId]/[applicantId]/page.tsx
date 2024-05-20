@@ -9,7 +9,11 @@ import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
 import Loader from "@/components/Loader";
 import { useAuth } from "@/app/contexts/AuthContext";
 
-export default function ApplicantPage( applicant: Applicant ) {
+interface ApplicantPageProps {
+  applicant: Applicant;
+}
+
+export default function ApplicantPage({ applicant }: ApplicantPageProps) {
 
   const renderResponses = () => {
     return (

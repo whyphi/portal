@@ -213,7 +213,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
               <div className="">({selectedApplicantIndex + 1} of {applicantData.length} applicants)</div>
             </div>
           </div>
-          {ApplicantPage(selectedApplicant)}
+          <ApplicantPage applicant={selectedApplicant}/>
         </div>
       }
       
