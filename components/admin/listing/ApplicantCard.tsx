@@ -8,13 +8,15 @@ interface ApplicantCardProps {
   listingId: string;
   applicant: Applicant;
   index: number;
+  highlighted: boolean;
   setSelectedApplicant: (applicant: Applicant) => void;
   setSelectedApplicantIndex: (index: number) => void;
 }
 
-export default function ApplicantCard({ listingId, applicant, index, setSelectedApplicant, setSelectedApplicantIndex }: ApplicantCardProps) {
+export default function ApplicantCard({ listingId, applicant, index, highlighted, setSelectedApplicant, setSelectedApplicantIndex }: ApplicantCardProps) {
   const router = useRouter();
   const { colleges } = applicant;
+  console.log("TEST HIGHLIGHT:", applicant.firstName, highlighted)
 
   // Filter the colleges that are true and format them with year
   const trueColleges = Object.keys(colleges)
@@ -26,7 +28,7 @@ export default function ApplicantCard({ listingId, applicant, index, setSelected
 
   return (
     <Card 
-      className="cursor-pointer hover:bg-purple-50" 
+      className={`cursor-pointer hover:bg-purple-50 transition-colors duration-500 ease-in-out ${highlighted ? 'bg-red-100' : ''}`} 
       onClick={() => {
         // scroll to top of page
         window.scrollTo({
