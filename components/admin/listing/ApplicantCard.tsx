@@ -2,7 +2,6 @@
 import { Card } from 'flowbite-react';
 import Image from 'next/image'
 import { Applicant } from '@/types/applicant';
-import { useRouter } from 'next/navigation';
 
 interface ApplicantCardProps {
   listingId: string;
@@ -13,10 +12,8 @@ interface ApplicantCardProps {
   setSelectedApplicantIndex: (index: number) => void;
 }
 
-export default function ApplicantCard({ listingId, applicant, index, highlighted, setSelectedApplicant, setSelectedApplicantIndex }: ApplicantCardProps) {
-  const router = useRouter();
+export default function ApplicantCard({ applicant, index, highlighted, setSelectedApplicant, setSelectedApplicantIndex }: ApplicantCardProps) {
   const { colleges } = applicant;
-  console.log("TEST HIGHLIGHT:", applicant.firstName, highlighted)
 
   // Filter the colleges that are true and format them with year
   const trueColleges = Object.keys(colleges)

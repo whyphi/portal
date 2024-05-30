@@ -25,7 +25,6 @@ export default function Listing({ params }: { params: { listingId: string } }) {
   const tabsRef = useRef<TabsRef>(null);
   const applicantRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  console.log(applicantRefs)
   // Need to investigate why tabs are changing state using refs
   // const [activeTab, setActiveTab] = useState(0);
 
@@ -162,7 +161,6 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     
     // reset applicant highlights after 2 seconds
     await delay(2000);
-    console.log("WTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTF")
     setApplicantHighlighted(Array(applicantHighlighted.length).fill(false))
   }
 
