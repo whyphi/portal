@@ -7,21 +7,26 @@ import { selectedApplicantIdKey } from "@/utils/globals";
 import { Tabs, TabsRef, Table, Button, Pagination } from 'flowbite-react';
 import { HiArrowLeft, HiOutlineCollection, HiOutlineTable } from 'react-icons/hi';
 import { useAuth } from "@/app/contexts/AuthContext";
+import { delay } from "@/utils/delay";
 import ApplicantPage from "../../../../components/admin/listing/ApplicantPage";
 
 export default function Listing({ params }: { params: { listingId: string } }) {
+  // authentication token (for API)
   const { token } = useAuth();
+  
+  // state variables
   const [applicantData, setApplicantData] = useState<[] | [Applicant]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
   const [selectedApplicantIndex, setSelectedApplicantIndex] = useState<number>(-1);
+  const [applicantHighlighted, setApplicantHighlighted] = useState<boolean[]>([]);
 
+  // ref variables
   const tabsRef = useRef<TabsRef>(null);
   const applicantRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Need to investigate why tabs are changing state using refs
   // const [activeTab, setActiveTab] = useState(0);
-
 
   useEffect(() => {
     // Fetch listings data from your /listings API endpoint
@@ -34,8 +39,9 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     })
       .then((response) => response.json())
       .then((data: [Applicant]) => {
-        // update applicantData and loading status
-        setApplicantData(data)
+        // update applicantData, highlighted applicants, and loading status
+        setApplicantData(data);
+        setApplicantHighlighted(Array(data.length).fill(false));
         setIsLoading(false);
 
         // after fetching listings -> use localStorage to check if selectedApplicant is defined
@@ -50,7 +56,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
           if (applicantIndex !== -1) {
             const applicant = data[applicantIndex];
 
-            // Check that applicant is still valid
+            // Check that applicant is still valid (otherwise we go back to All Applicants screen)
             if (applicant) {
               setSelectedApplicant(applicant);
               setSelectedApplicantIndex(applicantIndex);
@@ -71,6 +77,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
               listingId={params.listingId}
               applicant={applicant}
               index={index}
+              highlighted={applicantHighlighted[index]}
               setSelectedApplicant={setSelectedApplicant}
               setSelectedApplicantIndex={setSelectedApplicantIndex}
             />
@@ -132,7 +139,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     )
   }
 
-  const viewAllApplicants = () => {
+  const viewAllApplicants = async () => {
     // grab current selectedApplicantIndex
     const index = selectedApplicantIndex;
 
@@ -143,10 +150,18 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     // clear selectedApplicantId from localStorage
     localStorage.removeItem(selectedApplicantIdKey);
 
+    // set appicantHighlighted[index] to be true for some time
+    const newHighlights = [...applicantHighlighted];
+    newHighlights[index] = true;
+    setApplicantHighlighted(newHighlights);
+
     // Scroll to that index after state update (ensures scroll occurs in NEXT event-loop-cycle)
-    setTimeout(() => {
-      scrollApplicantIntoView(index);
-    }, 0);
+    await delay(0);
+    scrollApplicantIntoView(index);
+    
+    // reset applicant highlights after 2 seconds
+    await delay(2000);
+    setApplicantHighlighted(Array(applicantHighlighted.length).fill(false))
   }
 
   const onPageChange = (page: number) => {
