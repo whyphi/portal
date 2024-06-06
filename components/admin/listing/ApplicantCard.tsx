@@ -39,8 +39,8 @@ export default function ApplicantCard({ applicant, index, highlighted, setSelect
 
         // push to localStorage
         localStorage.setItem("selectedApplicantId", applicant.applicantId);
-        }}
-      >
+      }}
+    >
       <div className="flex flex-col items-center mb-1">
         <Image
           width={96}
