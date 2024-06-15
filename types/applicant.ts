@@ -19,6 +19,7 @@ export interface Applicant {
   phone:         string;
   preferredName: string;
   events:        null | { [key: string]: boolean };
+  status:        string;
 }
 
 export interface Response {

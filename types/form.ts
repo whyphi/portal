@@ -47,3 +47,26 @@ export interface FormProps {
   includeEventsAttended: boolean;
   isPreview: boolean;
 }
+
+export interface InterviewQuestion {
+  // question: string[];
+  response: string[];
+  rating: number;
+  comments: string[];
+}
+
+export interface InterviewFormData {
+  rusheeFullName: string;
+  brother1FullName: string;
+  brother2FullName: string;
+  responses: [] | InterviewQuestion[];
+}
+
+export interface InterviewFormProps {
+  title: string | null;
+  semester: string | null; // TO-DO: this should eventually link to a timeframe. 
+  questions: [] | { question: string, context: string }[];
+  listingId: string | null;
+  isPreview: boolean;
+}
+

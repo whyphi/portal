@@ -44,9 +44,11 @@ export default function Interviews() {
     <main className="container mx-auto px-8">
       <div className="flex flex-row justify-between">
         <p className="text-2xl font-semibold my-2">Interviews</p>
-        <div className="flex flex-row space-x-2 hover:bg-slate-300 items-center border-2 p-2 border-purple-300 rounded-xl">
+        <div className="flex flex-row space-x-2 hover:bg-violet-200 cursor-pointer items-center px-4 py-2 bg-violet-100 rounded-xl">
           <FaPlus />
-          <p className="text-md">Create New Interview</p>
+          <a href="/admin/interviews/create" className="text-sm">
+            Create New Interview
+          </a>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
