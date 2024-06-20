@@ -1,5 +1,4 @@
 "use client";
-import { useState, useEffect } from "react";
 import { Applicant, EventsAttended } from "@/types/applicant";
 import { Badge, Tabs, Table, Dropdown } from "flowbite-react";
 import { HiMenuAlt1, HiDocumentText, HiUserGroup } from "react-icons/hi";
@@ -8,45 +7,28 @@ import ResponseCard from "@/components/admin/listing/ResponseCard";
 import InterviewCard from "@/components/admin/listing/InterviewCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
 import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
-import Loader from "@/components/Loader";
-import { useAuth } from "@/app/contexts/AuthContext";
 
-export default function ApplicantPage({ params }: { params: { applicantId: string } }) {
-  const { token } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [applicantData, setApplicantData] = useState<null | Applicant>(null);
-  const [interviewTypeSelected, setInterviewTypeSelected] = useState<string>("All");
+interface ApplicantPageProps {
+  applicant: Applicant;
+}
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicant/${params.applicantId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data: Applicant) => {
-        setApplicantData(data);
-        setIsLoading(false);
-      })
-      .catch((error) => console.error("Error fetching listings:", error));
-  }, [params.applicantId, token]);
-
-  // TO-DO: Fetch interview responses from Backend. Probably filter out in frontend down below.
-  // useEffect(() => {
-  //   fetch()...
-  // }, [interviewTypeSelected, token]);
+export default function ApplicantPage({ applicant }: ApplicantPageProps) {
 
   const renderResponses = () => {
-    return applicantData?.responses.length === 0 ? (
-      <p>None</p>
-    ) : (
-      <div>
-        {applicantData?.responses.map((response, index) => (
-          <ResponseCard key={index} question={response.question} answer={response.response} />
-        ))}
-      </div>
+    return (
+      applicant?.responses.length === 0 ? (
+        <p>None</p>
+      ) : (
+        <div className="">
+          {applicant?.responses.map((response, index) => (
+            <ResponseCard
+              key={index}
+              question={response.question}
+              answer={response.response}
+            />
+          ))}
+        </div>
+      )
     );
   };
 
@@ -197,11 +179,12 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
     <div className="flex flex-wrap">
       {/* Left component (ApplicantInfoCard) */}
       <div className="w-full lg:pr-6 lg:w-1/3 overflow-auto lg:sticky top-0 lg:h-screen">
-        {applicantData && <ApplicantInfoCard applicant={applicantData} />}
+        {applicant && <ApplicantInfoCard applicant={applicant} />}
       </div>
 
       {/* Right component (Tabs and content) */}
       <div className="w-full lg:w-2/3 overflow-auto lg:pl-6">
+<<<<<<< HEAD:app/admin/listing/[listingId]/[applicantId]/page.tsx
         <Tabs.Group className="" aria-label="Tabs with underline" style="underline">
           <Tabs.Item icon={HiMenuAlt1} title="Responses">
             {renderResponses()}
@@ -209,10 +192,31 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
           <Tabs.Item icon={HiDocumentText} title="Resume">
             {applicantData && applicantData.resume ? (
               <ApplicantPDFViewer resumeLink={applicantData.resume} />
+=======
+        <Tabs
+          className=""
+          aria-label="Tabs with underline"
+          style="underline"
+        >
+
+          <Tabs.Item
+            icon={HiMenuAlt1}
+            title="Responses"
+          >
+            {renderResponses()}
+          </Tabs.Item>
+          <Tabs.Item
+            icon={HiDocumentText}
+            title="Resume"
+          >
+            {applicant && applicant.resume ? (
+              <ApplicantPDFViewer resumeLink={applicant.resume} />
+>>>>>>> dev/v1.0:components/admin/listing/ApplicantPage.tsx
             ) : (
               <p>No resume available.</p>
             )}
           </Tabs.Item>
+<<<<<<< HEAD:app/admin/listing/[listingId]/[applicantId]/page.tsx
           {applicantData?.events ? (
             <Tabs.Item icon={HiUserGroup} title="Events Attended">
               {renderEventsAttended(applicantData.events)}
@@ -224,6 +228,16 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
             {renderInterviews()}
           </Tabs.Item>
         </Tabs.Group>
+=======
+          {applicant?.events ? (<Tabs.Item
+            icon={HiUserGroup}
+            title="Events Attended"
+          >
+            {renderEventsAttended(applicant.events)}
+          </Tabs.Item>) : ("")}
+
+        </Tabs>
+>>>>>>> dev/v1.0:components/admin/listing/ApplicantPage.tsx
       </div>
     </div>
   );

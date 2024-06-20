@@ -54,6 +54,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [isInfoAlert, setIsInfoAlert] = useState<boolean>(true);
 
   // Confirmation Checkboxes
   const [confirmUndergraduate, setConfirmUndergraduate] = useState(false);
@@ -548,6 +549,30 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       </div>
     );
   };
+
+  const RenderInfoAlert = () => {
+    return (
+      <div className="fixed max-w-screen-sm w-full mt-10 z-50">
+        <Alert
+          className="z-1 shadow-md"
+          color="warning"
+          withBorderAccent
+          onDismiss={() => {
+            setIsInfoAlert(false);
+          }}
+        >
+          <span className="font-medium">Important Notice:</span> To ensure timely processing in anticipation of high application volume, kindly submit your application a few minutes prior to the designated deadline.
+    
+          <br />
+          <br />
+          
+          <span className="font-medium">For Assistance:</span> In case of technical difficulties during submission, please email <span className="underline">pct.bostonu@gmail.com</span> with a PDF containing all required application elements (outlined in the website), your photo and updated resume before the deadline.
+        </Alert>
+      </div>
+    );
+    
+  };
+
   const RenderFileInput = (
     id: keyof FormData,
     label: string,
@@ -604,7 +629,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
             <HiOutlineX
               className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
               onClick={(e: any) => clearFileInput(e)}
-              disabled={isSubmitting}
+              // disabled={isSubmitting}
             />
           </div>
           :
@@ -614,7 +639,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
             <HiOutlineX
               className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
               onClick={(e: any) => clearFileInput(e)}
-              disabled={isSubmitting}
+              // disabled={isSubmitting}
             />
           </div>
         }
@@ -631,6 +656,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   return (
 
     <form onSubmit={handleSubmit} className="flex flex-col mb-8 w-full">
+
+      {isInfoAlert && RenderInfoAlert()}
       {isError && RenderErrorAlert()}
 
       <div>

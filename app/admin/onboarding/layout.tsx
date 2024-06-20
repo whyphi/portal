@@ -1,8 +1,8 @@
-import '../../../../globals.css'
+import '../../globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Whyphi - Create',
+    title: 'Whyphi - Onboarding',
     description: "Whyphi's Admin",
 }
 
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
     return (
 
-        <div className="flex flex-col mx-auto justify-center max-w-screen-lg w-full">
+        <div className="flex flex-col mx-auto justify-center max-w-screen-lg">
             {children}
         </div>
 

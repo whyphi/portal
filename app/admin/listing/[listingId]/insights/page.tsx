@@ -9,12 +9,15 @@ import { Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
 import { useAuth } from "@/app/contexts/AuthContext";
 
-import { FlowbiteTabTheme } from "flowbite-react";
+import { CustomFlowbiteTheme } from "flowbite-react";
+import Link from "next/link";
+import { selectedApplicantIdKey } from "@/utils/globals";
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
-  const { token } = useAuth();
   const router = useRouter();
+  const { token } = useAuth();
+
   // dashboard : object containing data from backend (# applicants, average gpa, #1 major, avg gradYear, avg response length)
   const [dashboard, setDashboard] = useState<Dashboard>({
     applicantCount: null,
@@ -23,7 +26,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     commonGradYear: "",
   });
   const [insightsLoading, setInsightsIsLoading] = useState<boolean>(true);
-
 
   // distributionMetrics : object containing frequencies of each metric for all applicants
   const [distributionMetrics, setDistributionMetrics] = useState<DistributionMetricsState>({
@@ -44,7 +46,26 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
 
-  // Fetch insights data from your /listings API endpoint
+  // Fetch listings data from your /listings API endpoint
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
+      .then((response) => response.json())
+      .then((data: [Applicant]) => {
+        const cleanedData: Applicant[] = data.map((applicant: Applicant) => {
+          return {
+            ...applicant,
+            major: applicant.major.toLowerCase(),
+            minor: applicant.minor.toLowerCase(),
+          };
+        });
+        setInsightsIsLoading(false);
+        // parseData()
+      })
+      .catch((error) => console.error("Error fetching applicants:", error));
+
+  }, [])
+
+  // Parse data whenever applicantData changes
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/insights/listing/${params.listingId}`, {
       method: "GET",
@@ -61,7 +82,9 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       })
       .catch((error) => console.error("Error fetching data analytics:", error));
 
+
   }, [params.listingId, token])
+
 
 
   const handleActiveTab = (tab: number) => {
@@ -78,7 +101,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     setMatchingApplicants([]);
   };
 
-  console.log(distributionMetrics)
 
   const handlePieClick = (data: any) => {
     // error handling (only if metric/selectedItem is valid)
@@ -110,7 +132,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       return <Table.Cell>{colleges}</Table.Cell>
     } else if (["linkedin", "website"].includes(selectedItem)) {
       // case 2: handle url status
-      const hasURL = typeof val === 'string' ? (
+      const hasURL = typeof val === 'string' && val !== "" ? (
         <a
           href={val}
           target="_blank"
@@ -123,20 +145,25 @@ export default function Insights({ params }: { params: { listingId: string } }) 
           {val}
         </a>
       ) : (
-        "N/A"
+        "False"
       );
       return <Table.Cell>{hasURL}</Table.Cell>
     } else {
       // case 3: "gpa", "gradYear", "major", "minor"
-      return <Table.Cell>{val || 'N/A'}</Table.Cell>
+      return <Table.Cell>{val}</Table.Cell>
     }
   }
 
+  const handleRowClick = (applicant: Applicant) => {
+    localStorage.setItem(selectedApplicantIdKey, applicant.applicantId);
+    router.push(`/admin/listing/${params.listingId}`);
+  };
+
   const mapMatchingApplicants = matchingApplicants.map((applicant: Applicant, index: number) => (
     <Table.Row
-      key={index}
       className={`bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer`}
-      onClick={() => router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`)}
+      key={index}
+      onClick={() => handleRowClick(applicant)}
     >
       <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
         {applicant.firstName} {applicant.lastName}
@@ -145,7 +172,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     </Table.Row>
   ))
 
-  const customTabTheme: FlowbiteTabTheme = {
+  const customTabTheme: CustomFlowbiteTheme['tabs'] = {
     "base": "flex flex-col gap-2",
     "tablist": {
       "base": "flex text-center",
@@ -217,11 +244,11 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       </div>
 
 
-      <Tabs.Group style="pills" theme={customTabTheme} aria-label="Tabs with underline" onActiveTabChange={(tab) => handleActiveTab(tab)}>
+      <Tabs style="pills" theme={customTabTheme} aria-label="Tabs with underline" onActiveTabChange={(tab) => handleActiveTab(tab)}>
         {fields.map((field, index) => (
           <Tabs.Item color="purple" title={field} key={index} />
         ))}
-      </Tabs.Group>
+      </Tabs>
 
       <div className="flex flex-col items-center w-full">
         <PieChart width={450} height={400}>

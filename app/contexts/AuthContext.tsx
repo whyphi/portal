@@ -4,6 +4,8 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { getSession } from 'next-auth/react';
 import jwt from 'jsonwebtoken';
 import { Session } from 'next-auth';
+import { useRouter, usePathname } from 'next/navigation'
+
 
 interface AuthContextProps {
   token: string | null;
@@ -11,9 +13,19 @@ interface AuthContextProps {
   isLoading: boolean;
 }
 
+interface CustomSession extends Session {
+  token?: {
+    isNewUser?: boolean;
+    // Add other properties as needed
+  };
+}
+
+
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const router = useRouter()
+  const pathname = usePathname();
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -21,8 +33,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     getSession().then((session: Session | null) => {
       if (session) {
         // Use type assertion to add the 'token' property
-        const sessionWithToken = session as Session & { token?: string };
-  
+        const sessionWithToken = session as CustomSession;
+
+        // Check if user is a newUser
+        if (sessionWithToken && sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
+          
+          // To prevent infinite reloads; only redirect if the pathname is not /admin/onboarding
+          if (pathname !== "/admin/onboarding") {
+            router.push("/admin/onboarding");
+          }
+        }
+
         if (sessionWithToken.token) {
           const signedToken = jwt.sign(sessionWithToken.token, `${process.env.NEXT_PUBLIC_JWT_SECRET}`, {
             algorithm: 'HS256',
