@@ -26,6 +26,7 @@ export interface RushEvent {
   name: string;
   dateCreated: string;
   code: string;
+  deadline: string;
 }
 
 export interface RushCategory {

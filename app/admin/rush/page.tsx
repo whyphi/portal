@@ -10,7 +10,8 @@ import { RushCategory, RushEvent } from "@/types/admin/events";
 import { HiOutlinePencil, HiLink, HiOutlineTrash } from "react-icons/hi";
 import { formatMongoDate } from "@/utils/date";
 import Link from "next/link";
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function RushEvents() {
   const { token } = useAuth();
@@ -20,6 +21,7 @@ export default function RushEvents() {
 
   const [eventName, setEventName] = useState<string>("");
   const [eventCode, setEventCode] = useState<string>("");
+  const [eventDeadline, setEventDeadline] = useState(new Date());
 
   // States managing the create event modal
   const [openCreateEventModal, setOpenCreateEventModal] = useState<boolean>(false);
@@ -109,10 +111,6 @@ export default function RushEvents() {
               <HiLink className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600" />
             </a>
           </div>
-
-
-
-
         </div>
       </div>
 
@@ -132,7 +130,12 @@ export default function RushEvents() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ categoryId: selectedRushCategory?._id, name: eventName, code: eventCodeTrimmed })
+        body: JSON.stringify({ 
+          categoryId: selectedRushCategory?._id, 
+          name: eventName, 
+          code: eventCodeTrimmed,
+          deadline: eventDeadline.toISOString(),
+        })
       })
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -224,8 +227,25 @@ export default function RushEvents() {
               </div>
               <TextInput id="eventCode" type="text" required value={eventCode} onChange={(e) => setEventCode(e.target.value)} />
             </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="eventCode" value="Event Deadline" />
+                <span className="text-red-500"> *</span>
+              </div>
+              <DatePicker
+                selected={eventDeadline}
+                onChange={(date: Date) => setEventDeadline(date)}
+                showTimeSelect
+                isClearable
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5"
+                wrapperClassName="w-full" // Add a custom class to make it full width
+              />
+            </div>
             <div className="w-full">
-              <Button disabled={!eventName || !eventCode} onClick={handleCreateEvent}>Create Event</Button>
+              <Button disabled={!eventName || !eventCode || !eventDeadline} onClick={handleCreateEvent}>Create Event</Button>
             </div>
           </div>
         </Modal.Body>
