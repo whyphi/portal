@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
-import { Button, Accordion, Avatar, Modal, TextInput, Label } from "flowbite-react";
+import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
+import { FaRegCopy } from 'react-icons/fa';
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
 import { RushCategory, RushEvent } from "@/types/admin/events";
 import { HiOutlinePencil, HiLink, HiOutlineTrash } from "react-icons/hi";
@@ -34,6 +35,16 @@ export default function RushEvents() {
 
   const [rushCategoriesCodeToggled, setRushCategoriesCodeToggled] = useState<Record<string, boolean>>({});
 
+  // state to track copied status (for event.code)
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = (e: React.MouseEvent<SVGAElement>, event: RushEvent) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(event.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+  };
+  
   useEffect(() => {
     // Fetch all rush categories and events from the API
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`, {
@@ -85,9 +96,20 @@ export default function RushEvents() {
                   <Avatar placeholderInitials={event.name[0]} rounded />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{event.name}</p>
-                  <p className="truncate text-sm text-gray-500 dark:text-gray-400 mr-1">{formatMongoDate(event.dateCreated)}</p>
-                  <code className="truncate text-sm text-gray-500 dark:text-gray-400">{rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}</code>
+                  <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
+                  <p className="truncate text-sm text-gray-500 dark:text-gray-400 mr-1">Created: {formatMongoDate(event.dateCreated)}</p>
+                  <p className="truncate text-sm text-gray-500 dark:text-gray-400 mr-1">Deadline: {formatMongoDate(event.deadline)}</p>
+                  <div className="flex gap-3 items-center">
+                    <code className="truncate text-sm text-gray-500 dark:text-gray-400">{rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}</code>
+                    {rushCategoriesCodeToggled[categoryId] && (
+                      <Tooltip content={copied ? 'Copied!' : 'Copy code to clipboard'} placement="top">
+                        <FaRegCopy
+                          className="w-4 h-4 cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                          onClick={(e: React.MouseEvent<SVGAElement>) => handleCopy(e, event)}
+                        />
+                      </Tooltip>
+                    )}
+                  </div>
                 </div>
               </div>
             </Link>
