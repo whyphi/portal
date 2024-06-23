@@ -13,6 +13,7 @@ import { formatMongoDate } from "@/utils/date";
 import Link from "next/link";
 import "react-datepicker/dist/react-datepicker.css";
 import EventModel from "@/components/admin/events/EventModal";
+import MongoTimestamp from "@/components/MongoTimestamp";
 
 export interface EventFormData {
   eventName: string,
@@ -114,8 +115,18 @@ export default function RushEvents() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
-                  <p className="truncate text-sm text-gray-500 dark:text-gray-400 mr-1">Created: {formatMongoDate(event.dateCreated)}</p>
-                  <p className="truncate text-sm text-gray-500 dark:text-gray-400 mr-1">Deadline: {formatMongoDate(event.deadline)}</p>
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Created:
+                    <MongoTimestamp datestring={event.dateCreated} />
+                  </p>
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Last Modified:
+                    <MongoTimestamp datestring={event.lastModified} />
+                  </p>
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Deadline:
+                    <MongoTimestamp datestring={event.deadline} />
+                  </p>
                   <div className="flex gap-3 items-center">
                     <code className="truncate text-sm text-gray-500 dark:text-gray-400">{rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}</code>
                     {rushCategoriesCodeToggled[categoryId] && (
