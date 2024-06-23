@@ -169,7 +169,8 @@ export default function RushEvents() {
     )
   }
 
-  const handleCreateEvent = async () => {
+  // handleRusheeEvent : by default creates a rush event
+  const handleRusheeEvent = async (modifying?: boolean) => {
     const eventCodeTrimmed = eventFormData.eventCode.trim();
     if (eventCodeTrimmed !== eventFormData.eventCode) {
       alert('Event code cannot contain whitespace. Please check that you are not using whitespaces in your event code.');
@@ -177,7 +178,7 @@ export default function RushEvents() {
     }
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush`, {
-        method: 'POST',
+        method: `${modifying ? 'PATCH' : 'POST'}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -264,7 +265,7 @@ export default function RushEvents() {
         eventFormData={eventFormData}
         setEventFormData={setEventFormData}
         onClose={onCloseCreateEventModal}
-        onSubmit={handleCreateEvent}
+        onSubmit={handleRusheeEvent}
       />
       
       <EventModel 
@@ -273,7 +274,7 @@ export default function RushEvents() {
         eventFormData={eventFormData}
         setEventFormData={setEventFormData}
         onClose={onCloseModifyEventModal}
-        onSubmit={() => {}}
+        onSubmit={() => handleRusheeEvent(true)}
         modifyingEvent
       />
 
