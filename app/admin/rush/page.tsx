@@ -11,8 +11,20 @@ import { RushCategory, RushEvent } from "@/types/admin/events";
 import { HiOutlinePencil, HiLink, HiOutlineTrash } from "react-icons/hi";
 import { formatMongoDate } from "@/utils/date";
 import Link from "next/link";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import EventModel from "@/components/admin/events/EventModal";
+
+export interface EventFormData {
+  eventName: string,
+  eventCode: string,
+  eventDeadline: Date,
+}
+
+const initialValues: EventFormData = {
+  eventName: "",
+  eventCode: "",
+  eventDeadline: new Date(),
+};
 
 export default function RushEvents() {
   const { token } = useAuth();
@@ -20,12 +32,11 @@ export default function RushEvents() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
 
-  const [eventName, setEventName] = useState<string>("");
-  const [eventCode, setEventCode] = useState<string>("");
-  const [eventDeadline, setEventDeadline] = useState(new Date());
+  const [eventFormData, setEventFormData] = useState<EventFormData>(initialValues);
 
   // States managing the create event modal
   const [openCreateEventModal, setOpenCreateEventModal] = useState<boolean>(false);
+  const [openModifyEventModal, setOpenModifyEventModal] = useState<boolean>(false);
   const [selectedRushCategory, setSelectedRushCategory] = useState<RushCategory | null>(null);
 
   // States managing the delete event modal
@@ -71,9 +82,22 @@ export default function RushEvents() {
   }, [token]);
 
 
-  function onCloseEventModal() {
+  function onCloseCreateEventModal() {
     setOpenCreateEventModal(false);
-    setEventName("");
+    setEventFormData({
+      eventName: "",
+      eventCode: "",
+      eventDeadline: new Date(),
+    });
+  }
+  
+  function onCloseModifyEventModal() {
+    setOpenModifyEventModal(false);
+    setEventFormData({
+      eventName: "",
+      eventCode: "",
+      eventDeadline: new Date(),
+    });
   }
 
   function onCloseDeleteEventModal() {
@@ -115,7 +139,13 @@ export default function RushEvents() {
             </Link>
           </div>
           <div className="flex flex-row flex-shrink-0 px-2">
-            <HiOutlinePencil className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1" />
+            <HiOutlinePencil 
+              className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1"
+              onClick={() => { 
+                setEventFormData({ eventName: event.name, eventCode: event.code, eventDeadline: new Date(event.deadline)}); 
+                setOpenModifyEventModal(true); 
+              }}
+            />
             <HiOutlineTrash onClick={(e: React.MouseEvent<SVGAElement>) => {
               e.preventDefault();
               setSelectedEventToDelete(event);
@@ -140,8 +170,8 @@ export default function RushEvents() {
   }
 
   const handleCreateEvent = async () => {
-    const eventCodeTrimmed = eventCode.trim();
-    if (eventCodeTrimmed !== eventCode) {
+    const eventCodeTrimmed = eventFormData.eventCode.trim();
+    if (eventCodeTrimmed !== eventFormData.eventCode) {
       alert('Event code cannot contain whitespace. Please check that you are not using whitespaces in your event code.');
       return;
     }
@@ -154,9 +184,9 @@ export default function RushEvents() {
         },
         body: JSON.stringify({ 
           categoryId: selectedRushCategory?._id, 
-          name: eventName, 
+          name: eventFormData.eventName, 
           code: eventCodeTrimmed,
-          deadline: eventDeadline.toISOString(),
+          deadline: eventFormData.eventDeadline.toISOString(),
         })
       })
       if (!response.ok) {
@@ -188,8 +218,6 @@ export default function RushEvents() {
       console.error(error);
     }
   }
-
-
 
   if (isLoading) return <Loader />;
 
@@ -229,49 +257,25 @@ export default function RushEvents() {
       {/* Drawer component */}
       {isDrawerOpen && <CreateDrawer onClose={handleDrawerClose} />}
 
-      {/* Create Event Component */}
-      <Modal show={openCreateEventModal} size="md" onClose={onCloseEventModal} popup>
-        <Modal.Header />
-        <Modal.Body>
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Create an Event for {selectedRushCategory?.name}</h3>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="eventName" value="Event Name" />
-                <span className="text-red-500"> *</span>
-              </div>
-              <TextInput id="eventName" type="text" required value={eventName} onChange={(e) => setEventName(e.target.value)} />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="eventCode" value="Event Code" />
-                <span className="text-red-500"> *</span>
-              </div>
-              <TextInput id="eventCode" type="text" required value={eventCode} onChange={(e) => setEventCode(e.target.value)} />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="eventCode" value="Event Deadline" />
-                <span className="text-red-500"> *</span>
-              </div>
-              <DatePicker
-                selected={eventDeadline}
-                onChange={(date: Date) => setEventDeadline(date)}
-                showTimeSelect
-                isClearable
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                dateFormat="MMMM d, yyyy h:mm aa"
-                className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5"
-                wrapperClassName="w-full" // Add a custom class to make it full width
-              />
-            </div>
-            <div className="w-full">
-              <Button disabled={!eventName || !eventCode || !eventDeadline} onClick={handleCreateEvent}>Create Event</Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+      {/* Custom Create/Modify Event Component Modal */}
+      <EventModel 
+        showModal={openCreateEventModal}
+        selectedRushCategory={selectedRushCategory}
+        eventFormData={eventFormData}
+        setEventFormData={setEventFormData}
+        onClose={onCloseCreateEventModal}
+        onSubmit={handleCreateEvent}
+      />
+      
+      <EventModel 
+        showModal={openModifyEventModal}
+        selectedRushCategory={selectedRushCategory}
+        eventFormData={eventFormData}
+        setEventFormData={setEventFormData}
+        onClose={onCloseModifyEventModal}
+        onSubmit={() => {}}
+        modifyingEvent
+      />
 
       <Modal show={openDeleteEventModal} size="md" onClose={onCloseDeleteEventModal} popup>
         <Modal.Header />
