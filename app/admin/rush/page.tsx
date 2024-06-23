@@ -128,7 +128,9 @@ export default function RushEvents() {
                     <MongoTimestamp datestring={event.deadline} />
                   </p>
                   <div className="flex gap-3 items-center">
-                    <code className="truncate text-sm text-gray-500 dark:text-gray-400">{rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}</code>
+                    <code className="truncate text-sm text-gray-500 dark:text-gray-400">
+                      {rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}
+                    </code>
                     {rushCategoriesCodeToggled[categoryId] && (
                       <Tooltip content={copied ? 'Copied!' : 'Copy code to clipboard'} placement="top">
                         <FaRegCopy
