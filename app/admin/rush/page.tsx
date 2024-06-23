@@ -18,6 +18,7 @@ export interface EventFormData {
   eventName: string,
   eventCode: string,
   eventDeadline: Date,
+  eventId?: string,
 }
 
 const initialValues: EventFormData = {
@@ -84,20 +85,12 @@ export default function RushEvents() {
 
   function onCloseCreateEventModal() {
     setOpenCreateEventModal(false);
-    setEventFormData({
-      eventName: "",
-      eventCode: "",
-      eventDeadline: new Date(),
-    });
+    setEventFormData(initialValues);
   }
   
   function onCloseModifyEventModal() {
     setOpenModifyEventModal(false);
-    setEventFormData({
-      eventName: "",
-      eventCode: "",
-      eventDeadline: new Date(),
-    });
+    setEventFormData(initialValues);
   }
 
   function onCloseDeleteEventModal() {
@@ -142,7 +135,12 @@ export default function RushEvents() {
             <HiOutlinePencil 
               className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1"
               onClick={() => { 
-                setEventFormData({ eventName: event.name, eventCode: event.code, eventDeadline: new Date(event.deadline)}); 
+                setEventFormData({ 
+                  eventName: event.name, 
+                  eventCode: event.code, 
+                  eventDeadline: new Date(event.deadline),
+                  eventId: event.eventId,
+                }); 
                 setOpenModifyEventModal(true); 
               }}
             />
@@ -188,6 +186,7 @@ export default function RushEvents() {
           name: eventFormData.eventName, 
           code: eventCodeTrimmed,
           deadline: eventFormData.eventDeadline.toISOString(),
+          ...(modifying && { eventId: eventFormData.eventId })
         })
       })
       if (!response.ok) {
@@ -265,7 +264,7 @@ export default function RushEvents() {
         eventFormData={eventFormData}
         setEventFormData={setEventFormData}
         onClose={onCloseCreateEventModal}
-        onSubmit={handleRusheeEvent}
+        onSubmit={() => handleRusheeEvent()}
       />
       
       <EventModel 
