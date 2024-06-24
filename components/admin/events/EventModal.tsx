@@ -1,7 +1,6 @@
 import { EventFormData } from "@/app/admin/rush/page";
 import { RushCategory } from "@/types/admin/events";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
-import { useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 
 interface EventModalProps {
