@@ -3,13 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
-import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip } from "flowbite-react";
+import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
 import { FaRegCopy } from 'react-icons/fa';
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
 import { RushCategory, RushEvent } from "@/types/admin/events";
 import { HiOutlinePencil, HiLink, HiOutlineTrash } from "react-icons/hi";
-import { formatMongoDate } from "@/utils/date";
 import Link from "next/link";
 import "react-datepicker/dist/react-datepicker.css";
 import EventModel from "@/components/admin/events/EventModal";
@@ -103,9 +102,8 @@ export default function RushEvents() {
   const handleDrawerClose = () => setIsDrawerOpen(false);
 
   const EventRow = ({ event, index, categoryId }: { event: RushEvent, index: number, categoryId: string }) => {
-    const borderTopClass = 'border-t border-gray-200 dark:border-gray-700';
     return (
-      <div key={index} className={`${borderTopClass} group hover:bg-gray-100 dark:hover:bg-gray-800 py-3 sm:py-4 cursor-pointer`}>
+      <Card key={index} className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`}>
         <div className="flex flex-row items-center w-full">
           <div className="flex-1">
             <Link href={`/admin/rush/${event.eventId}`}>
@@ -115,10 +113,10 @@ export default function RushEvents() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
-                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                  {/* <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Created:
                     <MongoTimestamp datestring={event.dateCreated} />
-                  </p>
+                  </p> */}
                   <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Last Modified:
                     <MongoTimestamp datestring={event.lastModified} />
@@ -175,7 +173,7 @@ export default function RushEvents() {
             </a>
           </div>
         </div>
-      </div>
+      </Card>
 
     )
   }
