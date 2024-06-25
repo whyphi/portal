@@ -12,7 +12,7 @@ import { HiOutlinePencil, HiLink, HiOutlineTrash } from "react-icons/hi";
 import Link from "next/link";
 import "react-datepicker/dist/react-datepicker.css";
 import EventModal from "@/components/admin/rush/EventModal";
-import MongoTimestamp from "@/components/MongoTimestamp";
+import Timestamp from "react-timestamp";
 
 export interface EventFormData {
   eventName: string,
@@ -119,11 +119,11 @@ export default function RushEvents() {
                   </p> */}
                   <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Last Modified:
-                    <MongoTimestamp datestring={event.lastModified} />
+                    <Timestamp date={new Date(event.lastModified)} />
                   </p>
                   <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Deadline:
-                    <MongoTimestamp datestring={event.deadline} />
+                    <Timestamp date={new Date(event.deadline)} />
                   </p>
                   <div className="flex gap-3 items-center">
                     <code className="truncate text-sm text-gray-500 dark:text-gray-400">
