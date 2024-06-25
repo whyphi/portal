@@ -3,14 +3,29 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
-import { Button, Accordion, Avatar, Modal, TextInput, Label } from "flowbite-react";
+import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
+import { FaRegCopy } from 'react-icons/fa';
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
 import { RushCategory, RushEvent } from "@/types/admin/events";
 import { HiOutlinePencil, HiLink, HiOutlineTrash } from "react-icons/hi";
-import { formatMongoDate } from "@/utils/date";
 import Link from "next/link";
+import "react-datepicker/dist/react-datepicker.css";
+import EventModal from "@/components/admin/rush/EventModal";
+import Timestamp from "react-timestamp";
 
+export interface EventFormData {
+  eventName: string,
+  eventCode: string,
+  eventDeadline: Date,
+  eventId?: string,
+}
+
+const initialValues: EventFormData = {
+  eventName: "",
+  eventCode: "",
+  eventDeadline: new Date(),
+};
 
 export default function RushEvents() {
   const { token } = useAuth();
@@ -18,11 +33,11 @@ export default function RushEvents() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
 
-  const [eventName, setEventName] = useState<string>("");
-  const [eventCode, setEventCode] = useState<string>("");
+  const [eventFormData, setEventFormData] = useState<EventFormData>(initialValues);
 
   // States managing the create event modal
   const [openCreateEventModal, setOpenCreateEventModal] = useState<boolean>(false);
+  const [openModifyEventModal, setOpenModifyEventModal] = useState<boolean>(false);
   const [selectedRushCategory, setSelectedRushCategory] = useState<RushCategory | null>(null);
 
   // States managing the delete event modal
@@ -32,6 +47,16 @@ export default function RushEvents() {
 
   const [rushCategoriesCodeToggled, setRushCategoriesCodeToggled] = useState<Record<string, boolean>>({});
 
+  // state to track copied status (for event.code)
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = (e: React.MouseEvent<SVGAElement>, event: RushEvent) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(event.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+  };
+  
   useEffect(() => {
     // Fetch all rush categories and events from the API
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`, {
@@ -58,9 +83,14 @@ export default function RushEvents() {
   }, [token]);
 
 
-  function onCloseEventModal() {
+  function onCloseCreateEventModal() {
     setOpenCreateEventModal(false);
-    setEventName("");
+    setEventFormData(initialValues);
+  }
+  
+  function onCloseModifyEventModal() {
+    setOpenModifyEventModal(false);
+    setEventFormData(initialValues);
   }
 
   function onCloseDeleteEventModal() {
@@ -72,9 +102,8 @@ export default function RushEvents() {
   const handleDrawerClose = () => setIsDrawerOpen(false);
 
   const EventRow = ({ event, index, categoryId }: { event: RushEvent, index: number, categoryId: string }) => {
-    const borderTopClass = 'border-t border-gray-200 dark:border-gray-700';
     return (
-      <div key={index} className={`${borderTopClass} group hover:bg-gray-100 dark:hover:bg-gray-800 py-3 sm:py-4 cursor-pointer`}>
+      <Card key={index} className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`}>
         <div className="flex flex-row items-center w-full">
           <div className="flex-1">
             <Link href={`/admin/rush/${event.eventId}`}>
@@ -83,15 +112,49 @@ export default function RushEvents() {
                   <Avatar placeholderInitials={event.name[0]} rounded />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{event.name}</p>
-                  <p className="truncate text-sm text-gray-500 dark:text-gray-400 mr-1">{formatMongoDate(event.dateCreated)}</p>
-                  <code className="truncate text-sm text-gray-500 dark:text-gray-400">{rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}</code>
+                  <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
+                  {/* <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Created:
+                    <MongoTimestamp datestring={event.dateCreated} />
+                  </p> */}
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Last Modified:
+                    <Timestamp date={new Date(event.lastModified)} />
+                  </p>
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Deadline:
+                    <Timestamp date={new Date(event.deadline)} />
+                  </p>
+                  <div className="flex gap-3 items-center">
+                    <code className="truncate text-sm text-gray-500 dark:text-gray-400">
+                      {rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}
+                    </code>
+                    {rushCategoriesCodeToggled[categoryId] && (
+                      <Tooltip content={copied ? 'Copied!' : 'Copy code to clipboard'} placement="top">
+                        <FaRegCopy
+                          className="w-4 h-4 cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                          onClick={(e: React.MouseEvent<SVGAElement>) => handleCopy(e, event)}
+                        />
+                      </Tooltip>
+                    )}
+                  </div>
                 </div>
               </div>
             </Link>
           </div>
           <div className="flex flex-row flex-shrink-0 px-2">
-            <HiOutlinePencil className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1" />
+            <HiOutlinePencil 
+              className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1"
+              onClick={() => { 
+                setEventFormData({ 
+                  eventName: event.name, 
+                  eventCode: event.code, 
+                  eventDeadline: new Date(event.deadline),
+                  eventId: event.eventId,
+                }); 
+                setOpenModifyEventModal(true); 
+              }}
+            />
             <HiOutlineTrash onClick={(e: React.MouseEvent<SVGAElement>) => {
               e.preventDefault();
               setSelectedEventToDelete(event);
@@ -109,30 +172,33 @@ export default function RushEvents() {
               <HiLink className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600" />
             </a>
           </div>
-
-
-
-
         </div>
-      </div>
+      </Card>
 
     )
   }
 
-  const handleCreateEvent = async () => {
-    const eventCodeTrimmed = eventCode.trim();
-    if (eventCodeTrimmed !== eventCode) {
+  // handleRusheeEvent : by default creates a rush event
+  const handleRusheeEvent = async (modifying?: boolean) => {
+    const eventCodeTrimmed = eventFormData.eventCode.trim();
+    if (eventCodeTrimmed !== eventFormData.eventCode) {
       alert('Event code cannot contain whitespace. Please check that you are not using whitespaces in your event code.');
       return;
     }
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush`, {
-        method: 'POST',
+        method: `${modifying ? 'PATCH' : 'POST'}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ categoryId: selectedRushCategory?._id, name: eventName, code: eventCodeTrimmed })
+        body: JSON.stringify({ 
+          categoryId: selectedRushCategory?._id, 
+          name: eventFormData.eventName, 
+          code: eventCodeTrimmed,
+          deadline: eventFormData.eventDeadline.toISOString(),
+          ...(modifying && { eventId: eventFormData.eventId })
+        })
       })
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -163,8 +229,6 @@ export default function RushEvents() {
       console.error(error);
     }
   }
-
-
 
   if (isLoading) return <Loader />;
 
@@ -204,32 +268,25 @@ export default function RushEvents() {
       {/* Drawer component */}
       {isDrawerOpen && <CreateDrawer onClose={handleDrawerClose} />}
 
-      {/* Create Event Component */}
-      <Modal show={openCreateEventModal} size="md" onClose={onCloseEventModal} popup>
-        <Modal.Header />
-        <Modal.Body>
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Create an Event for {selectedRushCategory?.name}</h3>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="eventName" value="Event Name" />
-                <span className="text-red-500"> *</span>
-              </div>
-              <TextInput id="eventName" type="text" required value={eventName} onChange={(e) => setEventName(e.target.value)} />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="eventCode" value="Event Code" />
-                <span className="text-red-500"> *</span>
-              </div>
-              <TextInput id="eventCode" type="text" required value={eventCode} onChange={(e) => setEventCode(e.target.value)} />
-            </div>
-            <div className="w-full">
-              <Button disabled={!eventName || !eventCode} onClick={handleCreateEvent}>Create Event</Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+      {/* Custom Create/Modify Event Component Modal */}
+      <EventModal 
+        showModal={openCreateEventModal}
+        selectedRushCategory={selectedRushCategory}
+        eventFormData={eventFormData}
+        setEventFormData={setEventFormData}
+        onClose={onCloseCreateEventModal}
+        onSubmit={() => handleRusheeEvent()}
+      />
+      
+      <EventModal 
+        showModal={openModifyEventModal}
+        selectedRushCategory={selectedRushCategory}
+        eventFormData={eventFormData}
+        setEventFormData={setEventFormData}
+        onClose={onCloseModifyEventModal}
+        onSubmit={() => handleRusheeEvent(true)}
+        modifyingEvent
+      />
 
       <Modal show={openDeleteEventModal} size="md" onClose={onCloseDeleteEventModal} popup>
         <Modal.Header />
