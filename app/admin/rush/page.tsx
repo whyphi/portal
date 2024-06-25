@@ -11,7 +11,7 @@ import { RushCategory, RushEvent } from "@/types/admin/events";
 import { HiOutlinePencil, HiLink, HiOutlineTrash } from "react-icons/hi";
 import Link from "next/link";
 import "react-datepicker/dist/react-datepicker.css";
-import EventModal from "@/components/admin/events/EventModal";
+import EventModal from "@/components/admin/rush/EventModal";
 import MongoTimestamp from "@/components/MongoTimestamp";
 
 export interface EventFormData {
