@@ -48,24 +48,25 @@ export interface FormProps {
   isPreview: boolean;
 }
 
-export interface InterviewQuestion {
-  // question: string[];
-  response: string[];
+export interface InterviewQA {
+  question: string;
+  response: string;
   rating: number;
-  comments: string[];
+  comments: string;
 }
 
 export interface InterviewFormData {
   rusheeFullName: string;
   brother1FullName: string;
   brother2FullName: string;
-  responses: [] | InterviewQuestion[];
+  responses: [] | InterviewQA[];
 }
 
 export interface InterviewFormProps {
-  title: string | null;
+  title: string;
+  instructions: string | null;
   semester: string | null; // TO-DO: this should eventually link to a timeframe. 
-  questions: [] | { question: string, context: string }[];
+  questions: string[];
   listingId: string | null;
   isPreview: boolean;
 }

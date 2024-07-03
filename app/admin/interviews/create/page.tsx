@@ -2,24 +2,27 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Dropdown } from "flowbite-react";
 import { useRouter } from "next/navigation";
 import { Checkbox, Label } from "flowbite-react";
 import { useAuth } from "@/app/contexts/AuthContext";
 
 interface FormData {
   title: string;
-  semester: string;
+  semester: string; // TO-DO: Update to be an timeframe object?
+  instructions: string;
+  type: "case" | "technical" | "behavioral" | "other" | null;
   questions: [] | { question: string; context: string }[];
   deadline: Date;
-  includeEventsAttended: boolean;
 }
 
 const initialValues: FormData = {
   title: "",
   semester: "",
+  instructions: "",
+  type: null,
   questions: [] as { question: string; context: string }[], // Specify the type here
   deadline: new Date(),
-  includeEventsAttended: false,
 };
 
 export default function Create() {
@@ -38,7 +41,7 @@ export default function Create() {
     };
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/create`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/interviews`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,7 +53,7 @@ export default function Create() {
       if (response.ok) {
         // The request was successful, you can handle the response here if needed.
         console.log("Request successful!");
-        router.push("/admin"); // Replace "/admin" with the actual route to your admin page
+        router.push("/admin/interviews"); 
       } else {
         // Handle the case where the request was not successful.
         console.error("Request failed with status:", response.status);
@@ -73,29 +76,27 @@ export default function Create() {
     return flattenedQuestions;
   }
 
-  const handlePreview = async () => {
-    const currentDate = new Date();
-    const formattedDeadline = selectedDate.toISOString();
-    const formDataWithDates = {
-      ...formData,
-      dateCreated: currentDate.toISOString(),
-      deadline: formattedDeadline,
-    };
+  // const handlePreview = async () => {
+  //   const currentDate = new Date();
+  //   const formattedDeadline = selectedDate.toISOString();
+  //   const formDataWithDates = {
+  //     ...formData,
+  //     dateCreated: currentDate.toISOString(),
+  //     deadline: formattedDeadline,
+  //   };
 
-    // Encode the form data into a query parameter string
-    const { questions, includeEventsAttended, ...formDataStringsOnly } = formDataWithDates;
-    const flattenedQuestions = flattenQuestions(formData.questions);
-    const includeEventsAttendedString = includeEventsAttended.toString();
+  //   // Encode the form data into a query parameter string
+  //   const { questions, ...formDataStringsOnly } = formDataWithDates;
+  //   const flattenedQuestions = flattenQuestions(formData.questions);
 
-    const formDataQueryString = new URLSearchParams({
-      ...formDataStringsOnly,
-      ...flattenedQuestions,
-      includeEventsAttended: includeEventsAttendedString,
-    });
+  //   const formDataQueryString = new URLSearchParams({
+  //     ...formDataStringsOnly,
+  //     ...flattenedQuestions,
+  //   });
 
-    // Open a new tab and navigate to the preview route with form data as query parameters
-    window.open(`/admin/interviews/create/preview/listing?${formDataQueryString}`, "_blank");
-  };
+  //   // Open a new tab and navigate to the preview route with form data as query parameters
+  //   window.open(`/admin/interviews/create/preview/listing?${formDataQueryString}`, "_blank");
+  // };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -105,11 +106,11 @@ export default function Create() {
     }));
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, checked } = e.target;
+  const handleResponseChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [id]: checked,
+      [id]: value,
     }));
   };
 
@@ -163,6 +164,54 @@ export default function Create() {
         onChange={handleChange}
         required={required}
       />
+    </div>
+  );
+
+  const renderResponse = (
+    id: keyof FormData,
+    label: string,
+    type: string = "text",
+    required: boolean = false
+  ) => (
+    <div className="sm:w-full md:w-96 mb-6">
+      <label className="block mb-2 text-md font-medium text-gray-900">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <textarea
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full h-32 p-2.5"
+        id={id as string} // Convert the id to a string
+        placeholder={label}
+        value={formData[id] as string}
+        onChange={handleResponseChange}
+        required={required}
+        style={{ whiteSpace: 'pre-wrap' }}
+      />
+    </div>
+  );
+
+  const renderDropdownSelect = (
+    id: keyof FormData,
+    label: string,
+    values: string[] = [],
+    required: boolean = false
+  ) => (
+    <div className="sm:w-full md:w-96 mb-6">
+      <label className="block mb-2 text-md font-medium text-gray-900">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <select
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+        id={id as string} // Convert the id to a string
+        placeholder={label}
+        value={formData[id] as string}
+        required={required}>
+        <option value="">Select an option</option>
+        {values.map((value, index) => (
+          <option key={index} value={value}>
+            {value}
+          </option>
+        ))}
+      </select>
     </div>
   );
 
@@ -275,25 +324,6 @@ export default function Create() {
     );
   };
 
-  const renderAdditionalSection = () => {
-    return (
-      <div className="w-full mb-6">
-        <label className="block mb-2 text-md font-medium text-gray-900">Additional</label>
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={formData.includeEventsAttended}
-            onChange={handleCheckboxChange}
-            id="includeEventsAttended"
-            className="focus:ring-purple-500 dark:focus:ring-purple-600 text-purple-600"
-          />
-          <Label htmlFor="includeEventsAttended" className="font-light">
-            I want to collect <span className="font-medium underline">Events Attended</span> data
-          </Label>
-        </div>
-      </div>
-    );
-  };
-
   const textStyles = {
     title: "text-4xl font-bold dark:text-white mb-6 mt-4",
     subtitle: "mb-4 text-lg font-normal text-gray-500 dark:text-gray-400",
@@ -301,17 +331,14 @@ export default function Create() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col mb-8">
-      <h1 className={textStyles.title}>Create a New Listing</h1>
-
+      <h1 className={textStyles.title}>Create a New Interview</h1>
       {renderInput("title", "Title", "text", true)}
       {renderInput("semester", "Semester", "text", true)} {/* TODO: update to be dropdown */}
-
+      {renderResponse("instructions", "Instructions", "text", true)}
+      {renderDropdownSelect("type", "Interview Type", ["Case", "Behavioral", "Technical", "Other"], true)}
       <label className="block mb-2 text-md font-medium text-gray-900">Questions</label>
-
       {renderQuestions()}
       {renderDeadline()}
-      {/* {renderAdditionalSection()} */}
-
       <div className="flex gap-4">
         <button
           type="button"
@@ -319,13 +346,13 @@ export default function Create() {
           onClick={handleSubmit}>
           Submit
         </button>
-
+        {/* 
         <button
           type="button"
           className="w-24 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
           onClick={handlePreview}>
           Preview
-        </button>
+        </button> */}
       </div>
     </form>
   );

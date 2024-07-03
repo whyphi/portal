@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Applicant, EventsAttended } from "@/types/applicant";
 import { Badge, Tabs, Table, Dropdown } from "flowbite-react";
 import { HiMenuAlt1, HiDocumentText, HiUserGroup } from "react-icons/hi";
@@ -7,13 +8,16 @@ import ResponseCard from "@/components/admin/listing/ResponseCard";
 import InterviewCard from "@/components/admin/listing/InterviewCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
 import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
+import Loader from "@/components/Loader";
 
 interface ApplicantPageProps {
   applicant: Applicant;
 }
 
 export default function ApplicantPage({ applicant }: ApplicantPageProps) {
-
+  const [interviewTypeSelected, setInterviewTypeSelected] = useState<string>("All");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  
   const renderResponses = () => {
     return (
       applicant?.responses.length === 0 ? (
@@ -184,15 +188,6 @@ export default function ApplicantPage({ applicant }: ApplicantPageProps) {
 
       {/* Right component (Tabs and content) */}
       <div className="w-full lg:w-2/3 overflow-auto lg:pl-6">
-<<<<<<< HEAD:app/admin/listing/[listingId]/[applicantId]/page.tsx
-        <Tabs.Group className="" aria-label="Tabs with underline" style="underline">
-          <Tabs.Item icon={HiMenuAlt1} title="Responses">
-            {renderResponses()}
-          </Tabs.Item>
-          <Tabs.Item icon={HiDocumentText} title="Resume">
-            {applicantData && applicantData.resume ? (
-              <ApplicantPDFViewer resumeLink={applicantData.resume} />
-=======
         <Tabs
           className=""
           aria-label="Tabs with underline"
@@ -211,33 +206,21 @@ export default function ApplicantPage({ applicant }: ApplicantPageProps) {
           >
             {applicant && applicant.resume ? (
               <ApplicantPDFViewer resumeLink={applicant.resume} />
->>>>>>> dev/v1.0:components/admin/listing/ApplicantPage.tsx
             ) : (
               <p>No resume available.</p>
             )}
           </Tabs.Item>
-<<<<<<< HEAD:app/admin/listing/[listingId]/[applicantId]/page.tsx
-          {applicantData?.events ? (
-            <Tabs.Item icon={HiUserGroup} title="Events Attended">
-              {renderEventsAttended(applicantData.events)}
-            </Tabs.Item>
-          ) : (
-            ""
-          )}
-          <Tabs.Item icon={IoPeople} title="Interviews">
-            {renderInterviews()}
-          </Tabs.Item>
-        </Tabs.Group>
-=======
           {applicant?.events ? (<Tabs.Item
             icon={HiUserGroup}
             title="Events Attended"
           >
             {renderEventsAttended(applicant.events)}
           </Tabs.Item>) : ("")}
+          <Tabs.Item icon={IoPeople} title="Interviews">
+            {renderInterviews()}
+          </Tabs.Item>
 
         </Tabs>
->>>>>>> dev/v1.0:components/admin/listing/ApplicantPage.tsx
       </div>
     </div>
   );
