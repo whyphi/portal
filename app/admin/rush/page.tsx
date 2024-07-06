@@ -153,7 +153,9 @@ export default function RushEvents() {
               onClick={() => { 
                 setEventFormData({ 
                   eventName: event.name, 
-                  eventCode: event.code, 
+                  eventCode: event.code,
+                  eventLocation: event.location,
+                  eventDate: new Date(event.date),
                   eventDeadline: new Date(event.deadline),
                   eventId: event.eventId,
                 }); 
