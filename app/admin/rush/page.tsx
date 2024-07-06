@@ -13,10 +13,13 @@ import Link from "next/link";
 import "react-datepicker/dist/react-datepicker.css";
 import EventModal from "@/components/admin/rush/EventModal";
 import Timestamp from "react-timestamp";
+import { addTwoHours } from "@/utils/date";
 
 export interface EventFormData {
   eventName: string,
   eventCode: string,
+  eventLocation: string,
+  eventDate: Date,
   eventDeadline: Date,
   eventId?: string,
 }
@@ -24,7 +27,9 @@ export interface EventFormData {
 const initialValues: EventFormData = {
   eventName: "",
   eventCode: "",
-  eventDeadline: new Date(),
+  eventLocation: "",
+  eventDate: new Date(),
+  eventDeadline: addTwoHours(new Date()),
 };
 
 export default function RushEvents() {
@@ -196,6 +201,8 @@ export default function RushEvents() {
           categoryId: selectedRushCategory?._id, 
           name: eventFormData.eventName, 
           code: eventCodeTrimmed,
+          location: eventFormData.eventLocation,
+          date: eventFormData.eventDate.toISOString(),
           deadline: eventFormData.eventDeadline.toISOString(),
           ...(modifying && { eventId: eventFormData.eventId })
         })
