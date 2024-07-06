@@ -1,15 +1,17 @@
 "use client"
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
-import { Dashboard, DistributionMetricsState, Metrics, Colleges } from "@/types/insights"
+import { Dashboard, DistributionMetricsState } from "@/types/insights"
 import { Applicant } from "@/types/applicant";
-import { PieChart, Pie, Tooltip, Label, PolarGrid } from "recharts";
+import { PieChart, Pie, Tooltip, Label } from "recharts";
 import { Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
 import { useAuth } from "@/app/contexts/AuthContext";
 
 import { CustomFlowbiteTheme } from "flowbite-react";
+import Link from "next/link";
+import { selectedApplicantIdKey } from "@/utils/globals";
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
@@ -152,11 +154,16 @@ export default function Insights({ params }: { params: { listingId: string } }) 
     }
   }
 
+  const handleRowClick = (applicant: Applicant) => {
+    localStorage.setItem(selectedApplicantIdKey, applicant.applicantId);
+    router.push(`/admin/listing/${params.listingId}`);
+  };
+
   const mapMatchingApplicants = matchingApplicants.map((applicant: Applicant, index: number) => (
     <Table.Row
-      key={index}
       className={`bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer`}
-      onClick={() => router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`)}
+      key={index}
+      onClick={() => handleRowClick(applicant)}
     >
       <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
         {applicant.firstName} {applicant.lastName}

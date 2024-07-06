@@ -1,44 +1,24 @@
 "use client";
-import { useState, useEffect } from "react";
 import { Applicant, EventsAttended } from "@/types/applicant";
 import { Badge, Tabs, Table } from 'flowbite-react';
 import { HiMenuAlt1, HiDocumentText, HiUserGroup } from 'react-icons/hi';
 import ResponseCard from "@/components/admin/listing/ResponseCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
 import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
-import Loader from "@/components/Loader";
-import { useAuth } from "@/app/contexts/AuthContext";
 
-export default function ApplicantPage({ params }: { params: { applicantId: string } }) {
-  const { token } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [applicantData, setApplicantData] = useState<null | Applicant>(null);
+interface ApplicantPageProps {
+  applicant: Applicant;
+}
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicant/${params.applicantId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data: Applicant) => {
-        setApplicantData(data);
-        setIsLoading(false)
-      })
-      .catch((error) => console.error("Error fetching listings:", error));
-
-  }, [params.applicantId, token]);
-
+export default function ApplicantPage({ applicant }: ApplicantPageProps) {
 
   const renderResponses = () => {
     return (
-      applicantData?.responses.length === 0 ? (
+      applicant?.responses.length === 0 ? (
         <p>None</p>
       ) : (
         <div className="">
-          {applicantData?.responses.map((response, index) => (
+          {applicant?.responses.map((response, index) => (
             <ResponseCard
               key={index}
               question={response.question}
@@ -82,14 +62,14 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
     );
   }
 
-  if (isLoading) return <Loader />
+  // if (isLoading) return <Loader />
 
 
   return (
     <div className="flex flex-wrap">
       {/* Left component (ApplicantInfoCard) */}
       <div className="w-full lg:pr-6 lg:w-1/3 overflow-auto lg:sticky top-0 lg:h-screen">
-        {applicantData && <ApplicantInfoCard applicant={applicantData} />}
+        {applicant && <ApplicantInfoCard applicant={applicant} />}
       </div>
 
       {/* Right component (Tabs and content) */}
@@ -110,17 +90,17 @@ export default function ApplicantPage({ params }: { params: { applicantId: strin
             icon={HiDocumentText}
             title="Resume"
           >
-            {applicantData && applicantData.resume ? (
-              <ApplicantPDFViewer resumeLink={applicantData.resume} />
+            {applicant && applicant.resume ? (
+              <ApplicantPDFViewer resumeLink={applicant.resume} />
             ) : (
               <p>No resume available.</p>
             )}
           </Tabs.Item>
-          {applicantData?.events ? (<Tabs.Item
+          {applicant?.events ? (<Tabs.Item
             icon={HiUserGroup}
             title="Events Attended"
           >
-            {renderEventsAttended(applicantData.events)}
+            {renderEventsAttended(applicant.events)}
           </Tabs.Item>) : ("")}
 
         </Tabs>

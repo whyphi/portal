@@ -2,15 +2,17 @@
 import { Card } from 'flowbite-react';
 import Image from 'next/image'
 import { Applicant } from '@/types/applicant';
-import { useRouter } from 'next/navigation';
 
 interface ApplicantCardProps {
   listingId: string;
   applicant: Applicant;
+  index: number;
+  highlighted: boolean;
+  setSelectedApplicant: (applicant: Applicant) => void;
+  setSelectedApplicantIndex: (index: number) => void;
 }
 
-export default function ApplicantCard({ applicant }: ApplicantCardProps) {
-  const router = useRouter();
+export default function ApplicantCard({ applicant, index, highlighted, setSelectedApplicant, setSelectedApplicantIndex }: ApplicantCardProps) {
   const { colleges } = applicant;
 
   // Filter the colleges that are true and format them with year
@@ -22,7 +24,23 @@ export default function ApplicantCard({ applicant }: ApplicantCardProps) {
   const gradYear = applicant.gradYear.split(' ').pop();
 
   return (
-    <Card className="cursor-pointer" onClick={() => router.push(`/admin/listing/${applicant.listingId}/${applicant.applicantId}`)}>
+    <Card 
+      className={`cursor-pointer hover:bg-purple-50 transition-colors duration-500 ease-in-out ${highlighted ? 'bg-red-100' : ''}`} 
+      onClick={() => {
+        // scroll to top of page
+        window.scrollTo({
+          top: 0,
+          // behavior: 'smooth', // change 'smooth' to 'auto' if you don't want a smooth scroll
+        });
+
+        // update state variables
+        setSelectedApplicant(applicant);
+        setSelectedApplicantIndex(index);
+
+        // push to localStorage
+        localStorage.setItem("selectedApplicantId", applicant.applicantId);
+      }}
+    >
       <div className="flex flex-col items-center mb-1">
         <Image
           width={96}
