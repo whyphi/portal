@@ -4,8 +4,6 @@ import ListingCard from "@/components/admin/ListingCard";
 import Loader from "@/components/Loader";
 import { useAuth } from "../contexts/AuthContext";
 
-
-
 interface Listing {
   listingId: string;
   title: string;
