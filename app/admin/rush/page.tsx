@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
-import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card } from "flowbite-react";
+import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card, ButtonGroup } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
 import { FaRegCopy } from 'react-icons/fa';
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
@@ -14,6 +14,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import EventModal from "@/components/admin/rush/EventModal";
 import Timestamp from "react-timestamp";
 import { addTwoHours } from "@/utils/date";
+import { TbSettings } from "react-icons/tb";
+import SettingsModal from "@/components/admin/rush/SettingsModal";
 
 export interface EventFormData {
   eventName: string,
@@ -49,6 +51,10 @@ export default function RushEvents() {
   const [openDeleteEventModal, setOpenDeleteEventModal] = useState<boolean>(false);
   const [selectedEventToDelete, setSelectedEventToDelete] = useState<RushEvent | null>(null);
   const [toDeleteEventNameInput, setToDeleteEventNameInput] = useState<string>("");
+  
+  // States managing the settings modal
+  const [openSettingsModal, setOpenSettingsModal] = useState<boolean>(false);
+  const [defaultRushCategoryId, setDefaultRushCategoryId] = useState<string | null>(null);
 
   const [rushCategoriesCodeToggled, setRushCategoriesCodeToggled] = useState<Record<string, boolean>>({});
 
@@ -241,12 +247,16 @@ export default function RushEvents() {
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-bold dark:text-white mb-4 mt-4">Rush Events</h1>
-        <div className="flex"> {/* Container for buttons */}
-          <Button className="h-12 mr-2" onClick={handleDrawerOpen}>
+        <Button.Group>
+          <Button color="gray" className="h-12" onClick={handleDrawerOpen}>
             <HiPlus className="mr-1 h-5 w-5" />
             Create
           </Button>
-        </div>
+          <Button color="gray" className="h-12" onClick={() => setOpenSettingsModal(true)}>
+            <TbSettings className="mr-1 h-5 w-5" />
+            Settings
+          </Button>
+        </Button.Group>
       </div>
       <div className="mt-4 block">
         {rushCategories.map((data: RushCategory, index) => (
@@ -293,6 +303,16 @@ export default function RushEvents() {
         modifyingEvent
       />
 
+      {/* Custom Settings Component Modal */}
+      <SettingsModal
+        showModal={openSettingsModal}
+        defaultRushCategoryId={defaultRushCategoryId}
+        rushCategories={rushCategories}
+        onClose={() => setOpenSettingsModal(false)}
+        onSubmit={() => {}}
+      />
+
+      {/* Custom Delete Event Component Modal */}
       <Modal show={openDeleteEventModal} size="md" onClose={onCloseDeleteEventModal} popup>
         <Modal.Header />
         <Modal.Body>

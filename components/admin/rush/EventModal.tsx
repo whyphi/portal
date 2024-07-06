@@ -78,11 +78,11 @@ export default function EventModal({
 						</div>
 						<DatePicker
 							selected={eventFormData.eventDate}
-							onChange={(date: Date) => 
+							onChange={(date: Date) =>
 								setEventFormData({
-										...eventFormData,
-										eventDate: date,
-										...(date && { eventDeadline: addTwoHours(date) })
+									...eventFormData,
+									eventDate: date,
+									...(date && { eventDeadline: addTwoHours(date) })
 								})
 							}
 							showTimeSelect
@@ -114,13 +114,14 @@ export default function EventModal({
 					<div className="w-full">
 						<Button
 							disabled={
-								!eventFormData.eventName || 
+								!eventFormData.eventName ||
 								!eventFormData.eventCode ||
-								! eventFormData.eventDate || 
-								!eventFormData.eventDeadline || 
+								!eventFormData.eventDate ||
+								!eventFormData.eventDeadline ||
 								!eventFormData.eventLocation
 							}
-							onClick={onSubmit}>
+							onClick={onSubmit}
+						>
 							{modifyingEvent ? "Modify Event" : "Create Event"}
 						</Button>
 					</div>
