@@ -78,8 +78,12 @@ export default function EventModal({
 						</div>
 						<DatePicker
 							selected={eventFormData.eventDate}
-							onChange={(date: Date) =>
-								setEventFormData({ ...eventFormData, eventDate: date, eventDeadline: addTwoHours(date) })
+							onChange={(date: Date) => 
+								setEventFormData({
+										...eventFormData,
+										eventDate: date,
+										...(date && { eventDeadline: addTwoHours(date) })
+								})
 							}
 							showTimeSelect
 							isClearable
@@ -109,7 +113,13 @@ export default function EventModal({
 					</div>
 					<div className="w-full">
 						<Button
-							disabled={!eventFormData.eventName || !eventFormData.eventCode || !eventFormData.eventDeadline}
+							disabled={
+								!eventFormData.eventName || 
+								!eventFormData.eventCode ||
+								! eventFormData.eventDate || 
+								!eventFormData.eventDeadline || 
+								!eventFormData.eventLocation
+							}
 							onClick={onSubmit}>
 							{modifyingEvent ? "Modify Event" : "Create Event"}
 						</Button>

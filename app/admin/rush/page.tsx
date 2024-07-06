@@ -118,10 +118,6 @@ export default function RushEvents() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
-                  {/* <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
-                    Created:
-                    <MongoTimestamp datestring={event.dateCreated} />
-                  </p> */}
                   <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Last Modified:
                     <Timestamp date={new Date(event.lastModified)} />
