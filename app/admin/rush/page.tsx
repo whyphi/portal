@@ -76,7 +76,7 @@ export default function RushEvents() {
       },
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: RushCategory[]) => {
         // Create a new object with the categories and false as their initial code toggle status
         const categoriesCodeToggled = data.reduce((acc: Record<string, boolean>, category: RushCategory) => {
           acc[category._id] = false;
@@ -87,12 +87,15 @@ export default function RushEvents() {
         setRushCategories(data);
         setRushCategoriesCodeToggled(categoriesCodeToggled);
 
+        // set defaultRushCategoryId
+        const defaultRushCategory = data.find((category) => category.defaultRushCategory);
+        setDefaultRushCategoryId(defaultRushCategory?._id ?? null)
+
         // Stop the loading spinner
         setIsLoading(false);
       })
       .catch((err) => console.error(err));
   }, [token]);
-
 
   function onCloseCreateEventModal() {
     setOpenCreateEventModal(false);
@@ -281,9 +284,16 @@ export default function RushEvents() {
       <div className="mt-4 block">
         {rushCategories.map((data: RushCategory, index) => (
           <Accordion key={index} collapseAll className="mb-2">
-            <Accordion.Panel className="w-32">
+            <Accordion.Panel>
               <Accordion.Title>
-                {data.name}
+                <div className="flex flex-row items-center gap-3">
+                  <div>{data.name}</div>
+                  {data.defaultRushCategory && (
+                    <div className="text-sm bg-gray-100 mr-2 px-1.5 py-0.5 rounded">
+                      (default)
+                    </div>
+                  )}
+                </div>
               </Accordion.Title>
               <Accordion.Content>
                 <div className="flex flex-row items-center w-full mb-4 overflow-x-auto">
