@@ -125,15 +125,42 @@ export default function RushEvents() {
                 <div className="shrink-0">
                   <Avatar placeholderInitials={event.name[0]} rounded />
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex flex-col gap-1">
                   <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
                   <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Created:
+                    <Timestamp
+                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
+                      date={new Date(event.dateCreated)} 
+                    />
+                  </p>
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Last Modified:
-                    <Timestamp date={new Date(event.lastModified)} />
+                    <Timestamp
+                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
+                      date={new Date(event.lastModified)} 
+                    />
+                  </p>
+                  <hr className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700"/>
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Event Date:
+                    <Timestamp
+                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
+                      date={new Date(event.date)} 
+                    />
                   </p>
                   <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Deadline:
-                    <Timestamp date={new Date(event.deadline)} />
+                    <Timestamp
+                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
+                      date={new Date(event.deadline)} 
+                    />
+                  </p>
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Location:
+                    <div className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded">
+                      {event.location}
+                    </div>
                   </p>
                   <div className="flex gap-3 items-center">
                     <code className="truncate text-sm text-gray-500 dark:text-gray-400">
