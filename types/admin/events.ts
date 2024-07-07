@@ -36,6 +36,7 @@ export interface RushCategory {
   _id: string;
   dateCreated: string;
   name: string;
+  defaultRushCategory: boolean;
   events: RushEvent[]
 }
 

@@ -51,7 +51,7 @@ export default function RushEvents() {
   const [openDeleteEventModal, setOpenDeleteEventModal] = useState<boolean>(false);
   const [selectedEventToDelete, setSelectedEventToDelete] = useState<RushEvent | null>(null);
   const [toDeleteEventNameInput, setToDeleteEventNameInput] = useState<string>("");
-  
+
   // States managing the settings modal
   const [openSettingsModal, setOpenSettingsModal] = useState<boolean>(false);
   const [defaultRushCategoryId, setDefaultRushCategoryId] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export default function RushEvents() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
   };
-  
+
   useEffect(() => {
     // Fetch all rush categories and events from the API
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`, {
@@ -98,7 +98,7 @@ export default function RushEvents() {
     setOpenCreateEventModal(false);
     setEventFormData(initialValues);
   }
-  
+
   function onCloseModifyEventModal() {
     setOpenModifyEventModal(false);
     setEventFormData(initialValues);
@@ -150,18 +150,18 @@ export default function RushEvents() {
             </Link>
           </div>
           <div className="flex flex-row flex-shrink-0 px-2">
-            <HiOutlinePencil 
+            <HiOutlinePencil
               className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1"
-              onClick={() => { 
-                setEventFormData({ 
-                  eventName: event.name, 
+              onClick={() => {
+                setEventFormData({
+                  eventName: event.name,
                   eventCode: event.code,
                   eventLocation: event.location,
                   eventDate: new Date(event.date),
                   eventDeadline: new Date(event.deadline),
                   eventId: event.eventId,
-                }); 
-                setOpenModifyEventModal(true); 
+                });
+                setOpenModifyEventModal(true);
               }}
             />
             <HiOutlineTrash onClick={(e: React.MouseEvent<SVGAElement>) => {
@@ -201,9 +201,9 @@ export default function RushEvents() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          categoryId: selectedRushCategory?._id, 
-          name: eventFormData.eventName, 
+        body: JSON.stringify({
+          categoryId: selectedRushCategory?._id,
+          name: eventFormData.eventName,
           code: eventCodeTrimmed,
           location: eventFormData.eventLocation,
           date: eventFormData.eventDate.toISOString(),
@@ -230,6 +230,26 @@ export default function RushEvents() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         }
+      })
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      window.location.reload();
+    } catch (error) {
+      // TODO: handle error
+      console.error(error);
+    }
+  }
+
+  // handleRusheeEvent : by default creates a rush event
+  const handleUpdateSettings = async (defaultRushCategoryId: string | null) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/settings/${defaultRushCategoryId}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       })
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -284,7 +304,7 @@ export default function RushEvents() {
       {isDrawerOpen && <CreateDrawer onClose={handleDrawerClose} />}
 
       {/* Custom Create/Modify Event Component Modal */}
-      <EventModal 
+      <EventModal
         showModal={openCreateEventModal}
         selectedRushCategory={selectedRushCategory}
         eventFormData={eventFormData}
@@ -292,8 +312,8 @@ export default function RushEvents() {
         onClose={onCloseCreateEventModal}
         onSubmit={() => handleRusheeEvent()}
       />
-      
-      <EventModal 
+
+      <EventModal
         showModal={openModifyEventModal}
         selectedRushCategory={selectedRushCategory}
         eventFormData={eventFormData}
@@ -309,7 +329,7 @@ export default function RushEvents() {
         defaultRushCategoryId={defaultRushCategoryId}
         rushCategories={rushCategories}
         onClose={() => setOpenSettingsModal(false)}
-        onSubmit={() => {}}
+        onSubmit={(defaultRushCategoryId) => handleUpdateSettings(defaultRushCategoryId)}
       />
 
       {/* Custom Delete Event Component Modal */}

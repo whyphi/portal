@@ -1,16 +1,13 @@
-import { EventFormData } from "@/app/admin/rush/page";
 import { RushCategory } from "@/types/admin/events";
-import { addTwoHours } from "@/utils/date";
-import { Button, Dropdown, Label, Modal, TextInput } from "flowbite-react";
+import { Button, Dropdown, Label, Modal } from "flowbite-react";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
 
 interface SettingsModalProps {
 	showModal: boolean,
 	defaultRushCategoryId: string | null,
   rushCategories: RushCategory[],
 	onClose: () => void,
-	onSubmit: () => void,
+	onSubmit: (defaultRushCategoryId: string | null) => Promise<void>,
 }
 
 // SettingsModal: used to select/update the defaultRushCategoryId (TODO: delete rushCategories here too)
@@ -66,7 +63,7 @@ export default function SettingsModal({
 					<div className="w-full">
 						<Button
 							// disabled={}
-							onClick={onSubmit}
+							onClick={() => onSubmit(localDefaultRushCategoryId)}
 						>
 							Update Settings
 						</Button>

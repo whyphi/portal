@@ -39,7 +39,10 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: categoryName })
+        body: JSON.stringify({
+          name: categoryName,
+          defaultRushCategory: false
+        })
       })
       if (!response.ok) {
         throw new Error(response.statusText);
