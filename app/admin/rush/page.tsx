@@ -54,7 +54,7 @@ export default function RushEvents() {
 
   // States managing the settings modal
   const [openSettingsModal, setOpenSettingsModal] = useState<boolean>(false);
-  const [defaultRushCategoryId, setDefaultRushCategoryId] = useState<string | null>(null);
+  const [defaultRushCategoryId, setDefaultRushCategoryId] = useState<string>("");
 
   const [rushCategoriesCodeToggled, setRushCategoriesCodeToggled] = useState<Record<string, boolean>>({});
 
@@ -89,7 +89,7 @@ export default function RushEvents() {
 
         // set defaultRushCategoryId
         const defaultRushCategory = data.find((category) => category.defaultRushCategory);
-        setDefaultRushCategoryId(defaultRushCategory?._id ?? null)
+        setDefaultRushCategoryId(defaultRushCategory?._id ?? "")
 
         // Stop the loading spinner
         setIsLoading(false);
@@ -272,14 +272,17 @@ export default function RushEvents() {
   }
 
   // handleRusheeEvent : by default creates a rush event
-  const handleUpdateSettings = async (defaultRushCategoryId: string | null) => {
+  const handleUpdateSettings = async (defaultRushCategoryId: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/settings/${defaultRushCategoryId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/settings`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          defaultRushCategoryId: defaultRushCategoryId
+        })
       })
       if (!response.ok) {
         throw new Error(response.statusText);

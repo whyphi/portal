@@ -4,10 +4,10 @@ import { useState } from "react";
 
 interface SettingsModalProps {
 	showModal: boolean,
-	defaultRushCategoryId: string | null,
+	defaultRushCategoryId: string,
   rushCategories: RushCategory[],
 	onClose: () => void,
-	onSubmit: (defaultRushCategoryId: string | null) => Promise<void>,
+	onSubmit: (defaultRushCategoryId: string) => Promise<void>,
 }
 
 // SettingsModal: used to select/update the defaultRushCategoryId (TODO: delete rushCategories here too)
@@ -48,7 +48,7 @@ export default function SettingsModal({
 							<span className="text-red-500"> *</span>
 						</div>
 						<Dropdown label={getRushCategoryById(localDefaultRushCategoryId)} color="gray">
-							<Dropdown.Item onClick={() => setLocalDefaultRushCategoryId(null)}>
+							<Dropdown.Item onClick={() => setLocalDefaultRushCategoryId("")}>
 								None
 							</Dropdown.Item>
 							<Dropdown.Divider />
