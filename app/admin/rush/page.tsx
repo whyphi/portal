@@ -127,7 +127,7 @@ export default function RushEvents() {
                 </div>
                 <div className="min-w-0 flex flex-col gap-1">
                   <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
-                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                  {/* <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Created:
                     <Timestamp
                       className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
@@ -141,7 +141,7 @@ export default function RushEvents() {
                       date={new Date(event.lastModified)} 
                     />
                   </p>
-                  <hr className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700"/>
+                  <hr className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700"/> */}
                   <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Event Date:
                     <Timestamp
