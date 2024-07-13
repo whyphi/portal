@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
-import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card } from "flowbite-react";
+import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card, ButtonGroup } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
 import { FaRegCopy } from 'react-icons/fa';
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
@@ -13,10 +13,15 @@ import Link from "next/link";
 import "react-datepicker/dist/react-datepicker.css";
 import EventModal from "@/components/admin/rush/EventModal";
 import Timestamp from "react-timestamp";
+import { addTwoHours } from "@/utils/date";
+import { TbSettings } from "react-icons/tb";
+import SettingsModal from "@/components/admin/rush/SettingsModal";
 
 export interface EventFormData {
   eventName: string,
   eventCode: string,
+  eventLocation: string,
+  eventDate: Date,
   eventDeadline: Date,
   eventId?: string,
 }
@@ -24,7 +29,9 @@ export interface EventFormData {
 const initialValues: EventFormData = {
   eventName: "",
   eventCode: "",
-  eventDeadline: new Date(),
+  eventLocation: "",
+  eventDate: new Date(),
+  eventDeadline: addTwoHours(new Date()),
 };
 
 export default function RushEvents() {
@@ -45,6 +52,10 @@ export default function RushEvents() {
   const [selectedEventToDelete, setSelectedEventToDelete] = useState<RushEvent | null>(null);
   const [toDeleteEventNameInput, setToDeleteEventNameInput] = useState<string>("");
 
+  // States managing the settings modal
+  const [openSettingsModal, setOpenSettingsModal] = useState<boolean>(false);
+  const [defaultRushCategoryId, setDefaultRushCategoryId] = useState<string>("");
+
   const [rushCategoriesCodeToggled, setRushCategoriesCodeToggled] = useState<Record<string, boolean>>({});
 
   // state to track copied status (for event.code)
@@ -56,7 +67,7 @@ export default function RushEvents() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
   };
-  
+
   useEffect(() => {
     // Fetch all rush categories and events from the API
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`, {
@@ -65,7 +76,7 @@ export default function RushEvents() {
       },
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: RushCategory[]) => {
         // Create a new object with the categories and false as their initial code toggle status
         const categoriesCodeToggled = data.reduce((acc: Record<string, boolean>, category: RushCategory) => {
           acc[category._id] = false;
@@ -76,18 +87,21 @@ export default function RushEvents() {
         setRushCategories(data);
         setRushCategoriesCodeToggled(categoriesCodeToggled);
 
+        // set defaultRushCategoryId
+        const defaultRushCategory = data.find((category) => category.defaultRushCategory);
+        setDefaultRushCategoryId(defaultRushCategory?._id ?? "")
+
         // Stop the loading spinner
         setIsLoading(false);
       })
       .catch((err) => console.error(err));
   }, [token]);
 
-
   function onCloseCreateEventModal() {
     setOpenCreateEventModal(false);
     setEventFormData(initialValues);
   }
-  
+
   function onCloseModifyEventModal() {
     setOpenModifyEventModal(false);
     setEventFormData(initialValues);
@@ -111,19 +125,42 @@ export default function RushEvents() {
                 <div className="shrink-0">
                   <Avatar placeholderInitials={event.name[0]} rounded />
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex flex-col gap-1">
                   <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
                   {/* <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Created:
-                    <MongoTimestamp datestring={event.dateCreated} />
-                  </p> */}
+                    <Timestamp
+                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
+                      date={new Date(event.dateCreated)} 
+                    />
+                  </p>
                   <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Last Modified:
-                    <Timestamp date={new Date(event.lastModified)} />
+                    <Timestamp
+                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
+                      date={new Date(event.lastModified)} 
+                    />
+                  </p>
+                  <hr className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700"/> */}
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Event Date:
+                    <Timestamp
+                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
+                      date={new Date(event.date)} 
+                    />
                   </p>
                   <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
                     Deadline:
-                    <Timestamp date={new Date(event.deadline)} />
+                    <Timestamp
+                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
+                      date={new Date(event.deadline)} 
+                    />
+                  </p>
+                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                    Location:
+                    <div className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded">
+                      {event.location}
+                    </div>
                   </p>
                   <div className="flex gap-3 items-center">
                     <code className="truncate text-sm text-gray-500 dark:text-gray-400">
@@ -143,16 +180,18 @@ export default function RushEvents() {
             </Link>
           </div>
           <div className="flex flex-row flex-shrink-0 px-2">
-            <HiOutlinePencil 
+            <HiOutlinePencil
               className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1"
-              onClick={() => { 
-                setEventFormData({ 
-                  eventName: event.name, 
-                  eventCode: event.code, 
+              onClick={() => {
+                setEventFormData({
+                  eventName: event.name,
+                  eventCode: event.code,
+                  eventLocation: event.location,
+                  eventDate: new Date(event.date),
                   eventDeadline: new Date(event.deadline),
                   eventId: event.eventId,
-                }); 
-                setOpenModifyEventModal(true); 
+                });
+                setOpenModifyEventModal(true);
               }}
             />
             <HiOutlineTrash onClick={(e: React.MouseEvent<SVGAElement>) => {
@@ -192,10 +231,12 @@ export default function RushEvents() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          categoryId: selectedRushCategory?._id, 
-          name: eventFormData.eventName, 
+        body: JSON.stringify({
+          categoryId: selectedRushCategory?._id,
+          name: eventFormData.eventName,
           code: eventCodeTrimmed,
+          location: eventFormData.eventLocation,
+          date: eventFormData.eventDate.toISOString(),
           deadline: eventFormData.eventDeadline.toISOString(),
           ...(modifying && { eventId: eventFormData.eventId })
         })
@@ -230,25 +271,59 @@ export default function RushEvents() {
     }
   }
 
+  // handleRusheeEvent : by default creates a rush event
+  const handleUpdateSettings = async (defaultRushCategoryId: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/settings`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          defaultRushCategoryId: defaultRushCategoryId
+        })
+      })
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      window.location.reload();
+    } catch (error) {
+      // TODO: handle error
+      console.error(error);
+    }
+  }
+
   if (isLoading) return <Loader />;
 
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-bold dark:text-white mb-4 mt-4">Rush Events</h1>
-        <div className="flex"> {/* Container for buttons */}
-          <Button className="h-12 mr-2" onClick={handleDrawerOpen}>
+        <Button.Group>
+          <Button color="gray" className="h-12" onClick={handleDrawerOpen}>
             <HiPlus className="mr-1 h-5 w-5" />
             Create
           </Button>
-        </div>
+          <Button color="gray" className="h-12" onClick={() => setOpenSettingsModal(true)}>
+            <TbSettings className="mr-1 h-5 w-5" />
+            Settings
+          </Button>
+        </Button.Group>
       </div>
       <div className="mt-4 block">
         {rushCategories.map((data: RushCategory, index) => (
           <Accordion key={index} collapseAll className="mb-2">
-            <Accordion.Panel className="w-32">
+            <Accordion.Panel>
               <Accordion.Title>
-                {data.name}
+                <div className="flex flex-row items-center gap-3">
+                  <div>{data.name}</div>
+                  {data.defaultRushCategory && (
+                    <div className="text-sm bg-gray-100 mr-2 px-1.5 py-0.5 rounded">
+                      (default)
+                    </div>
+                  )}
+                </div>
               </Accordion.Title>
               <Accordion.Content>
                 <div className="flex flex-row items-center w-full mb-4 overflow-x-auto">
@@ -269,7 +344,7 @@ export default function RushEvents() {
       {isDrawerOpen && <CreateDrawer onClose={handleDrawerClose} />}
 
       {/* Custom Create/Modify Event Component Modal */}
-      <EventModal 
+      <EventModal
         showModal={openCreateEventModal}
         selectedRushCategory={selectedRushCategory}
         eventFormData={eventFormData}
@@ -277,8 +352,8 @@ export default function RushEvents() {
         onClose={onCloseCreateEventModal}
         onSubmit={() => handleRusheeEvent()}
       />
-      
-      <EventModal 
+
+      <EventModal
         showModal={openModifyEventModal}
         selectedRushCategory={selectedRushCategory}
         eventFormData={eventFormData}
@@ -288,6 +363,16 @@ export default function RushEvents() {
         modifyingEvent
       />
 
+      {/* Custom Settings Component Modal */}
+      <SettingsModal
+        showModal={openSettingsModal}
+        defaultRushCategoryId={defaultRushCategoryId}
+        rushCategories={rushCategories}
+        onClose={() => setOpenSettingsModal(false)}
+        onSubmit={(defaultRushCategoryId) => handleUpdateSettings(defaultRushCategoryId)}
+      />
+
+      {/* Custom Delete Event Component Modal */}
       <Modal show={openDeleteEventModal} size="md" onClose={onCloseDeleteEventModal} popup>
         <Modal.Header />
         <Modal.Body>
