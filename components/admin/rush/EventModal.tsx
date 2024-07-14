@@ -3,6 +3,8 @@ import { RushCategory } from "@/types/admin/events";
 import { addTwoHours } from "@/utils/date";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import DatePicker from "react-datepicker";
+import { CanvasPreview } from "./Image/CanvasPreview";
+import CropImage from "./Image/CropImage";
 
 interface EventModalProps {
 	showModal: boolean,
@@ -25,7 +27,7 @@ export default function EventModal({
 	modifyingEvent,
 }: EventModalProps) {
 	return (
-		<Modal show={showModal} size="md" onClose={onClose} popup>
+		<Modal show={showModal} size="2xl" onClose={onClose} popup>
 			<Modal.Header />
 			<Modal.Body>
 				<div className="space-y-6">
@@ -44,6 +46,13 @@ export default function EventModal({
 							value={eventFormData.eventName}
 							onChange={(e) => setEventFormData({ ...eventFormData, eventName: e.target.value })}
 						/>
+					</div>
+					<div>
+						<div className="mb-2 block">
+							<Label htmlFor="eventCoverImage" value="Event Cover Image" />
+							<span className="text-red-500"> *</span>
+						</div>
+						<CropImage />
 					</div>
 					<div>
 						<div className="mb-2 block">
