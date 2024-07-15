@@ -23,6 +23,7 @@ export interface EventFormData {
   eventLocation: string,
   eventDate: Date,
   eventDeadline: Date,
+  eventCoverImage: File | null,
   eventId?: string,
 }
 
@@ -31,6 +32,7 @@ const initialValues: EventFormData = {
   eventCode: "",
   eventLocation: "",
   eventDate: new Date(),
+  eventCoverImage: null,
   eventDeadline: addTwoHours(new Date()),
 };
 
@@ -189,6 +191,7 @@ export default function RushEvents() {
                   eventLocation: event.location,
                   eventDate: new Date(event.date),
                   eventDeadline: new Date(event.deadline),
+                  eventCoverImage: null, // TODO: replace with image from backend...
                   eventId: event.eventId,
                 });
                 setOpenModifyEventModal(true);
@@ -295,7 +298,7 @@ export default function RushEvents() {
   }
 
   if (isLoading) return <Loader />;
-
+  
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">

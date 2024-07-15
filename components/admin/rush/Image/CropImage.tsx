@@ -1,4 +1,4 @@
-// code inspired by example from https://codesandbox.io/s/react-image-crop-demo-with-react-hooks-y831o?file=/src/App.tsx
+// Disclosure: code inspired by example from https://codesandbox.io/s/react-image-crop-demo-with-react-hooks-y831o?file=/src/App.tsx
 import React, { useState, useRef } from 'react'
 
 import ReactCrop, {
@@ -6,12 +6,12 @@ import ReactCrop, {
   makeAspectCrop,
   Crop,
   PixelCrop,
-  convertToPixelCrop,
 } from 'react-image-crop'
 import { CanvasPreview } from './CanvasPreview'
 import { useDebounceEffect } from '@/utils/useDebounceEffect'
 import Image from 'next/image'
 import 'react-image-crop/dist/ReactCrop.css'
+import { Button } from 'flowbite-react'
 
 // This is to demonstate how to make and center a % aspect crop
 // which is a bit trickier so we use some helper functions.
@@ -35,14 +35,19 @@ function centerAspectCrop(
   )
 }
 
-export default function CropImage() {
+interface CropyImageProps {
+  onChange: (croppedImage: File) => void;
+}
+
+export default function CropImage({ 
+  onChange
+}: CropyImageProps) {
   const [imgSrc, setImgSrc] = useState('')
   const previewCanvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
-  const hiddenAnchorRef = useRef<HTMLAnchorElement>(null)
-  const blobUrlRef = useRef('')
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
+  const [displayReactCrop, setDisplayReactCrop] = useState(true)
   const aspect = 16 / 9
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -53,6 +58,9 @@ export default function CropImage() {
         setImgSrc(reader.result?.toString() || ''),
       )
       reader.readAsDataURL(e.target.files[0])
+      
+      // show ReactCrop editor
+      setDisplayReactCrop(true);
     }
   }
 
@@ -63,7 +71,7 @@ export default function CropImage() {
     }
   }
 
-  async function onDownloadCropClick() {
+  async function onSaveCropClick() {
     const image = imgRef.current
     const previewCanvas = previewCanvasRef.current
     if (!image || !previewCanvas || !completedCrop) {
@@ -102,15 +110,11 @@ export default function CropImage() {
       type: 'image/png',
     })
 
-    if (blobUrlRef.current) {
-      URL.revokeObjectURL(blobUrlRef.current)
-    }
-    blobUrlRef.current = URL.createObjectURL(blob)
+    const file = new File([blob], "cropped-image.png", { type: "image/png" });
+    onChange(file);
 
-    if (hiddenAnchorRef.current) {
-      hiddenAnchorRef.current.href = blobUrlRef.current
-      hiddenAnchorRef.current.click()
-    }
+    // hide ReactCrop editor
+    setDisplayReactCrop(false);
   }
 
   useDebounceEffect(
@@ -138,15 +142,13 @@ export default function CropImage() {
       <div className="Crop-Controls">
         <input type="file" accept="image/*" onChange={onSelectFile} />
       </div>
-      {!!imgSrc && (
+      {(!!imgSrc && displayReactCrop) && (
         <ReactCrop
           crop={crop}
           onChange={(_, percentCrop) => setCrop(percentCrop)}
           onComplete={(c) => setCompletedCrop(c)}
           aspect={aspect}
-          // minWidth={400}
           minHeight={100}
-          // circularCrop
         >
           <img
             ref={imgRef}
@@ -156,35 +158,22 @@ export default function CropImage() {
           />
         </ReactCrop>
       )}
-      {!!completedCrop && (
-        <>
-          <div>
-            <canvas
-              ref={previewCanvasRef}
-              style={{
-                border: '1px solid black',
-                objectFit: 'contain',
-                width: completedCrop.width,
-                height: completedCrop.height,
-              }}
-            />
-          </div>
-          <div>
-            <button onClick={onDownloadCropClick}>Download Crop</button>
-            <a
-              href="#hidden"
-              ref={hiddenAnchorRef}
-              download
-              style={{
-                position: 'absolute',
-                top: '-200vh',
-                visibility: 'hidden',
-              }}
-            >
-              Hidden download
-            </a>
-          </div>
-        </>
+      {!!completedCrop && (displayReactCrop ? 
+        <div>
+          <canvas
+            hidden // note: remove to display a real-time preview of the crop
+            ref={previewCanvasRef}
+            style={{
+              border: '1px solid black',
+              objectFit: 'contain',
+              width: completedCrop.width,
+              height: completedCrop.height,
+            }}
+          />
+          <Button onClick={onSaveCropClick}>Save Crop</Button>
+        </div>
+        :
+        <Button onClick={() => setDisplayReactCrop(true)}>Edit Crop</Button>
       )}
     </div>
   )
