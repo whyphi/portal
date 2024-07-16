@@ -301,7 +301,6 @@ export default function RushEvents() {
 
   console.log("eventCoverImage", eventFormData.eventCoverImage);
   
-  
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">

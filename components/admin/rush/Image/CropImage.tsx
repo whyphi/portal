@@ -11,7 +11,7 @@ import { CanvasPreview } from './CanvasPreview'
 import { useDebounceEffect } from '@/utils/useDebounceEffect'
 import Image from 'next/image'
 import 'react-image-crop/dist/ReactCrop.css'
-import { Button } from 'flowbite-react'
+import { Button, FileInput } from 'flowbite-react'
 
 // This is to demonstate how to make and center a % aspect crop
 // which is a bit trickier so we use some helper functions.
@@ -42,22 +42,28 @@ interface CropyImageProps {
 export default function CropImage({ 
   onChange
 }: CropyImageProps) {
-  const [imgSrc, setImgSrc] = useState('')
-  const previewCanvasRef = useRef<HTMLCanvasElement>(null)
-  const imgRef = useRef<HTMLImageElement>(null)
-  const [crop, setCrop] = useState<Crop>()
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
-  const [displayReactCrop, setDisplayReactCrop] = useState(true)
+  const [imgSrc, setImgSrc] = useState("");
+  const [imgName, setImgName] = useState("");
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const [displayReactCrop, setDisplayReactCrop] = useState(true);
   const aspect = 16 / 9
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
-      setCrop(undefined) // Makes crop preview update between images.
-      const reader = new FileReader()
+      const file = e.target.files[0];
+      const fullFilename = file.name;
+      const filenameWithoutExtension = fullFilename.substring(0, fullFilename.lastIndexOf('.')) || fullFilename;
+      setImgName(filenameWithoutExtension);
+
+      setCrop(undefined); // Makes crop preview update between images.
+      const reader = new FileReader();
       reader.addEventListener('load', () =>
         setImgSrc(reader.result?.toString() || ''),
       )
-      reader.readAsDataURL(e.target.files[0])
+      reader.readAsDataURL(file);
       
       // show ReactCrop editor
       setDisplayReactCrop(true);
@@ -68,38 +74,42 @@ export default function CropImage({
       // reset completedCrop (no file is chosen)
       setCompletedCrop(undefined);
       
-      // reset eventCoverImage
+      // reset eventCoverImage, imgName, amnd imgSrc
       onChange(null);
+
+      setImgName("");
+
+      setImgSrc("");
     }
   }
 
   function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
     if (aspect) {
-      const { width, height } = e.currentTarget
-      setCrop(centerAspectCrop(width, height, aspect))
+      const { width, height } = e.currentTarget;
+      setCrop(centerAspectCrop(width, height, aspect));
     }
   }
 
   async function onSaveCropClick() {
-    const image = imgRef.current
-    const previewCanvas = previewCanvasRef.current
+    const image = imgRef.current;
+    const previewCanvas = previewCanvasRef.current;
     if (!image || !previewCanvas || !completedCrop) {
-      throw new Error('Crop canvas does not exist')
+      throw new Error('Crop canvas does not exist');
     }
 
     // This will size relative to the uploaded image
     // size. If you want to size according to what they
     // are looking at on screen, remove scaleX + scaleY
-    const scaleX = image.naturalWidth / image.width
-    const scaleY = image.naturalHeight / image.height
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
 
     const offscreen = new OffscreenCanvas(
       completedCrop.width * scaleX,
       completedCrop.height * scaleY,
     )
-    const ctx = offscreen.getContext('2d')
+    const ctx = offscreen.getContext('2d');
     if (!ctx) {
-      throw new Error('No 2d context')
+      throw new Error('No 2d context');
     }
 
     ctx.drawImage(
@@ -112,14 +122,14 @@ export default function CropImage({
       0,
       offscreen.width,
       offscreen.height,
-    )
+    );
     // You might want { type: "image/jpeg", quality: <0 to 1> } to
     // reduce image size
     const blob = await offscreen.convertToBlob({
       type: 'image/png',
-    })
+    });
 
-    const file = new File([blob], "cropped-image.png", { type: "image/png" });
+    const file = new File([blob], imgName, { type: "image/png" });
     onChange(file);
 
     // hide ReactCrop editor
@@ -144,12 +154,12 @@ export default function CropImage({
     },
     100,
     [completedCrop],
-  )
+  );
 
   return (
     <div className="App">
       <div className="Crop-Controls">
-        <input type="file" accept="image/*" onChange={onSelectFile} />
+        <FileInput accept="image/*" onChange={onSelectFile} />
       </div>
       {(!!imgSrc && displayReactCrop) && (
         <ReactCrop

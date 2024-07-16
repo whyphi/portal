@@ -127,7 +127,8 @@ export default function EventModal({
 								!eventFormData.eventCode ||
 								!eventFormData.eventDate ||
 								!eventFormData.eventDeadline ||
-								!eventFormData.eventLocation
+								!eventFormData.eventLocation ||
+								!eventFormData.eventCoverImage
 							}
 							onClick={onSubmit}
 						>
