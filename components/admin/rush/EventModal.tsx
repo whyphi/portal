@@ -52,7 +52,7 @@ export default function EventModal({
 							<Label htmlFor="eventCoverImage" value="Event Cover Image" />
 							<span className="text-red-500"> *</span>
 						</div>
-						<CropImage onChange={(croppedImage) => setEventFormData({ ...eventFormData, eventCoverImage: croppedImage })} />
+						<CropImage onChange={(eventCoverImage) => setEventFormData({ ...eventFormData, eventCoverImage: eventCoverImage })} />
 					</div>
 					<div>
 						<div className="mb-2 block">

@@ -298,6 +298,9 @@ export default function RushEvents() {
   }
 
   if (isLoading) return <Loader />;
+
+  console.log("eventCoverImage", eventFormData.eventCoverImage);
+  
   
   return (
     <div className="overflow-x-auto">

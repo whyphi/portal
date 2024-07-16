@@ -36,7 +36,7 @@ function centerAspectCrop(
 }
 
 interface CropyImageProps {
-  onChange: (croppedImage: File) => void;
+  onChange: (eventCoverImage: File | null) => void;
 }
 
 export default function CropImage({ 
@@ -61,6 +61,15 @@ export default function CropImage({
       
       // show ReactCrop editor
       setDisplayReactCrop(true);
+    } else {
+      // show ReactCrop editor
+      setDisplayReactCrop(false);
+      
+      // reset completedCrop (no file is chosen)
+      setCompletedCrop(undefined);
+      
+      // reset eventCoverImage
+      onChange(null);
     }
   }
 
