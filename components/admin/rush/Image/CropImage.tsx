@@ -36,11 +36,15 @@ function centerAspectCrop(
 }
 
 interface CropyImageProps {
-  onChange: (eventCoverImage: File | null) => void;
+  eventCoverImage: string;
+  eventCoverImageName: string;
+  onChange: ([eventCoverImage, eventCoverImageName]: [string, string]) => void;
 }
 
-export default function CropImage({ 
-  onChange
+export default function CropImage({
+  eventCoverImage,
+  eventCoverImageName,
+  onChange,
 }: CropyImageProps) {
   const [imgSrc, setImgSrc] = useState("");
   const [imgName, setImgName] = useState("");
@@ -74,8 +78,8 @@ export default function CropImage({
       // reset completedCrop (no file is chosen)
       setCompletedCrop(undefined);
       
-      // reset eventCoverImage, imgName, amnd imgSrc
-      onChange(null);
+      // reset eventCoverImage/eventCoverImageName, imgName, amnd imgSrc
+      onChange(["", ""]);
 
       setImgName("");
 
@@ -103,11 +107,11 @@ export default function CropImage({
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
 
-    const offscreen = new OffscreenCanvas(
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
-    )
-    const ctx = offscreen.getContext('2d');
+    // Create an in-memory canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = completedCrop.width * scaleX;
+    canvas.height = completedCrop.height * scaleY;
+    const ctx = canvas.getContext('2d');
     if (!ctx) {
       throw new Error('No 2d context');
     }
@@ -120,17 +124,15 @@ export default function CropImage({
       previewCanvas.height,
       0,
       0,
-      offscreen.width,
-      offscreen.height,
+      canvas.width,
+      canvas.height,
     );
     // You might want { type: "image/jpeg", quality: <0 to 1> } to
     // reduce image size
-    const blob = await offscreen.convertToBlob({
-      type: 'image/png',
-    });
 
-    const file = new File([blob], imgName, { type: "image/png" });
-    onChange(file);
+    // Convert the canvas to a base64 data URL
+    const base64Image = canvas.toDataURL('image/png');
+    onChange([base64Image, imgName]);
 
     // hide ReactCrop editor
     setDisplayReactCrop(false);
@@ -192,7 +194,10 @@ export default function CropImage({
           <Button onClick={onSaveCropClick}>Save Crop</Button>
         </div>
         :
-        <Button onClick={() => setDisplayReactCrop(true)}>Edit Crop</Button>
+        <div>
+          <img src={eventCoverImage} alt={eventCoverImageName} />
+          <Button onClick={() => setDisplayReactCrop(true)}>Edit Crop</Button>
+        </div>
       )}
     </div>
   )

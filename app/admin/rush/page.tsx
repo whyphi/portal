@@ -23,7 +23,8 @@ export interface EventFormData {
   eventLocation: string,
   eventDate: Date,
   eventDeadline: Date,
-  eventCoverImage: File | null,
+  eventCoverImage: string,
+  eventCoverImageName: string,
   eventId?: string,
 }
 
@@ -32,7 +33,8 @@ const initialValues: EventFormData = {
   eventCode: "",
   eventLocation: "",
   eventDate: new Date(),
-  eventCoverImage: null,
+  eventCoverImage: "",
+  eventCoverImageName: "",
   eventDeadline: addTwoHours(new Date()),
 };
 
@@ -191,7 +193,8 @@ export default function RushEvents() {
                   eventLocation: event.location,
                   eventDate: new Date(event.date),
                   eventDeadline: new Date(event.deadline),
-                  eventCoverImage: null, // TODO: replace with image from backend...
+                  eventCoverImage: "", // TODO: replace with image from backend...
+                  eventCoverImageName: "", // TODO: replace with image from backend...
                   eventId: event.eventId,
                 });
                 setOpenModifyEventModal(true);
@@ -241,6 +244,7 @@ export default function RushEvents() {
           location: eventFormData.eventLocation,
           date: eventFormData.eventDate.toISOString(),
           deadline: eventFormData.eventDeadline.toISOString(),
+          eventCoverImage : eventFormData.eventCoverImage,
           ...(modifying && { eventId: eventFormData.eventId })
         })
       })
@@ -299,8 +303,6 @@ export default function RushEvents() {
 
   if (isLoading) return <Loader />;
 
-  console.log("eventCoverImage", eventFormData.eventCoverImage);
-  
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">
