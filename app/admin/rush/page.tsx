@@ -43,6 +43,8 @@ export default function RushEvents() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialValues);
 
@@ -230,6 +232,9 @@ export default function RushEvents() {
       alert('Event code cannot contain whitespace. Please check that you are not using whitespaces in your event code.');
       return;
     }
+    // ensure buttons cannot be clicked twice while API is submitting
+    setIsSubmitting(true);
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush`, {
         method: `${modifying ? 'PATCH' : 'POST'}`,
@@ -245,6 +250,7 @@ export default function RushEvents() {
           date: eventFormData.eventDate.toISOString(),
           deadline: eventFormData.eventDeadline.toISOString(),
           eventCoverImage : eventFormData.eventCoverImage,
+          eventCoverImageName : eventFormData.eventCoverImageName,
           ...(modifying && { eventId: eventFormData.eventId })
         })
       })
@@ -255,6 +261,8 @@ export default function RushEvents() {
     } catch (error) {
       // TODO: handle error
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -355,6 +363,7 @@ export default function RushEvents() {
         showModal={openCreateEventModal}
         selectedRushCategory={selectedRushCategory}
         eventFormData={eventFormData}
+        isSubmitting={isSubmitting}
         setEventFormData={setEventFormData}
         onClose={onCloseCreateEventModal}
         onSubmit={() => handleRusheeEvent()}
@@ -364,6 +373,7 @@ export default function RushEvents() {
         showModal={openModifyEventModal}
         selectedRushCategory={selectedRushCategory}
         eventFormData={eventFormData}
+        isSubmitting={isSubmitting}
         setEventFormData={setEventFormData}
         onClose={onCloseModifyEventModal}
         onSubmit={() => handleRusheeEvent(true)}

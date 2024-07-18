@@ -2,14 +2,15 @@ import { EventFormData } from "@/app/admin/rush/page";
 import { RushCategory } from "@/types/admin/events";
 import { addTwoHours } from "@/utils/date";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { AiOutlineLoading } from "react-icons/ai";
 import DatePicker from "react-datepicker";
-import { CanvasPreview } from "./Image/CanvasPreview";
 import CropImage from "./Image/CropImage";
 
 interface EventModalProps {
 	showModal: boolean,
 	selectedRushCategory: RushCategory | null,
 	eventFormData: EventFormData,
+	isSubmitting: boolean,
 	setEventFormData: React.Dispatch<React.SetStateAction<EventFormData>>,
 	onClose: () => void,
 	onSubmit: () => void,
@@ -21,6 +22,7 @@ export default function EventModal({
 	showModal,
 	selectedRushCategory,
 	eventFormData,
+	isSubmitting,
 	setEventFormData,
 	onClose,
 	onSubmit,
@@ -135,8 +137,11 @@ export default function EventModal({
 								!eventFormData.eventDate ||
 								!eventFormData.eventDeadline ||
 								!eventFormData.eventLocation ||
-								!eventFormData.eventCoverImage
+								!eventFormData.eventCoverImage ||
+								isSubmitting
 							}
+							isProcessing={isSubmitting}
+							processingSpinner={isSubmitting && <AiOutlineLoading className="h-6 w-6 animate-spin" />}
 							onClick={onSubmit}
 						>
 							{modifyingEvent ? "Modify Event" : "Create Event"}
