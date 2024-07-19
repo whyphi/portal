@@ -1,5 +1,5 @@
 // Disclosure: code inspired by example from https://codesandbox.io/s/react-image-crop-demo-with-react-hooks-y831o?file=/src/App.tsx
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 import ReactCrop, {
   centerCrop,
@@ -9,7 +9,6 @@ import ReactCrop, {
 } from 'react-image-crop'
 import { CanvasPreview } from './CanvasPreview'
 import { useDebounceEffect } from '@/utils/useDebounceEffect'
-import Image from 'next/image'
 import 'react-image-crop/dist/ReactCrop.css'
 import { Button, FileInput } from 'flowbite-react'
 
@@ -52,8 +51,30 @@ export default function CropImage({
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+
+  // state variables to keep track of which elements to render
   const [displayReactCrop, setDisplayReactCrop] = useState(true);
+  const [isInitialModifyLoad, setIsInitialModifyLoad] = useState(eventCoverImage !== "");
+
   const aspect = 16 / 9
+
+  useEffect(() => {
+    const fetchCoverImage = async () => {
+      if (eventCoverImage) {
+        const response = await fetch(eventCoverImage);
+        const blob = await response.blob();
+        const file = new File([blob], eventCoverImageName, { type: blob.type });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.files = dataTransfer.files;
+        onSelectFile({ target: input } as React.ChangeEvent<HTMLInputElement>);
+      }
+    }
+
+    fetchCoverImage();
+  }, []);
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
@@ -71,7 +92,7 @@ export default function CropImage({
       
       // show ReactCrop editor
       setDisplayReactCrop(true);
-    } else {
+    } else if (!isInitialModifyLoad) {
       // show ReactCrop editor
       setDisplayReactCrop(false);
       
@@ -161,9 +182,16 @@ export default function CropImage({
   return (
     <div className="App">
       <div className="Crop-Controls">
-        <FileInput accept="image/*" onChange={onSelectFile} />
+        <FileInput 
+          accept="image/*" 
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            // no longer first load
+            setIsInitialModifyLoad(false);
+            onSelectFile(e);
+          }} 
+        />
       </div>
-      {(!!imgSrc && displayReactCrop) && (
+      {(!!imgSrc && displayReactCrop && !isInitialModifyLoad) && (
         <ReactCrop
           crop={crop}
           onChange={(_, percentCrop) => setCrop(percentCrop)}
@@ -199,6 +227,13 @@ export default function CropImage({
           <Button onClick={() => setDisplayReactCrop(true)}>Edit Crop</Button>
         </div>
       )}
+      {/* edge case (first load --> display image) */}
+      {isInitialModifyLoad && 
+        <img
+          src={eventCoverImage}
+          alt={eventCoverImageName}
+        />
+      }
     </div>
   )
 }
