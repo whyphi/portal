@@ -22,7 +22,7 @@ export interface UserInEvent{
 }
 
 export interface RushEvent {
-  eventId: string;
+  _id: string;
   name: string;
   dateCreated: string;
   lastModified: string;
@@ -30,6 +30,8 @@ export interface RushEvent {
   location: string;
   date: string;
   deadline: string;
+  eventCoverImage: string;
+  eventCoverImageName: string;
 }
 
 export interface RushCategory {

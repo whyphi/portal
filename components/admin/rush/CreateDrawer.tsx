@@ -1,11 +1,9 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { HiOutlineUserGroup, HiOutlinePlus, HiOutlineX } from "react-icons/hi";
-import { Label, TextInput, Button, Select, Badge } from 'flowbite-react';
+import { HiOutlineUserGroup } from "react-icons/hi";
+import { Label, TextInput, Button } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
-import { Timeframe } from "@/types/admin/events";
-import { Spinner } from 'flowbite-react';
 
 interface CreateDrawerProps {
   onClose: () => void; // Prop for close button click handler
@@ -54,9 +52,7 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
       console.error(error);
     }
   }
-
-
-
+ 
   return (
     <div
       style={{ transform: `translateX(${translateX})` }}

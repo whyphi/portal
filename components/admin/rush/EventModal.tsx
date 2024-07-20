@@ -2,12 +2,15 @@ import { EventFormData } from "@/app/admin/rush/page";
 import { RushCategory } from "@/types/admin/events";
 import { addTwoHours } from "@/utils/date";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { AiOutlineLoading } from "react-icons/ai";
 import DatePicker from "react-datepicker";
+import CropImage from "./Image/CropImage";
 
 interface EventModalProps {
 	showModal: boolean,
 	selectedRushCategory: RushCategory | null,
 	eventFormData: EventFormData,
+	isSubmitting: boolean,
 	setEventFormData: React.Dispatch<React.SetStateAction<EventFormData>>,
 	onClose: () => void,
 	onSubmit: () => void,
@@ -19,13 +22,14 @@ export default function EventModal({
 	showModal,
 	selectedRushCategory,
 	eventFormData,
+	isSubmitting,
 	setEventFormData,
 	onClose,
 	onSubmit,
 	modifyingEvent,
 }: EventModalProps) {
 	return (
-		<Modal show={showModal} size="md" onClose={onClose} popup>
+		<Modal show={showModal} size="2xl" onClose={onClose} popup>
 			<Modal.Header />
 			<Modal.Body>
 				<div className="space-y-6">
@@ -43,6 +47,20 @@ export default function EventModal({
 							required
 							value={eventFormData.eventName}
 							onChange={(e) => setEventFormData({ ...eventFormData, eventName: e.target.value })}
+						/>
+					</div>
+					<div>
+						<div className="mb-2 block">
+							<Label htmlFor="eventCoverImage" value="Event Cover Image" />
+							<span className="text-red-500"> *</span>
+						</div>
+						<CropImage 
+							eventCoverImage={eventFormData.eventCoverImage}
+							eventCoverImageName={eventFormData.eventCoverImageName}
+							onChange={
+								([eventCoverImage, eventCoverImageName]) => 
+									setEventFormData({ ...eventFormData, eventCoverImage, eventCoverImageName})
+							} 
 						/>
 					</div>
 					<div>
@@ -118,8 +136,12 @@ export default function EventModal({
 								!eventFormData.eventCode ||
 								!eventFormData.eventDate ||
 								!eventFormData.eventDeadline ||
-								!eventFormData.eventLocation
+								!eventFormData.eventLocation ||
+								!eventFormData.eventCoverImage ||
+								isSubmitting
 							}
+							isProcessing={isSubmitting}
+							processingSpinner={isSubmitting && <AiOutlineLoading className="h-6 w-6 animate-spin" />}
 							onClick={onSubmit}
 						>
 							{modifyingEvent ? "Modify Event" : "Create Event"}

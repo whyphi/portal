@@ -23,6 +23,8 @@ export interface EventFormData {
   eventLocation: string,
   eventDate: Date,
   eventDeadline: Date,
+  eventCoverImage: string,
+  eventCoverImageName: string,
   eventId?: string,
 }
 
@@ -31,6 +33,8 @@ const initialValues: EventFormData = {
   eventCode: "",
   eventLocation: "",
   eventDate: new Date(),
+  eventCoverImage: "",
+  eventCoverImageName: "",
   eventDeadline: addTwoHours(new Date()),
 };
 
@@ -39,6 +43,8 @@ export default function RushEvents() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialValues);
 
@@ -120,7 +126,7 @@ export default function RushEvents() {
       <Card key={index} className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`}>
         <div className="flex flex-row items-center w-full">
           <div className="flex-1">
-            <Link href={`/admin/rush/${event.eventId}`}>
+            <Link href={`/admin/rush/${event._id}`}>
               <div className="flex items-center px-2 space-x-4">
                 <div className="shrink-0">
                   <Avatar placeholderInitials={event.name[0]} rounded />
@@ -189,7 +195,9 @@ export default function RushEvents() {
                   eventLocation: event.location,
                   eventDate: new Date(event.date),
                   eventDeadline: new Date(event.deadline),
-                  eventId: event.eventId,
+                  eventCoverImage: event.eventCoverImage,
+                  eventCoverImageName: event.eventCoverImageName,
+                  eventId: event._id,
                 });
                 setOpenModifyEventModal(true);
               }}
@@ -201,8 +209,8 @@ export default function RushEvents() {
             }} className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1" />
             <a
               href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
-                ? `https://staging--whyphi-rush.netlify.app/checkin/${event.eventId}`
-                : `https://rush.why-phi.com/checkin/${event.eventId}`
+                ? `https://staging--whyphi-rush.netlify.app/checkin/${event._id}`
+                : `https://rush.why-phi.com/checkin/${event._id}`
               }
               target="_blank"
               rel="noopener"
@@ -213,9 +221,8 @@ export default function RushEvents() {
           </div>
         </div>
       </Card>
-
     )
-  }
+  }  
 
   // handleRusheeEvent : by default creates a rush event
   const handleRusheeEvent = async (modifying?: boolean) => {
@@ -224,6 +231,9 @@ export default function RushEvents() {
       alert('Event code cannot contain whitespace. Please check that you are not using whitespaces in your event code.');
       return;
     }
+    // ensure buttons cannot be clicked twice while API is submitting
+    setIsSubmitting(true);
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush`, {
         method: `${modifying ? 'PATCH' : 'POST'}`,
@@ -238,7 +248,9 @@ export default function RushEvents() {
           location: eventFormData.eventLocation,
           date: eventFormData.eventDate.toISOString(),
           deadline: eventFormData.eventDeadline.toISOString(),
-          ...(modifying && { eventId: eventFormData.eventId })
+          eventCoverImage : eventFormData.eventCoverImage,
+          eventCoverImageName : eventFormData.eventCoverImageName,
+          ...(modifying && { _id: eventFormData.eventId })
         })
       })
       if (!response.ok) {
@@ -248,13 +260,15 @@ export default function RushEvents() {
     } catch (error) {
       // TODO: handle error
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   const handleDeleteEvent = async () => {
     console.log("hit")
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${selectedEventToDelete?.eventId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${selectedEventToDelete?._id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -348,6 +362,7 @@ export default function RushEvents() {
         showModal={openCreateEventModal}
         selectedRushCategory={selectedRushCategory}
         eventFormData={eventFormData}
+        isSubmitting={isSubmitting}
         setEventFormData={setEventFormData}
         onClose={onCloseCreateEventModal}
         onSubmit={() => handleRusheeEvent()}
@@ -357,6 +372,7 @@ export default function RushEvents() {
         showModal={openModifyEventModal}
         selectedRushCategory={selectedRushCategory}
         eventFormData={eventFormData}
+        isSubmitting={isSubmitting}
         setEventFormData={setEventFormData}
         onClose={onCloseModifyEventModal}
         onSubmit={() => handleRusheeEvent(true)}
