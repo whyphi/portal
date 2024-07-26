@@ -32,6 +32,14 @@ export interface RushEvent {
   deadline: string;
   eventCoverImage: string;
   eventCoverImageName: string;
+  attendees: [Attendee];
+  numAttendees: number;
+}
+
+interface Attendee {
+  name: string;
+  email: string;
+  checkInTime: string;
 }
 
 export interface RushCategory {
