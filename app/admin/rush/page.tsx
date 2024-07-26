@@ -127,7 +127,7 @@ export default function RushEvents() {
     return (
       <Card className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`} key={index}>
         <Link href={`/admin/rush/${event._id}`}>
-          <div className="flex flex-row items-center w-full">
+          <div className="flex flex-col gap-5 md:flex-row lg:flex-row items-center w-full">
             <div className="flex-1">
                 <div className="flex items-center px-2 space-x-4">
                   <div className="shrink-0">
