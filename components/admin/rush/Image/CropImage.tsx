@@ -56,25 +56,7 @@ export default function CropImage({
   const [displayReactCrop, setDisplayReactCrop] = useState(true);
   const [isInitialModifyLoad, setIsInitialModifyLoad] = useState(eventCoverImage !== "");
 
-  const aspect = 16 / 9
-
-  useEffect(() => {
-    const fetchCoverImage = async () => {
-      if (eventCoverImage) {
-        const response = await fetch(eventCoverImage);
-        const blob = await response.blob();
-        const file = new File([blob], eventCoverImageName, { type: blob.type });
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.files = dataTransfer.files;
-        onSelectFile({ target: input } as React.ChangeEvent<HTMLInputElement>);
-      }
-    }
-
-    fetchCoverImage();
-  }, []);
+  const aspect = 16 / 9  
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
@@ -181,7 +163,7 @@ export default function CropImage({
 
   return (
     <div className="App">
-      <div className="Crop-Controls">
+      <div className="Crop-Controls mb-2">
         <FileInput 
           accept="image/*" 
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -223,13 +205,18 @@ export default function CropImage({
         </div>
         :
         <div>
-          <img src={eventCoverImage} alt={eventCoverImageName} />
+          <img
+            className="my-2 rounded"
+            src={eventCoverImage} 
+            alt={eventCoverImageName} 
+          />
           <Button onClick={() => setDisplayReactCrop(true)}>Edit Crop</Button>
         </div>
       )}
       {/* edge case (first load --> display image) */}
       {isInitialModifyLoad && 
         <img
+          className="mt-2 rounded"
           src={eventCoverImage}
           alt={eventCoverImageName}
         />
