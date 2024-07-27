@@ -16,6 +16,7 @@ interface AuthContextProps {
 interface CustomSession extends Session {
   token?: {
     isNewUser?: boolean;
+    _id?: string;
     // Add other properties as needed
   };
 }
@@ -34,6 +35,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (session) {
         // Use type assertion to add the 'token' property
         const sessionWithToken = session as CustomSession;
+
+        console.log(sessionWithToken)
 
         // Check if user is a newUser
         if (sessionWithToken && sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
@@ -73,3 +76,16 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export const getUserId = () => {
+  const { token } = useAuth();
+  if (!token) {
+    return null;
+  }
+  const decodedToken = jwt.decode(token) as jwt.JwtPayload | null;
+  if (!decodedToken || typeof decodedToken._id === "undefined") {
+    return null;
+  }
+
+  return decodedToken._id;
+}

@@ -63,7 +63,7 @@ export default function NavSidebar() {
                       {session?.user?.email}
                     </span>
                   </Dropdown.Header>
-                  <Link href={`admin/settings`}>
+                  <Link href={`admin/account-settings`}>
                     <button
                       className="block text-sm w-full"
                     >
