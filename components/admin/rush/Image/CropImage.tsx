@@ -56,25 +56,7 @@ export default function CropImage({
   const [displayReactCrop, setDisplayReactCrop] = useState(true);
   const [isInitialModifyLoad, setIsInitialModifyLoad] = useState(eventCoverImage !== "");
 
-  const aspect = 16 / 9
-
-  useEffect(() => {
-    const fetchCoverImage = async () => {
-      if (eventCoverImage) {
-        const response = await fetch(eventCoverImage);
-        const blob = await response.blob();
-        const file = new File([blob], eventCoverImageName, { type: blob.type });
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.files = dataTransfer.files;
-        onSelectFile({ target: input } as React.ChangeEvent<HTMLInputElement>);
-      }
-    }
-
-    fetchCoverImage();
-  }, []);
+  const aspect = 16 / 9  
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
