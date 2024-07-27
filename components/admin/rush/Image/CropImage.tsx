@@ -163,7 +163,7 @@ export default function CropImage({
 
   return (
     <div className="App">
-      <div className="Crop-Controls">
+      <div className="Crop-Controls mb-2">
         <FileInput 
           accept="image/*" 
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -205,13 +205,18 @@ export default function CropImage({
         </div>
         :
         <div>
-          <img src={eventCoverImage} alt={eventCoverImageName} />
+          <img
+            className="my-2 rounded"
+            src={eventCoverImage} 
+            alt={eventCoverImageName} 
+          />
           <Button onClick={() => setDisplayReactCrop(true)}>Edit Crop</Button>
         </div>
       )}
       {/* edge case (first load --> display image) */}
       {isInitialModifyLoad && 
         <img
+          className="mt-2 rounded"
           src={eventCoverImage}
           alt={eventCoverImageName}
         />
