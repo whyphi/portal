@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
-import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card, Badge } from "flowbite-react";
+  import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card, ButtonGroup, Badge } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
 import { FaRegCopy } from 'react-icons/fa';
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
@@ -126,7 +126,7 @@ export default function RushEvents() {
   const EventRow = ({ event, index, categoryId }: { event: RushEvent, index: number, categoryId: string }) => {
     return (
       <Card className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`} key={index}>
-        <Link href={`/admin/rush/${categoryId}/${event._id}`}>
+        <Link href={`/admin/rush/${event._id}`}>
           <div className="flex flex-col gap-5 md:flex-row lg:flex-row items-center w-full">
             <div className="flex-1">
                 <div className="flex items-center px-2 space-x-4">
@@ -325,12 +325,8 @@ export default function RushEvents() {
               <Accordion.Content>
                 <div className="flex flex-row items-center w-full mb-4 overflow-x-auto">
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setSelectedRushCategory(data); setOpenCreateEventModal(true) }}>Create Event</Button>
-                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>
-                    {rushCategoriesCodeToggled[data._id] ? "Hide Code" : "Show Code"}
-                  </Button>
-                  <Button size="xs" color="gray" className="mr-2" onClick={() => router.push(`/admin/rush/${data._id}/analytics`)}>
-                    View Analytics
-                  </Button>
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>{rushCategoriesCodeToggled[data._id] ? "Hide Code" : "Show Code"}</Button>
+                  <Button size="xs" color="gray" className="mr-2" disabled>View Analytics</Button>
                   <Button size="xs" color="gray" className="mr-2" disabled>Export Data</Button>
                 </div>
                 {data.events && data.events.map((event: RushEvent, index: number) => (

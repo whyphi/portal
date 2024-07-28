@@ -3,6 +3,6 @@
 export default function RushEvent({ params }: { params: { eventId: string } }) {
   
   return (
-    <>In Progress...</>
+    <>hello</>
   )
 }
