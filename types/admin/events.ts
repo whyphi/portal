@@ -47,6 +47,21 @@ export interface RushCategory {
   dateCreated: string;
   name: string;
   defaultRushCategory: boolean;
-  events: RushEvent[]
+  events: [RushEvent]
 }
 
+export interface Analytics {
+  [email: string]: AnalyticsAttendee;
+}
+
+interface AnalyticsAttendee {
+  name: string;
+  email: string;
+  checkinTime: string;
+  eventsAttended: [AnalyticsEvent];
+}
+
+interface AnalyticsEvent {
+  eventId: string;
+  eventName: string;
+}
