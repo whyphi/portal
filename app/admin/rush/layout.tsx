@@ -12,7 +12,7 @@ export default function RootLayout({
 }) {
   return (
 
-    <div className="flex flex-col mx-auto justify-center max-w-screen-xl">
+    <div className="flex flex-col mx-auto justify-center max-w-screen-lg">
       {children}
     </div>
 
