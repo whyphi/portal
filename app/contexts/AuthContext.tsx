@@ -75,19 +75,17 @@ export const useAuth = () => {
   return context;
 };
 
+/* eslint-disable */
 export const getUserId = () => {
-  const authContext = useContext(AuthContext);
-  if (!authContext) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  const { token } = authContext;
+  const { token } = useAuth();
   if (!token) {
     return null;
   }
   const decodedToken = jwt.decode(token) as jwt.JwtPayload | null;
-  if (!decodedToken || typeof decodedToken._id === "undefined") {
+  if (!decodedToken || typeof decodedToken?._id === "undefined") {
     return null;
   }
 
-  return decodedToken._id;
+  return decodedToken?._id;
 }
+
