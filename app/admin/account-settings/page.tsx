@@ -52,16 +52,16 @@ export default function AccountSettings() {
         <form className="flex flex-col gap-4" onSubmit={(e) => {
           e.preventDefault();
           console.log(user);
-          // fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/member/${_id}`, {
-          //   method: "PUT",
-          //   headers: {
-          //     Authorization: `Bearer ${token}`,
-          //     "Content-Type": "application/json",
-          //   },
-          //   body: JSON.stringify(user)
-          // })
-          //   .then(() => router.push("/admin"))
-          //   .catch(console.error);
+          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/member/${_id}`, {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user)
+          })
+            .then(() => router.push("/admin"))
+            .catch(console.error);
         }}>
 
           {/* Personal Information */}

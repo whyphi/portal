@@ -76,7 +76,11 @@ export const useAuth = () => {
 };
 
 export const getUserId = () => {
-  const { token } = useAuth();
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  const { token } = authContext;
   if (!token) {
     return null;
   }
