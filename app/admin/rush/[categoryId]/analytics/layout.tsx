@@ -1,8 +1,7 @@
-import '../../globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Whyphi - Rush',
+  title: 'Whyphi - Rush Analytics',
 }
 
 export default function RootLayout({
@@ -12,7 +11,7 @@ export default function RootLayout({
 }) {
   return (
 
-    <div className="flex flex-col mx-auto justify-center max-w-screen-xl">
+    <div className="flex flex-col justify-center max-w-screen-xl">
       {children}
     </div>
 
