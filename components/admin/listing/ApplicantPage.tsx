@@ -77,7 +77,6 @@ export default function ApplicantPage({ applicant }: ApplicantPageProps) {
         <Tabs
           className=""
           aria-label="Tabs with underline"
-          style="underline"
         >
 
           <Tabs.Item

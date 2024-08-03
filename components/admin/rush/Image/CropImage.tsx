@@ -1,5 +1,5 @@
 // Disclosure: code inspired by example from https://codesandbox.io/s/react-image-crop-demo-with-react-hooks-y831o?file=/src/App.tsx
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 
 import ReactCrop, {
   centerCrop,
