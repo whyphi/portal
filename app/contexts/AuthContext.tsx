@@ -16,6 +16,7 @@ interface AuthContextProps {
 interface CustomSession extends Session {
   token?: {
     isNewUser?: boolean;
+    _id?: string;
     // Add other properties as needed
   };
 }
@@ -73,3 +74,18 @@ export const useAuth = () => {
   }
   return context;
 };
+
+/* eslint-disable */
+export const getUserId = () => {
+  const { token } = useAuth();
+  if (!token) {
+    return null;
+  }
+  const decodedToken = jwt.decode(token) as jwt.JwtPayload | null;
+  if (!decodedToken || typeof decodedToken?._id === "undefined") {
+    return null;
+  }
+
+  return decodedToken?._id;
+}
+

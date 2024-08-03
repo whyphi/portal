@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Dropdown, Avatar } from "flowbite-react";
 import { HiOutlineQrcode, HiUsers } from "react-icons/hi";
-import { Sidebar } from "flowbite-react";
+import Link from "next/link";
 
 
 
@@ -63,6 +63,13 @@ export default function NavSidebar() {
                       {session?.user?.email}
                     </span>
                   </Dropdown.Header>
+                  <Link href={`/admin/account-settings`}>
+                    <button
+                      className="block text-sm w-full"
+                    >
+                      Settings
+                    </button>
+                  </Link>
                   <Dropdown.Divider />
                   <button
                     className="block text-sm w-full"
