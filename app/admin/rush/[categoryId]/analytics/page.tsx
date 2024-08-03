@@ -3,13 +3,13 @@
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/AdminLoader";
 import { Analytics } from "@/types/admin/events";
-import { Drawer, Table } from "flowbite-react";
+import { Badge, Drawer, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 
 export default function RushAnalytics({ params }: { params: { categoryId: string } }) {
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [analytics, setAnalytics] = useState<Analytics>({});
+  const [analytics, setAnalytics] = useState<Analytics | null>();
   const [error, setError] = useState<Error>();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,15 +45,16 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
   }, [token]);
 
   const renderAnalyticsTable = () => {
-    return Object.keys(analytics).map((email) => (
+    if (!analytics) return
+    return Object.keys(analytics.attendees).map((email) => (
       <Table.Row key={email} className="bg-white dark:border-gray-700 dark:bg-gray-800">
         <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-          {analytics[email].name}
+          {analytics.attendees[email].name}
         </Table.Cell>
-        <Table.Cell>{analytics[email].email}</Table.Cell>
-        <Table.Cell>{analytics[email].eventsAttended.length}</Table.Cell>
+        <Table.Cell>{analytics.attendees[email].email}</Table.Cell>
+        <Table.Cell>{analytics.attendees[email].eventsAttended.length}</Table.Cell>
         {/* TODO: create function to determine if the candidate can be accepted for interview */}
-        <Table.Cell>{analytics[email].eventsAttended.length > 4 ? "True" : "False"}</Table.Cell>
+        <Table.Cell>{analytics.attendees[email].eventsAttended.length > 4 ? "True" : "False"}</Table.Cell>
         <Table.Cell>
           <a onClick={handleOpen} className="font-medium text-cyan-600 hover:underline hover:cursor-pointer dark:text-cyan-500">
             Details
@@ -63,11 +64,14 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
     ));
   }
 
-  if (isLoading) return <Loader />;
+  if (isLoading || !analytics) return <Loader />;
 
   return (
     <div className="overflow-x-auto">
-      <h1 className="text-2xl font-bold mb-4">Rush Analytics</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold mb-4">
+        Rush Analytics
+        <Badge size="lg">{analytics.categoryName}</Badge>
+      </h1>
       <Table hoverable>
         <Table.Head>
           <Table.HeadCell>Name</Table.HeadCell>
