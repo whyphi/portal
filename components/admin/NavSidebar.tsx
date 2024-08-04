@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Dropdown, Avatar, Sidebar, DarkThemeToggle, useThemeMode } from "flowbite-react";
-import { HiClipboardList, HiOutlineQrcode, HiFolderAdd, HiChartBar, HiUsers, HiShare, HiMenuAlt2 } from "react-icons/hi";
+import { HiClipboardList, HiOutlineQrcode, HiFolderAdd, HiChartBar, HiDatabase, HiShare, HiMenuAlt2, HiUserGroup } from "react-icons/hi";
 
 
 export default function NavSidebar() {
@@ -79,8 +79,11 @@ export default function NavSidebar() {
               <Sidebar.Item href="/admin/events">Member</Sidebar.Item>
               <Sidebar.Item href="/admin/rush">Rush</Sidebar.Item>
             </Sidebar.Collapse>
-            <Sidebar.Item href="/admin/members" icon={HiUsers}>
+            <Sidebar.Item href="/admin/members" icon={HiDatabase}>
               Member Database
+            </Sidebar.Item>
+            <Sidebar.Item href="/admin/family-tree" icon={HiUserGroup}>
+              Family Tree
             </Sidebar.Item>
           </Sidebar.ItemGroup>
         </Sidebar.Items>

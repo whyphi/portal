@@ -307,11 +307,11 @@ export default function RushEvents() {
       <div className="flex justify-between items-center">
         <h1 className={AdminTextStyles.subtitle}>Rush Events</h1>
         <Button.Group>
-          <Button color="gray" className="h-12" onClick={handleDrawerOpen}>
+          <Button color="gray" onClick={handleDrawerOpen}>
             <HiPlus className="mr-1 h-5 w-5" />
             Create
           </Button>
-          <Button color="gray" className="h-12" onClick={() => setOpenSettingsModal(true)}>
+          <Button color="gray" onClick={() => setOpenSettingsModal(true)}>
             <TbSettings className="mr-1 h-5 w-5" />
             Settings
           </Button>
