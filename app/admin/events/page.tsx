@@ -1,9 +1,8 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { getSession } from 'next-auth/react';
 import Loader from "@/components/Loader";
-import { Button, Select, Label } from "flowbite-react";
+import { Button, Accordion } from "flowbite-react";
 import { HiOutlineCog, HiPlus } from "react-icons/hi";
 import CreateTimeframe from "@/components/admin/events/CreateTimeframe";
 import { useAuth } from "@/app/contexts/AuthContext";
@@ -16,7 +15,6 @@ export default function Events() {
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [timeframes, setTimeframes] = useState<Timeframe[]>([]);
-  const [selectedTimeframeIndex, setSelectedTimeframeIndex] = useState<number>(0);
   const [isCreateTimeframeVisible, setIsCreateTimeframeVisible] = useState<boolean>(false);
 
 
@@ -30,7 +28,6 @@ export default function Events() {
       .then((response) => response.json())
       .then((data) => {
         setTimeframes(data.sort((a: { dateCreated: string }, b: { dateCreated: string }) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()))
-        setSelectedTimeframeIndex(0);
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching data:", error));
@@ -68,19 +65,19 @@ export default function Events() {
           </Button>
         </div>
       </div>
-      <div className="mb-2 block">
-        <Label htmlFor="timeframe" value="Select your timeframe" />
-      </div>
-      <Select id="timeframe" required value={timeframes[selectedTimeframeIndex]?.name} onChange={(e) => {
-        const selectedTimeframeIndex = timeframes.findIndex((timeframe) => timeframe?.name === e.target.value);
-        setSelectedTimeframeIndex(selectedTimeframeIndex);
-      }}>
-        {timeframes.map((timeframe, i) => (
-          <option key={timeframe.name} value={timeframe.name}>{timeframe.name}</option>
-        ))}
-      </Select>
 
-      {timeframes[selectedTimeframeIndex] && <EventsList events={timeframes[selectedTimeframeIndex].events} />}
+      {timeframes.map((timeframe, index) => 
+        <Accordion key={index} collapseAll className="mb-2">
+          <Accordion.Panel>
+            <Accordion.Title>
+              <div className="text-m font-medium text-gray-900 dark:text-white">{timeframe.name}</div>
+            </Accordion.Title>
+            <Accordion.Content>
+              <EventsList events={timeframe.events} />
+            </Accordion.Content>
+          </Accordion.Panel>
+        </Accordion>
+      )}
 
       {/* Drawer component */}
       {isCreateTimeframeVisible && <CreateTimeframe timeframes={timeframes} onClose={handleCloseButtonClick} />}
