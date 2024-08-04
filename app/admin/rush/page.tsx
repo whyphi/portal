@@ -169,9 +169,9 @@ export default function RushEvents() {
                   </div>
                 </div>
             </div>
-            <div className="flex flex-row flex-shrink-0 px-2">
+            <div className="flex flex-row items-center px-2">
               <HiOutlinePencil
-                className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1"
+                className="w-5 h-5 text-gray-800 dark:text-gray-400 transition duration-200 ease-in-out hover:w-8 hover:h-8 hover:text-purple-600 dark:hover:text-purple-500 mr-1"
                 onClick={(e: React.MouseEvent<SVGAElement>) => {
                   e.preventDefault();
                   setEventFormData({
@@ -186,12 +186,15 @@ export default function RushEvents() {
                   });
                   setOpenModifyEventModal(true);
                 }}
-                />
-              <HiOutlineTrash onClick={(e: React.MouseEvent<SVGAElement>) => {
-                e.preventDefault();
-                setSelectedEventToDelete(event);
-                setOpenDeleteEventModal(true);
-              }} className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1" />
+              />
+              <HiOutlineTrash 
+                onClick={(e: React.MouseEvent<SVGAElement>) => {
+                  e.preventDefault();
+                  setSelectedEventToDelete(event);
+                  setOpenDeleteEventModal(true);
+                }} 
+                className="w-5 h-5 text-gray-800 dark:text-gray-400 transition duration-200 ease-in-out hover:w-8 hover:h-8 hover:text-purple-600 dark:hover:text-purple-500 mr-1"
+              />
               <a
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => e.stopPropagation()}
                 href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
@@ -200,9 +203,10 @@ export default function RushEvents() {
                 }
                 target="_blank"
                 rel="noopener"
-                className="w-5 h-5 group-hover:text-blue-600"
-                >
-                <HiLink className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600" />
+              >
+                <HiLink 
+                  className="w-5 h-5 text-gray-800 dark:text-gray-400 transition duration-200 ease-in-out hover:w-8 hover:h-8 hover:text-blue-600 dark:hover:text-blue-500 mr-1" 
+                />
               </a>
             </div>
           </div>

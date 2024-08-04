@@ -8,8 +8,6 @@
   :root { }
 }
 
-body { }
-
 /* Custom CSS for slide-down animation */
 .slide-down-enter-active {
   transition: max-height 700ms ease-in-out;
