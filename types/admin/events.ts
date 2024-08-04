@@ -32,6 +32,14 @@ export interface RushEvent {
   deadline: string;
   eventCoverImage: string;
   eventCoverImageName: string;
+  attendees: readonly Attendee[];
+  numAttendees: number;
+}
+
+interface Attendee {
+  name: string;
+  email: string;
+  checkInTime: string;
 }
 
 export interface RushCategory {
@@ -39,6 +47,26 @@ export interface RushCategory {
   dateCreated: string;
   name: string;
   defaultRushCategory: boolean;
-  events: RushEvent[]
+  events: readonly RushEvent[]
 }
 
+export interface Analytics {
+  categoryName: string,
+  attendees: AnalyticsAttendees
+}
+
+interface AnalyticsAttendees {
+  [email: string]: AnalyticsAttendee;
+}
+
+interface AnalyticsAttendee {
+  name: string;
+  email: string;
+  checkinTime: string;
+  eventsAttended: readonly AnalyticsEvent[];
+}
+
+interface AnalyticsEvent {
+  eventId: string;
+  eventName: string;
+}

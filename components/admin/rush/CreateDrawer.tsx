@@ -75,11 +75,13 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
         <div className="mb-4">
           <div className="mb-2 block">
             <Label htmlFor="graduationYear" value="Name" />
+            <span className="text-red-500"> *</span>
           </div>
           <TextInput
             key="timeframeName"
             required
             id="timeframeName"
+            placeholder="Fall 2024"
             type="text"
             value={categoryName}
             onChange={handleInputchange}

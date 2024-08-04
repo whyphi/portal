@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
-import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card, ButtonGroup } from "flowbite-react";
+  import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card, ButtonGroup, Badge } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
 import { FaRegCopy } from 'react-icons/fa';
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
@@ -16,6 +16,7 @@ import Timestamp from "react-timestamp";
 import { addTwoHours } from "@/utils/date";
 import { TbSettings } from "react-icons/tb";
 import SettingsModal from "@/components/admin/rush/SettingsModal";
+import { useRouter } from "next/navigation";
 
 export interface EventFormData {
   eventName: string,
@@ -40,6 +41,7 @@ const initialValues: EventFormData = {
 
 export default function RushEvents() {
   const { token } = useAuth();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
@@ -123,103 +125,88 @@ export default function RushEvents() {
 
   const EventRow = ({ event, index, categoryId }: { event: RushEvent, index: number, categoryId: string }) => {
     return (
-      <Card key={index} className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`}>
-        <div className="flex flex-row items-center w-full">
-          <div className="flex-1">
-            <Link href={`/admin/rush/${event._id}`}>
-              <div className="flex items-center px-2 space-x-4">
-                <div className="shrink-0">
-                  <Avatar placeholderInitials={event.name[0]} rounded />
-                </div>
-                <div className="min-w-0 flex flex-col gap-1">
-                  <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
-                  {/* <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
-                    Created:
-                    <Timestamp
-                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
-                      date={new Date(event.dateCreated)} 
-                    />
-                  </p>
-                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
-                    Last Modified:
-                    <Timestamp
-                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
-                      date={new Date(event.lastModified)} 
-                    />
-                  </p>
-                  <hr className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700"/> */}
-                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
-                    Event Date:
-                    <Timestamp
-                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
-                      date={new Date(event.date)} 
-                    />
-                  </p>
-                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
-                    Deadline:
-                    <Timestamp
-                      className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded"
-                      date={new Date(event.deadline)} 
-                    />
-                  </p>
-                  <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
-                    Location:
-                    <div className="bg-gray-100 mr-2 px-1.5 py-0.5 rounded">
-                      {event.location}
+      <Card className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`} key={index}>
+        <Link href={`/admin/rush/${categoryId}/${event._id}`}>
+          <div className="flex flex-col gap-5 md:flex-row lg:flex-row items-center w-full">
+            <div className="flex-1">
+                <div className="flex items-center px-2 space-x-4">
+                  <div className="shrink-0">
+                    <Avatar color="light" bordered placeholderInitials={event.name[0]} rounded />
+                  </div>
+                  <div className="min-w-0 flex flex-col gap-1">
+                    <p className="truncate text-m font-medium text-gray-900 dark:text-white">{event.name}</p>
+                    <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                      Event Date:
+                      <Badge color="indigo">
+                        <Timestamp date={new Date(event.date)} />
+                      </Badge>
+                    </p>
+                    <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                      Deadline:
+                      <Badge color="purple">
+                        <Timestamp date={new Date(event.deadline)} />
+                      </Badge>
+                    </p>
+                    <p className="flex gap-2 truncate text-sm text-gray-500 dark:text-gray-400 mr-1">
+                      Location:
+                      <Badge color="green">
+                        {event.location}
+                      </Badge>
+                    </p>
+                    <div className="flex gap-3 items-center">
+                      <code className="truncate text-sm text-gray-500 dark:text-gray-400">
+                        {rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}
+                      </code>
+                      {rushCategoriesCodeToggled[categoryId] && (
+                        <Tooltip content={copied ? 'Copied!' : 'Copy code to clipboard'} placement="top">
+                          <FaRegCopy
+                            className="w-4 h-4 cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                            onClick={(e: React.MouseEvent<SVGAElement>) => handleCopy(e, event)}
+                            />
+                        </Tooltip>
+                      )}
                     </div>
-                  </p>
-                  <div className="flex gap-3 items-center">
-                    <code className="truncate text-sm text-gray-500 dark:text-gray-400">
-                      {rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}
-                    </code>
-                    {rushCategoriesCodeToggled[categoryId] && (
-                      <Tooltip content={copied ? 'Copied!' : 'Copy code to clipboard'} placement="top">
-                        <FaRegCopy
-                          className="w-4 h-4 cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                          onClick={(e: React.MouseEvent<SVGAElement>) => handleCopy(e, event)}
-                        />
-                      </Tooltip>
-                    )}
                   </div>
                 </div>
-              </div>
-            </Link>
+            </div>
+            <div className="flex flex-row flex-shrink-0 px-2">
+              <HiOutlinePencil
+                className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1"
+                onClick={(e: React.MouseEvent<SVGAElement>) => {
+                  e.preventDefault();
+                  setEventFormData({
+                    eventName: event.name,
+                    eventCode: event.code,
+                    eventLocation: event.location,
+                    eventDate: new Date(event.date),
+                    eventDeadline: new Date(event.deadline),
+                    eventCoverImage: event.eventCoverImage,
+                    eventCoverImageName: event.eventCoverImageName,
+                    eventId: event._id,
+                  });
+                  setOpenModifyEventModal(true);
+                }}
+                />
+              <HiOutlineTrash onClick={(e: React.MouseEvent<SVGAElement>) => {
+                e.preventDefault();
+                setSelectedEventToDelete(event);
+                setOpenDeleteEventModal(true);
+              }} className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1" />
+              <a
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => e.stopPropagation()}
+                href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
+                  ? `https://staging--whyphi-rush.netlify.app/checkin/${event._id}`
+                  : `https://rush.why-phi.com/checkin/${event._id}`
+                }
+                target="_blank"
+                rel="noopener"
+                className="w-5 h-5 group-hover:text-blue-600"
+                >
+                <HiLink className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600" />
+              </a>
+            </div>
           </div>
-          <div className="flex flex-row flex-shrink-0 px-2">
-            <HiOutlinePencil
-              className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1"
-              onClick={() => {
-                setEventFormData({
-                  eventName: event.name,
-                  eventCode: event.code,
-                  eventLocation: event.location,
-                  eventDate: new Date(event.date),
-                  eventDeadline: new Date(event.deadline),
-                  eventCoverImage: event.eventCoverImage,
-                  eventCoverImageName: event.eventCoverImageName,
-                  eventId: event._id,
-                });
-                setOpenModifyEventModal(true);
-              }}
-            />
-            <HiOutlineTrash onClick={(e: React.MouseEvent<SVGAElement>) => {
-              e.preventDefault();
-              setSelectedEventToDelete(event);
-              setOpenDeleteEventModal(true);
-            }} className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1" />
-            <a
-              href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
-                ? `https://staging--whyphi-rush.netlify.app/checkin/${event._id}`
-                : `https://rush.why-phi.com/checkin/${event._id}`
-              }
-              target="_blank"
-              rel="noopener"
-              className="w-5 h-5 group-hover:text-blue-600"
-            >
-              <HiLink className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600" />
-            </a>
-          </div>
-        </div>
+        </Link>
       </Card>
     )
   }  
@@ -331,19 +318,19 @@ export default function RushEvents() {
             <Accordion.Panel>
               <Accordion.Title>
                 <div className="flex flex-row items-center gap-3">
-                  <div>{data.name}</div>
-                  {data.defaultRushCategory && (
-                    <div className="text-sm bg-gray-100 mr-2 px-1.5 py-0.5 rounded">
-                      (default)
-                    </div>
-                  )}
+                  <div className="text-m font-medium text-gray-900 dark:text-white">{data.name}</div>
+                  {data.defaultRushCategory && <Badge color="teal">default</Badge>}
                 </div>
               </Accordion.Title>
               <Accordion.Content>
                 <div className="flex flex-row items-center w-full mb-4 overflow-x-auto">
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setSelectedRushCategory(data); setOpenCreateEventModal(true) }}>Create Event</Button>
-                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>{rushCategoriesCodeToggled[data._id] ? "Hide Code" : "Show Code"}</Button>
-                  <Button size="xs" color="gray" className="mr-2" disabled>View Analytics</Button>
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>
+                    {rushCategoriesCodeToggled[data._id] ? "Hide Code" : "Show Code"}
+                  </Button>
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => router.push(`/admin/rush/${data._id}/analytics`)}>
+                    View Analytics
+                  </Button>
                   <Button size="xs" color="gray" className="mr-2" disabled>Export Data</Button>
                 </div>
                 {data.events && data.events.map((event: RushEvent, index: number) => (

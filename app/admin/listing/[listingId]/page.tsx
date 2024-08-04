@@ -198,7 +198,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
       {/* either render Tabs (all applicants) OR single applicant view */}
       {selectedApplicant == null
         ? 
-        <Tabs aria-label="Default tabs" style="default" ref={tabsRef}>
+        <Tabs aria-label="Default tabs" ref={tabsRef}>
           <Tabs.Item active title="Card" icon={HiOutlineCollection}>
             {renderApplicantCardView()}
           </Tabs.Item>
