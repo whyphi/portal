@@ -7,7 +7,7 @@ import { Canvas } from 'reaflow';
 
 
 
-export default function Accountability() {
+export default function FamilyTree() {
   const { token } = useAuth();
   const [familyTreeData, setFamilyTreeData] = useState<any>({});
   const [currentFamily, setCurrentFamilly] = useState<string>("");
@@ -49,10 +49,6 @@ export default function Accountability() {
       };
     });
 
-    console.log({
-      nodes: nodes,
-      edges: edges
-    })
 
     return {
       nodes: nodes,
@@ -73,7 +69,6 @@ export default function Accountability() {
         setFamilyTreeData(data);
         setCurrentFamilly(Object.keys(data)[0]);
         setCurrentFamillyData(generateFamilyTreeNodesAndEdges(data[Object.keys(data)[0]]));
-        console.log(data[Object.keys(data)[0]])
         setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching data:", error));
