@@ -33,9 +33,10 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
             <div className='flex flex-row items-center justify-between'>
               <div className='flex flex-col gap-2'>
                 <a className="text-base font-medium text-gray-900 dark:text-white">{event.name}</a>
-                <Badge>
-                  <Timestamp date={new Date(event.dateCreated)} />
-                </Badge>
+                <div className='flex gap-2 items-center truncate text-sm text-gray-500 dark:text-gray-400'>
+                  Date created:
+                  <Badge><Timestamp date={new Date(event.dateCreated)} /></Badge>
+                </div>
               </div>
               <div className='flex gap-2'>
                 {event.tags?.map((tag) => (
