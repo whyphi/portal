@@ -17,6 +17,7 @@ import { addTwoHours } from "@/utils/date";
 import { TbSettings } from "react-icons/tb";
 import SettingsModal from "@/components/admin/rush/SettingsModal";
 import { useRouter } from "next/navigation";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 export interface EventFormData {
   eventName: string,
@@ -304,7 +305,7 @@ export default function RushEvents() {
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-bold dark:text-white mb-4 mt-4">Rush Events</h1>
+        <h1 className={AdminTextStyles.subtitle}>Rush Events</h1>
         <Button.Group>
           <Button color="gray" className="h-12" onClick={handleDrawerOpen}>
             <HiPlus className="mr-1 h-5 w-5" />

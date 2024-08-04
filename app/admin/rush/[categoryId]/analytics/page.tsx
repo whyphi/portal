@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/AdminLoader";
+import { AdminTextStyles } from "@/styles/TextStyles";
 import { Analytics } from "@/types/admin/events";
 import { Badge, Drawer, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
@@ -68,7 +69,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
 
   return (
     <div className="overflow-x-auto">
-      <h1 className="flex items-center gap-2 text-2xl font-bold mb-4">
+      <h1 className={`flex items-center gap-2 ${AdminTextStyles.subtitle}`}>
         Rush Analytics
         <Badge size="lg">{analytics.categoryName}</Badge>
       </h1>
