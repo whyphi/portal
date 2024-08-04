@@ -84,6 +84,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/create`, {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formDataWithDates),
@@ -105,6 +106,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.listingId}`, {
         method: "DELETE",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
@@ -274,6 +276,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/${params.listingId}/update-field`, {
         method: "PATCH",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
