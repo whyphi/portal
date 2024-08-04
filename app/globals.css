@@ -24,3 +24,20 @@ body { }
   transition: max-height 700ms ease-in-out;
   max-height: 0px;
 }
+
+/* Custom theme styles */
+body {
+  /* Default background color */
+  background-color: #ffffff; /* Light mode background */
+}
+
+.dark body {
+  /* Dark mode background color */
+  /* Gray-700 */
+  /* background-color: #374151; */
+  /* Gray-800 */
+  /* background-color: #1f2937; */
+
+  /* Somwhere in between 700 and 800 */
+  background-color: #29313e;
+}
