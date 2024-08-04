@@ -3,11 +3,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link'
-import { Card, Badge, Dropdown, Modal, Button } from "flowbite-react";
+import { Card, Badge, Modal, Button, Popover, ListGroup } from "flowbite-react";
 import { Event } from "@/types/admin/events";
-import { formatMongoDate } from "@/utils/date";
-import { HiDotsVertical } from "react-icons/hi";
+import { HiDotsVertical, HiOutlineTrash } from "react-icons/hi";
 import { useAuth } from '@/app/contexts/AuthContext';
+import Timestamp from 'react-timestamp';
 
 
 interface EventsListProps {
@@ -19,39 +19,65 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
+  const handleOptionsClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+  };
+
   if (!events || events.length === 0) return <p className="mt-4 text-center">No Events 😔</p>;
 
   return (
-    <Card className="max-w mt-4">
-      <div className="flow-root">
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          {events.map((event) => (
-            <li key={event._id} className="py-3 sm:py-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center space-x-4 cursor-pointer">
-              <div className="flex-1">
-                <Link href={`/admin/events/${event._id}`}>
-                  <a className="text-base font-medium text-gray-900 dark:text-white">{event.name}</a>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{formatMongoDate(event.dateCreated)}</p>
-                </Link>
+    <div>
+      {events.map((event) => (
+        <Link className='w-full' href={`/admin/events/${event._id}`} key={event._id}>
+          <Card className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`}>
+            <div className='flex flex-row items-center justify-between'>
+              <div className='flex flex-col gap-2'>
+                <a className="text-base font-medium text-gray-900 dark:text-white">{event.name}</a>
+                <Badge>
+                  <Timestamp date={new Date(event.dateCreated)} />
+                </Badge>
               </div>
-              <div className="flex space-x-2">
+              <div className='flex gap-2'>
                 {event.tags?.map((tag) => (
                   <Badge key={tag} color="purple">
                     {tag}
                   </Badge>
                 ))}
+                <Popover 
+                  trigger="click"
+                  placement="bottom-end"
+                  arrow={false}
+                  content={
+                    <ListGroup className="w-48">
+                      <div
+                        onClick={(e: React.MouseEvent<HTMLElement>) => {
+                          handleOptionsClick(e); 
+                          setSelectedEvent(event); 
+                          setOpenDeleteModal(true); 
+                        }}
+                      >
+                        <ListGroup.Item active icon={HiOutlineTrash} >Delete</ListGroup.Item>
+                      </div>
+                      {/* TODO: add settings <div
+                        onClick={(e: React.MouseEvent<HTMLElement>) => {
+                          handleOptionsClick(e); 
+                        }}
+                      >
+                        <ListGroup.Item>Settings</ListGroup.Item>
+                      </div> */}
+                    </ListGroup>
+                  }
+                  >
+                  <button onClick={handleOptionsClick} className="focus:outline-none">
+                    <HiDotsVertical />
+                  </button>
+                </Popover>
               </div>
-              <Dropdown label="" dismissOnClick={false} renderTrigger={() => <span><HiDotsVertical /></span>}>
-                <Dropdown.Item
-                  onClick={() => { setSelectedEvent(event); setOpenDeleteModal(true); }}
-                >
-                  Delete
-                </Dropdown.Item>
-                {/* <Dropdown.Item>Settings</Dropdown.Item> */}
-              </Dropdown>
-            </li>
-          ))}
-        </ul>
-      </div>
+            </div>
+          </Card>
+        </Link>
+      ))}
+
       <Modal show={openDeleteModal} onClose={() => { setOpenDeleteModal(false); setSelectedEvent(null); }}>
         <Modal.Header>{`Are you sure you want to delete ${selectedEvent?.name}`}</Modal.Header>
         <Modal.Body>
@@ -84,7 +110,7 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Card>
+    </div>
   );
 };
 
