@@ -76,10 +76,10 @@ export default function NavSidebar() {
               QR Code (Check-in)
             </Sidebar.Item>
             <Sidebar.Collapse icon={HiShare} label="Events">
-              <Sidebar.Item href="/admin/members">Member</Sidebar.Item>
+              <Sidebar.Item href="/admin/events">Member</Sidebar.Item>
               <Sidebar.Item href="/admin/rush">Rush</Sidebar.Item>
             </Sidebar.Collapse>
-            <Sidebar.Item href="/admin" icon={HiUsers}>
+            <Sidebar.Item href="/admin/members" icon={HiUsers}>
               Member Database
             </Sidebar.Item>
           </Sidebar.ItemGroup>
