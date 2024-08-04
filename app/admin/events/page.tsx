@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Loader from "@/components/Loader";
-import { Button, Accordion } from "flowbite-react";
+import { Button, Accordion, ButtonGroup } from "flowbite-react";
 import { HiOutlineCog, HiPlus } from "react-icons/hi";
 import CreateTimeframe from "@/components/admin/events/CreateTimeframe";
 import { useAuth } from "@/app/contexts/AuthContext";
@@ -55,15 +55,16 @@ export default function Events() {
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-4xl font-bold dark:text-white mb-6 mt-4">Events</h1>
-        <div className="flex"> {/* Container for buttons */}
-          <Button className="h-12 mr-2" onClick={handleCreateButtonClick}>
+        <Button.Group>
+          <Button color="gray" onClick={handleCreateButtonClick}>
             <HiPlus className="mr-1 h-5 w-5" />
             Create
           </Button>
-          <Button onClick={() => router.push('/admin/events/settings')} className="h-12">
-            <HiOutlineCog className="h-5 w-5" />
+          <Button color="gray" onClick={() => router.push('/admin/events/settings')}>
+            <HiOutlineCog className="mr-1 h-5 w-5" />
+            Settings
           </Button>
-        </div>
+        </Button.Group>
       </div>
 
       {timeframes.map((timeframe, index) => 
