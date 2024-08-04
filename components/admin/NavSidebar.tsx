@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Dropdown, Avatar } from "flowbite-react";
-import { HiOutlineQrcode, HiUsers } from "react-icons/hi";
+import { HiOutlineQrcode, HiUsers, HiUserGroup } from "react-icons/hi";
 import Link from "next/link";
 
 
@@ -189,6 +189,16 @@ export default function NavSidebar() {
                   </a>
                 </li>
               </ul>
+            </li>
+
+            <li>
+              <a
+                href="/admin/family-tree"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <HiUserGroup className="w-5 h-5 text-gray-800 dark:text-white" />
+                <span className="flex-1 ml-3 whitespace-nowrap">Family Tree</span>
+              </a>
             </li>
 
 
