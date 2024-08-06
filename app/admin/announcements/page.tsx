@@ -1,14 +1,9 @@
 "use client"
 import React, { useState } from "react";
 import { Card } from 'flowbite-react';
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 export default function Announcements() {
-
-  const textStyles = {
-    title: "text-4xl font-bold dark:text-white mb-6 mt-4 ",
-    subtitle: "mb-4 text-lg font-normal text-gray-500 dark:text-gray-400",
-    content: "font-normal text-gray-700 dark:text-gray-400 whitespace-pre-line", // Add this style
-  };
 
   var dummyAnnouncements = [
     {
@@ -45,14 +40,14 @@ export default function Announcements() {
 
   return (
     <div className="overflow-x-auto">
-      <h1 className={textStyles.title}>Announcements</h1>
+      <h1 className={AdminTextStyles.title}>Announcements</h1>
       {dummyAnnouncements.map((announcement, index) => (
         <Card key={index} href="#" className="max-w mb-4">
           <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
             {announcement.title}
           </h5>
           <p className="text-xs">{announcement.date}</p>
-          <p className={textStyles.content}>
+          <p className={AdminTextStyles.content}>
             {announcement.content}
           </p>
         </Card>
