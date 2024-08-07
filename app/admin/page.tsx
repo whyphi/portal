@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
 import Loader from "@/components/Loader";
 import { useAuth } from "../contexts/AuthContext";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 interface Listing {
   listingId: string;

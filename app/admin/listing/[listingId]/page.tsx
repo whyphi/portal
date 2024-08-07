@@ -9,6 +9,7 @@ import { HiArrowLeft, HiOutlineCollection, HiOutlineTable } from 'react-icons/hi
 import { useAuth } from "@/app/contexts/AuthContext";
 import { delay } from "@/utils/delay";
 import ApplicantPage from "../../../../components/admin/listing/ApplicantPage";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 export default function Listing({ params }: { params: { listingId: string } }) {
   // authentication token (for API)
@@ -194,7 +195,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Applicants</h1>
+      <h1 className={AdminTextStyles.subtitle}>Applicants</h1>
       {/* either render Tabs (all applicants) OR single applicant view */}
       {selectedApplicant == null
         ? 

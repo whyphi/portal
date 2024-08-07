@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ToggleSwitch, Dropdown } from 'flowbite-react';
 import Link from "next/link";
 import { selectedApplicantIdKey } from "@/utils/globals";
+import { HiOutlineCog } from "react-icons/hi";
 
 interface ListingCardProps {
   listingId: string;
@@ -148,11 +149,11 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
 
   return (
     <div className="min-h-full flex flex-col bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-      <div className="flex justify-between items-center py-2 px-6 bg-violet-100 rounded-t-lg">
+      <div className="flex justify-between items-center py-2 px-6 bg-violet-100 dark:bg-violet-200 rounded-t-lg">
         {renderIndicator(isActive)}
         <div className="flex justify-between items-center">
           <div className="dropdown-container cursor-pointer"> {/* Add a class to identify the dropdown */}
-            <Dropdown label="" dismissOnClick={false} renderTrigger={() => <span>{renderSettingsIcon()}</span>}>
+            <Dropdown label="" dismissOnClick={false} renderTrigger={() => <span><HiOutlineCog /></span>}>
               <Dropdown.Item href={`public/${listingId}`}>View Public Listing</Dropdown.Item>
               <Dropdown.Item href={`admin/listing/${listingId}/insights`}>Insights</Dropdown.Item>
               <Dropdown.Item href={`admin/settings/${listingId}`}>Settings</Dropdown.Item>
