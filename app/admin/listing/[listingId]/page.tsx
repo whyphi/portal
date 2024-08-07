@@ -8,7 +8,7 @@ import { Tabs, TabsRef, Table, Button, Pagination } from 'flowbite-react';
 import { HiArrowLeft, HiOutlineCollection, HiOutlineTable } from 'react-icons/hi';
 import { useAuth } from "@/app/contexts/AuthContext";
 import { delay } from "@/utils/delay";
-import ApplicantPage from "../../../../components/admin/listing/ApplicantPage";
+import ApplicantPage from "@/components/admin/listing/ApplicantPage";
 import { AdminTextStyles } from "@/styles/TextStyles";
 
 export default function Listing({ params }: { params: { listingId: string } }) {
@@ -97,7 +97,6 @@ export default function Listing({ params }: { params: { listingId: string } }) {
             <Table.HeadCell>Graduation Year</Table.HeadCell>
             <Table.HeadCell>College(s)</Table.HeadCell>
             <Table.HeadCell>Major</Table.HeadCell>
-            <Table.HeadCell></Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {applicantData.map((applicant, index) => (
