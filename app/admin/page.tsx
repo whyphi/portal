@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
 import Loader from "@/components/Loader";
 import { useAuth } from "../contexts/AuthContext";
-import { AdminTextStyles } from "@/styles/TextStyles";
 
 interface Listing {
   listingId: string;
@@ -53,7 +52,6 @@ export default function Admin() {
               active={listing.isVisible}
               deadline={listing.deadline}
               dateCreated={listing.dateCreated}
-              applicantCount={0}
             />
           </div>
         ))}
