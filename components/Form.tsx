@@ -4,10 +4,9 @@ import { useRouter } from "next/navigation";
 import { Button, Label, Alert, TextInput, Checkbox, Textarea, Select } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { HiOutlineX } from "react-icons/hi";
-
-
 import { FormData, FormProps } from "@/types/form"
 import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
+import YearSelect from "./public/YearSelect";
 
 const initialValues: FormData = {
   gradYear: '',
@@ -44,7 +43,7 @@ const initialValues: FormData = {
 };
 
 
-export default function Form({ title, listingId, includeEventsAttended, isPreview }: FormProps) {
+export default function Form({ title, listingId, questions, includeEventsAttended, isPreview }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
@@ -56,14 +55,11 @@ export default function Form({ title, listingId, includeEventsAttended, isPrevie
   const [isError, setIsError] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [isInfoAlert, setIsInfoAlert] = useState<boolean>(true);
-
+  
   // Confirmation Checkboxes
   const [confirmUndergraduate, setConfirmUndergraduate] = useState(false);
   const [confirmNotStudyingAbroad, setConfirmNotStudyingAbroad] = useState(false);
-  const questions = [{
-    question: "hello",
-    context: "goodbye"
-  }]
+
   if (includeEventsAttended) {
     initialValues.events = {
       infoSession1: false,
@@ -481,14 +477,13 @@ export default function Form({ title, listingId, includeEventsAttended, isPrevie
             <option value="January">January</option>
             <option value="May">May</option>
           </Select>
-          <input
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-1/2 p-2.5"
-            id="gradYear"
-            type="number"
-            placeholder="Year"
+          <YearSelect
+            startYear={2020}
+            endYear={2050}
             value={formData["gradYear"]}
-            onChange={handleChange}
-            // required={true}
+            onChange={(e) => handleDropdownChange(e, "gradYear")} // Pass the field name to handleChange
+            className="w-1/2"
+            placeholder="Year"
             disabled={isSubmitting}
           />
         </div>
