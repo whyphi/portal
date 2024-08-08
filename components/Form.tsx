@@ -1,12 +1,13 @@
 'use client'
 import { useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Label, Alert } from 'flowbite-react';
+import { Button, Label, Alert, TextInput, Checkbox, Textarea, Select } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
 import { HiOutlineX } from "react-icons/hi";
 
 
 import { FormData, FormProps } from "@/types/form"
+import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
 
 const initialValues: FormData = {
   gradYear: '',
@@ -43,7 +44,7 @@ const initialValues: FormData = {
 };
 
 
-export default function Form({ title, questions, listingId, includeEventsAttended, isPreview }: FormProps) {
+export default function Form({ title, listingId, includeEventsAttended, isPreview }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
@@ -59,7 +60,10 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   // Confirmation Checkboxes
   const [confirmUndergraduate, setConfirmUndergraduate] = useState(false);
   const [confirmNotStudyingAbroad, setConfirmNotStudyingAbroad] = useState(false);
-
+  const questions = [{
+    question: "hello",
+    context: "goodbye"
+  }]
   if (includeEventsAttended) {
     initialValues.events = {
       infoSession1: false,
@@ -187,11 +191,11 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   // Component that handles essay questions
   const renderResponseInputs = () => {
     return questions.map((question, index) => (
-      <div key={index} className="mb-6">
-        <label className="block mb-2 text-sm font-medium text-gray-900">
+      <div key={index} className="flex flex-col gap-1 mb-6">
+        <label className={AdminTextStyles.default}>
           {question.question} (Max {maxWordCount} words) <span className="text-red-500">*</span>
         </label>
-        <textarea
+        <Textarea
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 h-32"
           value={formData.responses[index]}
           onChange={(e) => handleResponseChange(index, e.target.value)}
@@ -388,12 +392,11 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     type: string = "text",
     required: boolean = false
   ) => (
-    <div className="mb-6">
-      <label className="block mb-2 text-sm font-medium text-gray-900">
+    <div className="flex flex-col gap-1 mb-6">
+      <label className={`${AdminTextStyles.default}`}>
         {label !== 'gpa' && label} {required && <span className="text-red-500">*</span>}
       </label>
-      <input
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+      <TextInput
         id={id}
         type={type}
         placeholder={label}
@@ -408,10 +411,9 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   const RenderGpaCheckbox = () => {
     return (
       <div className="absolute top-1/2 transform -translate-y-1/2 right-6 text-xs">
-        <label className="flex text-xs">
-          <input
-            className="mr-2 focus:ring-purple-300 text-purple-600"
-            type="checkbox"
+        <label className={`flex text-xs ${DimmedAdminTextStyles.subtext}`}>
+          <Checkbox
+            className="mr-2 dark:bg-gray-400 focus:ring-purple-300 text-purple-600"
             name="hasGpa"
             checked={!formData.hasGpa}
             onChange={handleHasGpaChange}
@@ -425,14 +427,13 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
   const RenderGpaSection = () => {
     return (
-      <div className="mb-6">
-        <label className="block mb-2 text-sm font-medium text-gray-900">
+      <div className="flex flex-col gap-1 mb-6">
+        <label className={AdminTextStyles.default}>
           GPA (N/A if not applicable) <span className="text-red-500">*</span>
         </label>
         {formData.hasGpa ?
           <div className="relative">
-            <input
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+            <TextInput
               id="gpa"
               type="text"
               placeholder="GPA"
@@ -440,20 +441,18 @@ export default function Form({ title, questions, listingId, includeEventsAttende
               onChange={handleChange}
               required={true}
               disabled={isSubmitting}
-
             />
             {RenderGpaCheckbox()}
           </div>
           :
           <div className="relative">
-            <input
-              className="bg-gray-200 border border-gray-500 text-gray-500 text-sm rounded-lg focus:ring-0 focus:border-gray-500  block w-full p-2.5 cursor-auto focus:outline-none"
+            <TextInput
               id="gpa"
               type="text"
               placeholder="GPA"
               value={formData["gpa"]}
               onChange={handleChange}
-              disabled={isSubmitting}
+              disabled={true}
               readOnly
             />
             {RenderGpaCheckbox()}
@@ -466,20 +465,22 @@ export default function Form({ title, questions, listingId, includeEventsAttende
 
   const RenderGradMonthYear = () => {
     return (
-      <>
-        <label className="block mb-2 text-sm font-medium text-gray-900">Expected Graduation Date <span className="text-red-500">*</span></label>
+      <div className="flex flex-col gap-1">
+        <label className={AdminTextStyles.default}>
+          Expected Graduation Date <span className="text-red-500">*</span>
+        </label>
         <div className="flex gap-2 mb-6">
-          <select
+          <Select
             id="gradMonth"
             placeholder="Month"
             value={formData["gradMonth"]}
             onChange={(e) => handleDropdownChange(e, "gradMonth")} // Pass the field name to handleChange
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-1/2 p-2.5"
+            className="w-1/2"
           >
             <option value="" disabled>Select Month</option>
             <option value="January">January</option>
             <option value="May">May</option>
-          </select>
+          </Select>
           <input
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-1/2 p-2.5"
             id="gradYear"
@@ -491,7 +492,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
             disabled={isSubmitting}
           />
         </div>
-      </>
+      </div>
     )
   }
 
@@ -511,14 +512,15 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     };
 
     return (
-      <>
-        <label className="block mb-2 text-sm font-medium text-gray-900">Events Attended <span className="text-red-500">*</span></label>
-        <fieldset className="grid gap-2 grid-cols-4 mb-6">
+      <div className="flex flex-col gap-2">
+        <label className={AdminTextStyles.default}>
+          Events Attended <span className="text-red-500">*</span>
+        </label>
+        <fieldset className="grid gap-2 grid-cols-3 mb-6">
           {formData.events && Object.entries(formData.events).map(([event, isChecked]) => (
-            <label key={event} className="flex text-xs">
-              <input
+            <label key={event} className={`flex ${AdminTextStyles.subtext}`}>
+              <Checkbox
                 className="mr-2 focus:ring-purple-300 text-purple-600"
-                type="checkbox"
                 name={event}
                 checked={isChecked}
                 onChange={handleEventsAttendedChange}
@@ -528,7 +530,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
             </label>
           ))}
         </fieldset>
-      </>
+      </div>
     )
   };
 
@@ -599,8 +601,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
     };
 
     return (
-      <div className="flex flex-col mb-6">
-        <label className="block mb-4 text-sm font-medium text-gray-900">
+      <div className="flex flex-col gap-1 mb-6">
+        <label className={AdminTextStyles.default}>
           {label} {required && <span className="text-red-500">*</span>}
         </label>
         <div className="relative">
@@ -648,11 +650,6 @@ export default function Form({ title, questions, listingId, includeEventsAttende
   }
 
 
-  const textStyles = {
-    title: "text-4xl font-bold dark:text-white mb-6 mt-4 text-purple-800",
-    subtitle: "mb-4 text-lg font-normal text-gray-500 dark:text-gray-400"
-  }
-
   return (
 
     <form onSubmit={handleSubmit} className="flex flex-col mb-8 w-full">
@@ -661,7 +658,7 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       {isError && RenderErrorAlert()}
 
       <div>
-        <h1 className={textStyles.title}>{title}</h1>
+        <h1 className={AdminTextStyles.title}>{title}</h1>
       </div>
 
       {RenderInput("firstName", "First Name", "text", true)}
@@ -673,22 +670,26 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       {RenderGradMonthYear()}
       {/* {RenderInput("gradYear", "Expected Graduation Date (Month Year) | (Example: May 2026)", "text", true)} */}
 
-      <label className="block mb-2 text-sm font-medium text-gray-900">College / School <span className="text-red-500">*</span></label>
-      <fieldset className="grid gap-2 grid-cols-4 mb-6">
-        {Object.entries(formData.colleges).map(([college, isChecked]) => (
-          <label key={college} className="flex text-xs">
-            <input
-              className="mr-2 focus:ring-purple-300 text-purple-600"
-              type="checkbox"
-              name={college}
-              checked={isChecked}
-              onChange={handleCollegeChange}
-              disabled={isSubmitting}
-            />
-            {college}
-          </label>
-        ))}
-      </fieldset>
+      <div className="flex flex-col gap-1">
+        <label className={AdminTextStyles.default}>
+          College / School <span className="text-red-500">*</span>
+        </label>
+        <fieldset className="grid gap-2 grid-cols-4 mb-6">
+          {Object.entries(formData.colleges).map(([college, isChecked]) => (
+            <label key={college} className={AdminTextStyles.subtext}>
+              <Checkbox
+                className="mr-2 focus:ring-purple-300 text-purple-600"
+                // type="checkbox"
+                name={college}
+                checked={isChecked}
+                onChange={handleCollegeChange}
+                disabled={isSubmitting}
+              />
+              {college}
+            </label>
+          ))}
+        </fieldset>
+      </div>
 
       {RenderInput("email", "Email", "email", true)}
       {RenderInput("phone", "Phone Number (xxx-xxx-xxxx)", "text", true)}
@@ -703,9 +704,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       {questions && renderResponseInputs()}
 
       <div className="flex items-center mb-2">
-        <input
+        <Checkbox
           className="mr-2 focus:ring-purple-300 text-purple-600"
-          type="checkbox"
           checked={confirmUndergraduate}
           onChange={() => setConfirmUndergraduate(prevValue => !prevValue)}
           required={true}
@@ -715,9 +715,8 @@ export default function Form({ title, questions, listingId, includeEventsAttende
       </div>
 
       <div className="flex items-center mb-8">
-        <input
+        <Checkbox
           className="mr-2 focus:ring-purple-300 text-purple-600"
-          type="checkbox"
           checked={confirmNotStudyingAbroad}
           onChange={() => setConfirmNotStudyingAbroad(prevValue => !prevValue)}
           required={true}
