@@ -6,7 +6,7 @@ import { HiOutlinePhone, HiOutlineMail } from "react-icons/hi";
 import { AiFillLinkedin } from "react-icons/ai";
 import { MdWeb } from "react-icons/md";
 
-import { AdminTextStyles, DimmedAdminTextStyles } from '@/styles/TextStyles';
+import { AdminTextStyles, ThinAdminTextStyles } from '@/styles/TextStyles';
 
 interface ApplicantInfoCardProps {
   applicant: Applicant;
@@ -34,14 +34,14 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
         </div>
         <h3 className={AdminTextStyles.paragraph}>{`${applicant.firstName} ${applicant.lastName}`}</h3>
         {applicant.preferredName !== "" && (<h5 className="pb-2 text-sm text-gray-500">({applicant.preferredName})</h5>)}
-        <p className={DimmedAdminTextStyles.default}>{`${applicant.gradMonth} ${applicant.gradYear}`}</p>
+        <p className={ThinAdminTextStyles.default}>{`${applicant.gradMonth} ${applicant.gradYear}`}</p>
 
         <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
 
-        <p className={DimmedAdminTextStyles.default}>College(s): {trueColleges.join(', ')}</p>
-        <p className={DimmedAdminTextStyles.default}>Major: {applicant?.major}</p>
-        {applicant.minor && <p className={DimmedAdminTextStyles.default}>Minor: {applicant.minor}</p>}
-        <p className={DimmedAdminTextStyles.default}>GPA: {applicant.hasGpa ? applicant?.gpa : "N/A"}</p>
+        <p className={ThinAdminTextStyles.default}>College(s): {trueColleges.join(', ')}</p>
+        <p className={ThinAdminTextStyles.default}>Major: {applicant?.major}</p>
+        {applicant.minor && <p className={ThinAdminTextStyles.default}>Minor: {applicant.minor}</p>}
+        <p className={ThinAdminTextStyles.default}>GPA: {applicant.hasGpa ? applicant?.gpa : "N/A"}</p>
 
         <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
 

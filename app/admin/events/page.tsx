@@ -73,7 +73,7 @@ export default function Events() {
             <Accordion.Title>
               <div className="text-m font-medium text-gray-900 dark:text-white">{timeframe.name}</div>
             </Accordion.Title>
-            <Accordion.Content>
+            <Accordion.Content className="dark:bg-background-dark">
               <EventsList events={timeframe.events} />
             </Accordion.Content>
           </Accordion.Panel>

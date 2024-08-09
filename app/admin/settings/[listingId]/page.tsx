@@ -155,7 +155,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
       <div>
         <div className="flex flex-col border rounded mb-6 p-4">
           {formData.questions.length === 0 ? (
-            "None"
+            <p className={AdminTextStyles.default}>None</p>
           ) : (
             formData.questions.map((questionObj, index) => (
               <div className="w-full" key={index}>

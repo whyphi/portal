@@ -5,7 +5,7 @@ import { Button, Label, Alert, TextInput, Checkbox, Textarea, Select } from 'flo
 import { AiOutlineLoading } from 'react-icons/ai';
 import { HiOutlineX } from "react-icons/hi";
 import { FormData, FormProps } from "@/types/form"
-import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
+import { AdminTextStyles, ThinAdminTextStyles } from "@/styles/TextStyles";
 import YearSelect from "./public/YearSelect";
 
 const initialValues: FormData = {
@@ -407,7 +407,7 @@ export default function Form({ title, listingId, questions, includeEventsAttende
   const RenderGpaCheckbox = () => {
     return (
       <div className="absolute top-1/2 transform -translate-y-1/2 right-6 text-xs">
-        <label className={`flex text-xs ${DimmedAdminTextStyles.subtext}`}>
+        <label className={`flex text-xs ${ThinAdminTextStyles.subtext}`}>
           <Checkbox
             className="mr-2 dark:bg-gray-400 focus:ring-purple-300 text-purple-600"
             name="hasGpa"

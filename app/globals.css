@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { }
+:root {
+  --bg-light: #ffffff; /* Light mode background */
+  --bg-dark: #29313e; /* Dark mode background */
+}
 
 @media (prefers-color-scheme: dark) {
   :root { }
@@ -25,8 +28,7 @@
 
 /* Custom theme styles */
 body {
-  /* Default background color */
-  background-color: #ffffff; /* Light mode background */
+  background-color: var(--bg-light);
 }
 
 .dark body {
@@ -37,5 +39,5 @@ body {
   /* background-color: #1f2937; */
 
   /* Somwhere in between 700 and 800 */
-  background-color: #29313e;
+  background-color: var(--bg-dark);
 }

@@ -10,10 +10,18 @@ export const AdminTextStyles = {
   datepicker: `bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-400 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 p-2.5`,
 }
 
-export const DimmedAdminTextStyles = {
+export const ThinAdminTextStyles = {
   default: `text-base font-extralight text-gray-700 dark:text-gray-100 mb-1`, // Input/question titles
   subtext: `text-sm font-extralight dark:text-white mb-1`, // Onboarding
   content: "font-normal font-extralight text-gray-700 dark:text-gray-400 whitespace-pre-line", // Multi-line formatted paragraph
   subcontent: "text-sm font-extralight font-normal text-gray-700 dark:text-gray-400 whitespace-pre-line", // Multi-line formatted paragraph
+  // Add fields from AdminTextStyles as needed...
+}
+
+export const DimmedAdminTextStyles = {
+  default: `text-base text-gray-700 dark:text-gray-400 mb-1`, // Input/question titles
+  subtext: `text-sm text-gray-700 dark:text-gray-400 mb-1`, // Onboarding
+  content: "font-normal text-gray-700 dark:text-gray-400 whitespace-pre-line", // Multi-line formatted paragraph
+  subcontent: "text-sm text-gray-700 dark:text-gray-400 whitespace-pre-line", // Multi-line formatted paragraph
   // Add fields from AdminTextStyles as needed...
 }

@@ -8,6 +8,7 @@ import { Event } from "@/types/admin/events";
 import { HiDotsVertical, HiOutlineTrash } from "react-icons/hi";
 import { useAuth } from '@/app/contexts/AuthContext';
 import Timestamp from 'react-timestamp';
+import { AdminTextStyles } from '@/styles/TextStyles';
 
 
 interface EventsListProps {
@@ -23,13 +24,13 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
     e.preventDefault();
   };
 
-  if (!events || events.length === 0) return <p className="mt-4 text-center">No Events 😔</p>;
+  if (!events || events.length === 0) return <p className={`mt-2 text-center ${AdminTextStyles.default}`}>No Events 😔</p>;
 
   return (
     <div>
       {events.map((event) => (
         <Link className='w-full' href={`/admin/events/${event._id}`} key={event._id}>
-          <Card className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`}>
+          <Card className={`hover:bg-gray-100 dark:hover:bg-gray-600 dark:shadow-gray-800 dark:bg-background-dark cursor-pointer mb-3`}>
             <div className='flex flex-row items-center justify-between'>
               <div className='flex flex-col gap-2'>
                 <a className="text-base font-medium text-gray-900 dark:text-white">{event.name}</a>
@@ -57,7 +58,7 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
                           setOpenDeleteModal(true); 
                         }}
                       >
-                        <ListGroup.Item active icon={HiOutlineTrash} >Delete</ListGroup.Item>
+                        <ListGroup.Item icon={HiOutlineTrash} >Delete</ListGroup.Item>
                       </div>
                       {/* TODO: add settings <div
                         onClick={(e: React.MouseEvent<HTMLElement>) => {
@@ -69,7 +70,7 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
                     </ListGroup>
                   }
                   >
-                  <button onClick={handleOptionsClick} className="focus:outline-none">
+                  <button onClick={handleOptionsClick} className="focus:outline-none dark:text-white">
                     <HiDotsVertical />
                   </button>
                 </Popover>
