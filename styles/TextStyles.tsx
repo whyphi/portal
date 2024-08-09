@@ -8,6 +8,7 @@ export const AdminTextStyles = {
   content: "font-normal text-gray-700 dark:text-gray-400 whitespace-pre-line", // Multi-line formatted paragraph
   subcontent: "text-sm font-normal text-gray-700 dark:text-gray-400 whitespace-pre-line", // Multi-line formatted paragraph
   datepicker: `bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-400 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 p-2.5`,
+  card: `hover:bg-gray-100 dark:hover:bg-gray-600 dark:shadow-gray-900 dark:bg-background-dark cursor-pointer`,
 }
 
 export const ThinAdminTextStyles = {

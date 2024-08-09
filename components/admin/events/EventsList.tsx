@@ -30,7 +30,7 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
     <div>
       {events.map((event) => (
         <Link className='w-full' href={`/admin/events/${event._id}`} key={event._id}>
-          <Card className={`hover:bg-gray-100 dark:hover:bg-gray-600 dark:shadow-gray-800 dark:bg-background-dark cursor-pointer mb-3`}>
+          <Card className={`mb-3 ${AdminTextStyles.card}`}>
             <div className='flex flex-row items-center justify-between'>
               <div className='flex flex-col gap-2'>
                 <a className="text-base font-medium text-gray-900 dark:text-white">{event.name}</a>
@@ -81,15 +81,17 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
       ))}
 
       <Modal show={openDeleteModal} onClose={() => { setOpenDeleteModal(false); setSelectedEvent(null); }}>
-        <Modal.Header>{`Are you sure you want to delete ${selectedEvent?.name}`}</Modal.Header>
-        <Modal.Body>
+        <Modal.Header className="dark:bg-background-dark">
+          {`Are you sure you want to delete ${selectedEvent?.name}`}
+        </Modal.Header>
+        <Modal.Body className="dark:bg-background-dark">
           <div className="space-y-6">
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
               All of your data will be permanently removed from our servers forever. This action cannot be undone.
             </p>
           </div>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="dark:bg-background-dark">
           <Button color="failure" onClick={async () => {
             try {
               await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/${selectedEvent?._id}`, {

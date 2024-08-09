@@ -41,3 +41,20 @@ body {
   /* Somwhere in between 700 and 800 */
   background-color: var(--bg-dark);
 }
+
+/* Handle transitions (TO-DO: determine why it is not being applied everywhere) */
+/* html {
+  transition: background-color 300ms ease-in-out, 
+              border-color 300ms ease-in-out, 
+              color 300ms ease-in-out, 
+              fill 300ms ease-in-out, 
+              stroke 300ms ease-in-out;
+}
+
+body {
+  transition: background-color 300ms ease-in-out, 
+              border-color 300ms ease-in-out, 
+              color 300ms ease-in-out, 
+              fill 300ms ease-in-out, 
+              stroke 300ms ease-in-out;
+} */

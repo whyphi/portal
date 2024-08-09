@@ -126,7 +126,7 @@ export default function RushEvents() {
 
   const EventRow = ({ event, index, categoryId }: { event: RushEvent, index: number, categoryId: string }) => {
     return (
-      <Card className={`hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-background-dark dark:shadow-gray-800 cursor-pointer mb-3`} key={index}>
+      <Card className={`mb-3 ${AdminTextStyles.card}`} key={index}>
         <Link href={`/admin/rush/${categoryId}/${event._id}`}>
           <div className="flex flex-col gap-5 md:flex-row lg:flex-row items-center w-full">
             <div className="flex-1">
@@ -382,8 +382,8 @@ export default function RushEvents() {
 
       {/* Custom Delete Event Component Modal */}
       <Modal show={openDeleteEventModal} size="md" onClose={onCloseDeleteEventModal} popup>
-        <Modal.Header />
-        <Modal.Body>
+        <Modal.Header className="dark:bg-background-dark" />
+        <Modal.Body className="dark:bg-background-dark">
           <div className="space-y-6">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">Delete {selectedEventToDelete?.name}</h3>
             <p className="text-gray-500 text-sm">Are you sure you want to delete <b className="underline"><u>{selectedEventToDelete?.name}</u></b>? Deleting this event will permanently remove all data associated with it, including rushee check-in data and analytics. The deleted data is not recoverable so please proceed with caution.</p>

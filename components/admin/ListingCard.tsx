@@ -80,8 +80,8 @@ export default function ListingCard({ listingId, title, active, deadline, dateCr
   };
 
   return (
-    <div className="min-h-full flex flex-col bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-      <div className="flex justify-between items-center py-2 px-6 bg-violet-100 dark:bg-violet-200 rounded-t-lg">
+    <div className="min-h-full flex flex-col bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow dark:bg-background-dark dark:hover:bg-gray-700 dark:border-gray-700 dark:shadow-gray-900">
+      <div className="flex justify-between items-center py-2 px-6 bg-violet-100 dark:bg-violet-300 rounded-t-lg">
         {renderIndicator(isActive)}
         <div className="flex justify-between items-center">
           <div className="dropdown-container hover:cursor-pointer"> {/* Add a class to identify the dropdown */}

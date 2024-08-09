@@ -84,8 +84,8 @@ export default function TimeframeSetting({ params }: { params: { timeframeId: st
         </div>
 
         <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-          <Modal.Header>Delete Timeframe</Modal.Header>
-          <Modal.Body>
+          <Modal.Header className="dark:bg-background-dark">Delete Timeframe</Modal.Header>
+          <Modal.Body className="dark:bg-background-dark">
             <div className="space-y-6">
               <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
                 Permanently remove the timeframe and all its associated content and data from the Whyphi platform. This action is not reversible, so please continue with caution.
@@ -95,7 +95,7 @@ export default function TimeframeSetting({ params }: { params: { timeframeId: st
               </p>
             </div>
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer className="dark:bg-background-dark">
             <Button gradientMonochrome="failure" onClick={handleDelete}>Delete</Button>
             <Button color="gray" onClick={() => setOpenModal(false)}>
               Cancel
