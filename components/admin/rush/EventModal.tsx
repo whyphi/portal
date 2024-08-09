@@ -5,6 +5,7 @@ import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { AiOutlineLoading } from "react-icons/ai";
 import DatePicker from "react-datepicker";
 import CropImage from "./Image/CropImage";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 interface EventModalProps {
 	showModal: boolean,
@@ -29,9 +30,9 @@ export default function EventModal({
 	modifyingEvent,
 }: EventModalProps) {
 	return (
-		<Modal show={showModal} size="2xl" onClose={onClose} popup>
-			<Modal.Header />
-			<Modal.Body>
+		<Modal  show={showModal} size="2xl" onClose={onClose} popup>
+			<Modal.Header className="dark:bg-background-dark" />
+			<Modal.Body className="dark:bg-background-dark">
 				<div className="space-y-6">
 					<h3 className="text-xl font-bold text-gray-900 dark:text-white">
 						{modifyingEvent ? `Modify Event` : `Create an Event for "${selectedRushCategory?.name}"`}
@@ -108,7 +109,7 @@ export default function EventModal({
 							timeFormat="HH:mm"
 							timeIntervals={15}
 							dateFormat="MMMM d, yyyy h:mm aa"
-							className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5"
+							className={`w-full ${AdminTextStyles.datepicker}`}
 							wrapperClassName="w-full"
 						/>
 					</div>
@@ -125,7 +126,7 @@ export default function EventModal({
 							timeFormat="HH:mm"
 							timeIntervals={15}
 							dateFormat="MMMM d, yyyy h:mm aa"
-							className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5"
+							className={`w-full ${AdminTextStyles.datepicker}`}
 							wrapperClassName="w-full"
 						/>
 					</div>

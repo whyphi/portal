@@ -126,7 +126,7 @@ export default function RushEvents() {
 
   const EventRow = ({ event, index, categoryId }: { event: RushEvent, index: number, categoryId: string }) => {
     return (
-      <Card className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`} key={index}>
+      <Card className={`hover:bg-gray-100 dark:hover:bg-gray-600 dark:bg-background-dark dark:shadow-gray-800 cursor-pointer mb-3`} key={index}>
         <Link href={`/admin/rush/${categoryId}/${event._id}`}>
           <div className="flex flex-col gap-5 md:flex-row lg:flex-row items-center w-full">
             <div className="flex-1">
@@ -305,7 +305,7 @@ export default function RushEvents() {
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">
-        <h1 className={AdminTextStyles.subtitle}>Rush Events</h1>
+        <h1 className={AdminTextStyles.title}>Rush Events</h1>
         <Button.Group>
           <Button color="gray" onClick={handleDrawerOpen}>
             <HiPlus className="mr-1 h-5 w-5" />
@@ -327,7 +327,7 @@ export default function RushEvents() {
                   {data.defaultRushCategory && <Badge color="teal">default</Badge>}
                 </div>
               </Accordion.Title>
-              <Accordion.Content>
+              <Accordion.Content className="dark:bg-background-dark">
                 <div className="flex flex-row items-center w-full mb-4 overflow-x-auto">
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setSelectedRushCategory(data); setOpenCreateEventModal(true) }}>Create Event</Button>
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>

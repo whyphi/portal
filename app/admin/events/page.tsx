@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import Loader from "@/components/Loader";
-import { Button, Accordion, ButtonGroup } from "flowbite-react";
+import { Button, Accordion } from "flowbite-react";
 import { HiOutlineCog, HiPlus } from "react-icons/hi";
 import CreateTimeframe from "@/components/admin/events/CreateTimeframe";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
 import EventsList from "@/components/admin/events/EventsList";
 import { useRouter } from "next/navigation";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 export default function Events() {
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function Events() {
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-bold dark:text-white mb-6 mt-4">Events</h1>
+        <h1 className={AdminTextStyles.title}>Events</h1>
         <Button.Group>
           <Button color="gray" onClick={handleCreateButtonClick}>
             <HiPlus className="mr-1 h-5 w-5" />
