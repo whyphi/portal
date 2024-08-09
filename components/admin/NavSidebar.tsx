@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Dropdown, Avatar, Sidebar, DarkThemeToggle, useThemeMode } from "flowbite-react";
-import { HiClipboardList, HiOutlineQrcode, HiFolderAdd, HiChartBar, HiDatabase, HiShare, HiMenuAlt2, HiUserGroup } from "react-icons/hi";
+import { HiClipboardList, HiOutlineQrcode, HiFolderAdd, HiChartBar, HiDatabase, HiShare, HiMenuAlt2, HiUserGroup, HiCube, HiCubeTransparent } from "react-icons/hi";
 
 
 export default function NavSidebar() {
@@ -76,8 +76,8 @@ export default function NavSidebar() {
               QR Code (Check-in)
             </Sidebar.Item>
             <Sidebar.Collapse icon={HiShare} label="Events">
-              <Sidebar.Item href="/admin/events">Member</Sidebar.Item>
-              <Sidebar.Item href="/admin/rush">Rush</Sidebar.Item>
+              <Sidebar.Item href="/admin/events" icon={HiCube}>Member</Sidebar.Item>
+              <Sidebar.Item href="/admin/rush" icon={HiCubeTransparent}>Rush</Sidebar.Item>
             </Sidebar.Collapse>
             <Sidebar.Item href="/admin/members" icon={HiDatabase}>
               Member Database
