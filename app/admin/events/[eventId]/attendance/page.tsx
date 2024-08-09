@@ -6,6 +6,7 @@ import Link from "next/link";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { Event, UserInEvent } from "@/types/admin/events";
 import { Avatar } from 'flowbite-react';
+import { AdminTextStyles, DimmedAdminTextStyles } from '@/styles/TextStyles';
 
 
 export default function Attendance({ params }: { params: { eventId: string } }) {
@@ -40,9 +41,9 @@ export default function Attendance({ params }: { params: { eventId: string } }) 
           Back
         </button>
       </Link>
-      <h1 className="text-3xl font-bold mb-6">{event?.name ?? 'Loading...'} - Attendance</h1>
+      <h1 className={`mb-6 ${AdminTextStyles.subtitle}`}>{event?.name ?? 'Loading...'} - Attendance</h1>
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-medium">Users Attended ({event?.usersAttended.length ?? 'Loading...'})</h3>
+        <h3 className={DimmedAdminTextStyles.subtext}>Users Attended ({event?.usersAttended.length ?? 'Loading...'})</h3>
       </div>
       <hr className="border-gray-300 mt-2 mb-2 border-1" />
       {event && event.usersAttended.length > 0 ? (
@@ -53,7 +54,7 @@ export default function Attendance({ params }: { params: { eventId: string } }) 
                 <div className="mr-4 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center" style={{backgroundColor: `hsl(${user.name.charCodeAt(0)%360}, 80%, 90%)`}}>
                   {user.name.charAt(0)}
                 </div>
-                <span className="text-md">{user.name}</span>
+                <span className={AdminTextStyles.default}>{user.name}</span>
               </li>
               {index < event.usersAttended.length - 1 ? <hr className="border-gray-300 mt-2 mb-2" /> : null}
             </React.Fragment>

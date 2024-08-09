@@ -52,7 +52,6 @@ export default function Admin() {
               active={listing.isVisible}
               deadline={listing.deadline}
               dateCreated={listing.dateCreated}
-              applicantCount={0}
             />
           </div>
         ))}

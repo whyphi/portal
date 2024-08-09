@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth, getUserId } from "@/app/contexts/AuthContext";
 import { Button, Card, Select, Label, TextInput } from "flowbite-react";
 import { Member } from "@/types/admin/account-settings/member";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 export default function AccountSettings() {
   const { token } = useAuth();
@@ -39,16 +40,10 @@ export default function AccountSettings() {
     }));
   }
 
-
-  const textStyles = {
-    title: "text-2xl font-bold dark:text-white mb-2 mt-4",
-    subtitle: "mb-2 text-lg font-normal font-semibold ",
-  };
-
   return (
     <div>
       <Card className="max-w">
-        <h1 className={textStyles.title}>Account Settings</h1>
+        <h1 className={AdminTextStyles.title}>Account Settings</h1>
         <form className="flex flex-col gap-4" onSubmit={(e) => {
           e.preventDefault();
           console.log(user);
@@ -66,7 +61,7 @@ export default function AccountSettings() {
 
           {/* Personal Information */}
           <div className="border-b border-gray-200 pb-6">
-            <h4 className={textStyles.subtitle}>Personal Information</h4>
+            <h4 className={AdminTextStyles.subtitle}>Personal Information</h4>
 
             {/* Name and Email */}
             <div className="flex flex-row mb-4">
@@ -134,7 +129,7 @@ export default function AccountSettings() {
 
           {/* PCT-related Information */}
           <div className="border-b border-gray-200 pb-6">
-            <h4 className={textStyles.subtitle}>PCT-related Information</h4>
+            <h4 className={AdminTextStyles.subtitle}>PCT-related Information</h4>
 
             {/* Class and Family */}
             <div className="flex flex-row mb-4">

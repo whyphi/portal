@@ -6,6 +6,7 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import Link from "next/link";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { QrReader } from '@cmdnio/react-qr-reader';
+import { AdminTextStyles, DimmedAdminTextStyles } from '@/styles/TextStyles';
 
 
 export default function CheckInPage() {
@@ -28,8 +29,8 @@ export default function CheckInPage() {
         </button>
       </Link>
 
-      <h1 className="text-3xl font-bold">{eventName}</h1>
-      <p className="text-sm text-gray-500">Scan your personal QR-Code to get checked in to this event!</p>
+      <h1 className={AdminTextStyles.subtitle}>{eventName}</h1>
+      <p className={DimmedAdminTextStyles.default}>Scan your personal QR-Code to get checked in to this event!</p>
       <div>
         <QrReader
           className="max-w-md mx-auto rounded-lg"

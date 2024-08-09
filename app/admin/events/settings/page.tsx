@@ -6,9 +6,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
 import { HiArrowNarrowLeft } from "react-icons/hi";
-
-import Loader from "@/components/Loader";
 import TimeframesList from "@/components/admin/events/settings/TimeframesList";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 export default function TimeframeSettings() {
   const router = useRouter();
@@ -47,7 +46,7 @@ export default function TimeframeSettings() {
       </Link>
       <div className="flex flex-col justify-between">
 
-        <h1 className="text-4xl font-bold dark:text-white mb-6 mt-4">Timeframe Settings</h1>
+        <h1 className={AdminTextStyles.title}>Timeframe Settings</h1>
         <TimeframesList timeframes={timeframes} />
       </div>
     </div>

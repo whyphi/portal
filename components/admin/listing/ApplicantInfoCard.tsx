@@ -1,31 +1,18 @@
 "use client"
-import { Card } from 'flowbite-react';
+import { Badge, Card } from 'flowbite-react';
 import Image from 'next/image'
 import { Applicant } from '@/types/applicant';
 import { HiOutlinePhone, HiOutlineMail } from "react-icons/hi";
 import { AiFillLinkedin } from "react-icons/ai";
 import { MdWeb } from "react-icons/md";
 
-import Link from 'next/link'
-
-
-
+import { AdminTextStyles, ThinAdminTextStyles } from '@/styles/TextStyles';
 
 interface ApplicantInfoCardProps {
   applicant: Applicant;
 }
 
-
 export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps) {
-
-  const textStyles = {
-    name: "text-xl font-bold dark:text-white",
-    college: "text-md font-extralight text-gray-700 pt-2",
-    major: "text-md font-extralight text-gray-700",
-    gpa: "text-md font-extralight text-gray-700 pb-2",
-    link: "text-base font-normal leading-tight text-blue-500 dark:text-gray-400 underline",
-    gradDate: "text-sm font-extralight text-gray-600 pb-3"
-  }
 
   // Filter the colleges that are true and format them with year
   const trueColleges = Object.keys(applicant.colleges)
@@ -34,7 +21,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
 
   return (
     <Card>
-      <ul className="space-y-2">
+      <ul className="space-y-4">
         <div className="flex justify-center">
           <Image
             loader={() => applicant.image}
@@ -45,16 +32,16 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
             width={96}
           />
         </div>
-        <h3 className={textStyles.name}>{`${applicant.firstName} ${applicant.lastName}`}</h3>
-        {applicant.preferredName == "" ? (<></>) : (<h5 className="pb-2 text-sm text-gray-500">({applicant.preferredName})</h5>)}
-        <p className={textStyles.gradDate}>{`${applicant.gradMonth} ${applicant.gradYear}`}</p>
+        <h3 className={AdminTextStyles.paragraph}>{`${applicant.firstName} ${applicant.lastName}`}</h3>
+        {applicant.preferredName !== "" && (<h5 className="pb-2 text-sm text-gray-500">({applicant.preferredName})</h5>)}
+        <p className={ThinAdminTextStyles.default}>{`${applicant.gradMonth} ${applicant.gradYear}`}</p>
 
         <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
 
-        <p className={textStyles.college}>College(s): {trueColleges.join(', ')}</p>
-        <p className={textStyles.major}>Major: {applicant?.major}</p>
-        {applicant.minor && <p className={textStyles.major}>Minor: {applicant.minor}</p>}
-        <p className={textStyles.gpa}>GPA: {applicant.hasGpa ? applicant?.gpa : "N/A"}</p>
+        <p className={ThinAdminTextStyles.default}>College(s): {trueColleges.join(', ')}</p>
+        <p className={ThinAdminTextStyles.default}>Major: {applicant?.major}</p>
+        {applicant.minor && <p className={ThinAdminTextStyles.default}>Minor: {applicant.minor}</p>}
+        <p className={ThinAdminTextStyles.default}>GPA: {applicant.hasGpa ? applicant?.gpa : "N/A"}</p>
 
         <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
 
@@ -73,21 +60,24 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
         {applicant.linkedin != "" ?
           (<li className="flex space-x-3 items-center">
             <AiFillLinkedin className="text-gray-500" />
-            <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-              <Link className={textStyles.link} href={applicant.linkedin} rel="noopener noreferrer" target="_blank">Click Here</Link>
-            </span>
+            <a href={applicant.linkedin} target="_blank" rel="noopener noreferrer">
+              <Badge>
+                LinkedIn
+              </Badge>
+            </a>
           </li>) :
           (<></>)}
         {applicant.website != "" ?
           (<li className="flex space-x-3 items-center">
             <MdWeb className="text-gray-500" />
-            <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-              <Link className={textStyles.link} href={applicant.website} rel="noopener noreferrer" target="_blank">Click Here</Link>
-            </span>
+            <a href={applicant.website} target="_blank" rel="noopener noreferrer">
+              <Badge color="purple">
+                Website
+              </Badge>
+            </a>
           </li>) :
           (<></>)}
       </ul>
-
     </Card>
   )
 }

@@ -12,6 +12,7 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import { CustomFlowbiteTheme } from "flowbite-react";
 import Link from "next/link";
 import { selectedApplicantIdKey } from "@/utils/globals";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 
 export default function Insights({ params }: { params: { listingId: string } }) {
@@ -45,25 +46,6 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   // matchingApplicants : list of applicants depending on which part of PieChart (if any) has been clicked
   const [matchingApplicants, setMatchingApplicants] = useState<[] | Applicant[]>([]);
-
-  // Fetch listings data from your /listings API endpoint
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`)
-      .then((response) => response.json())
-      .then((data: [Applicant]) => {
-        const cleanedData: Applicant[] = data.map((applicant: Applicant) => {
-          return {
-            ...applicant,
-            major: applicant.major.toLowerCase(),
-            minor: applicant.minor.toLowerCase(),
-          };
-        });
-        setInsightsIsLoading(false);
-        // parseData()
-      })
-      .catch((error) => console.error("Error fetching applicants:", error));
-
-  }, [])
 
   // Parse data whenever applicantData changes
   useEffect(() => {
@@ -177,7 +159,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Insights</h1>
+      <h1 className={AdminTextStyles.title}>Insights</h1>
 
       <div className="mb-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <SummaryCard title="Number of Applicants" value={dashboard.applicantCount} />
@@ -209,7 +191,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
               onClick={handlePieClick}
               className="cursor-pointer"
             >
-              <Label position="center" >
+              <Label className={AdminTextStyles.default} position="center">
                 {selectedItem}
               </Label>
             </Pie>

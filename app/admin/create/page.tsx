@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from 'next/navigation'
-import { Checkbox, Label } from 'flowbite-react';
+import { Checkbox, Label, TextInput } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 
 
@@ -160,11 +161,10 @@ export default function Create() {
     required: boolean = false
   ) => (
     <div className="sm:w-full md:w-96 mb-6">
-      <label className="block mb-2 text-md font-medium text-gray-900">
+      <label className={AdminTextStyles.default}>
         {label} {required && <span className="text-red-500">*</span>}
       </label>
-      <input
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+      <TextInput
         id={id as string} // Convert the id to a string
         type={type}
         placeholder={label}
@@ -178,7 +178,7 @@ export default function Create() {
   const renderQuestions = () => {
     return (
       <div>
-        <div className="flex flex-col border rounded mb-6 p-4">
+        <div className={`flex flex-col border rounded p-4 ${AdminTextStyles.default}`}>
           {formData.questions.length === 0 ? (
             "None"
           ) : (
@@ -204,11 +204,10 @@ export default function Create() {
                   </svg>
                 </div>
                 <div className="mb-6">
-                  <label className="block mb-2 text-sm font-medium text-gray-900">
+                  <label className={`block ${AdminTextStyles.subtext}`}>
                     Question <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+                  <TextInput
                     id={`question-${index}`} // Set a unique id for each question input
                     type="text"
                     placeholder="Question"
@@ -219,11 +218,10 @@ export default function Create() {
                   />
                 </div>
                 <div className="mb-6">
-                  <label className="block mb-2 text-sm font-medium text-gray-900">
+                  <label className={`block ${AdminTextStyles.subtext}`}>
                     Additional Context / Subheadings
                   </label>
-                  <input
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+                  <TextInput
                     id={`additional-${index}`} // Set a unique id for each additional input
                     type="text"
                     placeholder="Add any additional text that explains the question here"
@@ -277,7 +275,7 @@ export default function Create() {
   const renderDeadline = () => {
     return (
       <div className="w-full mb-6">
-        <label className="block mb-2 text-md font-medium text-gray-900">
+        <label className={`block ${AdminTextStyles.default}`}>
           Deadline <span className="text-red-500">*</span>
         </label>
         <DatePicker
@@ -288,7 +286,7 @@ export default function Create() {
           timeFormat="HH:mm"
           timeIntervals={15}
           dateFormat="MMMM d, yyyy h:mm aa"
-          className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5"
+          className={`w-full ${AdminTextStyles.datepicker}`}
           wrapperClassName="w-64" // Add a custom class to make it full width
         />
       </div>
@@ -298,7 +296,7 @@ export default function Create() {
   const renderAdditionalSection = () => {
     return (
       <div className="w-full mb-6">
-        <label className="block mb-2 text-md font-medium text-gray-900">
+        <label className={`block ${AdminTextStyles.default}`}>
           Additional
         </label>
         <div className="flex items-center gap-2">
@@ -313,18 +311,13 @@ export default function Create() {
     )
   }
 
-  const textStyles = {
-    title: "text-4xl font-bold dark:text-white mb-6 mt-4",
-    subtitle: "mb-4 text-lg font-normal text-gray-500 dark:text-gray-400",
-  };
-
   return (
     <form onSubmit={handleSubmit} className="flex flex-col mb-8">
-      <h1 className={textStyles.title}>Create a New Listing</h1>
+      <h1 className={AdminTextStyles.title}>Create a New Listing</h1>
 
       {renderInput("title", "Title", "text", true)}
 
-      <label className="block mb-2 text-md font-medium text-gray-900">
+      <label className={AdminTextStyles.default}>
         Questions
       </label>
 
