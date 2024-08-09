@@ -706,7 +706,10 @@ export default function Form({ title, listingId, questions, includeEventsAttende
           required={true}
           disabled={isSubmitting}
         />
-        <Label>Please confirm that you are currently a BU undergraduate student.</Label>
+        <Label>
+          Please confirm that you are currently a BU undergraduate student.
+          <span className="text-red-500">*</span>
+        </Label>
       </div>
 
       <div className="flex items-center mb-8">
@@ -717,7 +720,10 @@ export default function Form({ title, listingId, questions, includeEventsAttende
           required={true}
           disabled={isSubmitting}
         />
-        <Label>Please confirm that you are currently NOT studying abroad.</Label>
+        <Label>
+          Please confirm that you are currently NOT studying abroad.
+          <span className="text-red-500">*</span>
+        </Label>
       </div>
 
       <Button
