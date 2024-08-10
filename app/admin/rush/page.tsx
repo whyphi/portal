@@ -17,6 +17,7 @@ import { addTwoHours } from "@/utils/date";
 import { TbSettings } from "react-icons/tb";
 import SettingsModal from "@/components/admin/rush/SettingsModal";
 import { useRouter } from "next/navigation";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 export interface EventFormData {
   eventName: string,
@@ -125,7 +126,7 @@ export default function RushEvents() {
 
   const EventRow = ({ event, index, categoryId }: { event: RushEvent, index: number, categoryId: string }) => {
     return (
-      <Card className={`hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer mb-3`} key={index}>
+      <Card className={`mb-3 ${AdminTextStyles.card}`} key={index}>
         <Link href={`/admin/rush/${categoryId}/${event._id}`}>
           <div className="flex flex-col gap-5 md:flex-row lg:flex-row items-center w-full">
             <div className="flex-1">
@@ -169,9 +170,9 @@ export default function RushEvents() {
                   </div>
                 </div>
             </div>
-            <div className="flex flex-row flex-shrink-0 px-2">
+            <div className="flex flex-row items-center px-2">
               <HiOutlinePencil
-                className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1"
+                className="w-5 h-5 text-gray-800 dark:text-gray-400 transition duration-200 ease-in-out hover:w-8 hover:h-8 hover:text-purple-600 dark:hover:text-purple-500 mr-1"
                 onClick={(e: React.MouseEvent<SVGAElement>) => {
                   e.preventDefault();
                   setEventFormData({
@@ -186,12 +187,15 @@ export default function RushEvents() {
                   });
                   setOpenModifyEventModal(true);
                 }}
-                />
-              <HiOutlineTrash onClick={(e: React.MouseEvent<SVGAElement>) => {
-                e.preventDefault();
-                setSelectedEventToDelete(event);
-                setOpenDeleteEventModal(true);
-              }} className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600 mr-1" />
+              />
+              <HiOutlineTrash 
+                onClick={(e: React.MouseEvent<SVGAElement>) => {
+                  e.preventDefault();
+                  setSelectedEventToDelete(event);
+                  setOpenDeleteEventModal(true);
+                }} 
+                className="w-5 h-5 text-gray-800 dark:text-gray-400 transition duration-200 ease-in-out hover:w-8 hover:h-8 hover:text-purple-600 dark:hover:text-purple-500 mr-1"
+              />
               <a
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => e.stopPropagation()}
                 href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
@@ -200,9 +204,10 @@ export default function RushEvents() {
                 }
                 target="_blank"
                 rel="noopener"
-                className="w-5 h-5 group-hover:text-blue-600"
-                >
-                <HiLink className="w-5 h-5 text-gray-800 transition duration-200 ease-in-out hover:text-purple-600" />
+              >
+                <HiLink 
+                  className="w-5 h-5 text-gray-800 dark:text-gray-400 transition duration-200 ease-in-out hover:w-8 hover:h-8 hover:text-blue-600 dark:hover:text-blue-500 mr-1" 
+                />
               </a>
             </div>
           </div>
@@ -300,7 +305,7 @@ export default function RushEvents() {
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center">
-        <h1 className="text-4xl font-bold dark:text-white mb-4 mt-4">Rush Events</h1>
+        <h1 className={AdminTextStyles.title}>Rush Events</h1>
         <Button.Group>
           <Button color="gray" onClick={handleDrawerOpen}>
             <HiPlus className="mr-1 h-5 w-5" />
@@ -322,7 +327,7 @@ export default function RushEvents() {
                   {data.defaultRushCategory && <Badge color="teal">default</Badge>}
                 </div>
               </Accordion.Title>
-              <Accordion.Content>
+              <Accordion.Content className="dark:bg-background-dark">
                 <div className="flex flex-row items-center w-full mb-4 overflow-x-auto">
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setSelectedRushCategory(data); setOpenCreateEventModal(true) }}>Create Event</Button>
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>
@@ -377,8 +382,8 @@ export default function RushEvents() {
 
       {/* Custom Delete Event Component Modal */}
       <Modal show={openDeleteEventModal} size="md" onClose={onCloseDeleteEventModal} popup>
-        <Modal.Header />
-        <Modal.Body>
+        <Modal.Header className="dark:bg-background-dark" />
+        <Modal.Body className="dark:bg-background-dark">
           <div className="space-y-6">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">Delete {selectedEventToDelete?.name}</h3>
             <p className="text-gray-500 text-sm">Are you sure you want to delete <b className="underline"><u>{selectedEventToDelete?.name}</u></b>? Deleting this event will permanently remove all data associated with it, including rushee check-in data and analytics. The deleted data is not recoverable so please proceed with caution.</p>

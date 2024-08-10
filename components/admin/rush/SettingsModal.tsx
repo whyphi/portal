@@ -35,8 +35,8 @@ export default function SettingsModal({
 
 	return (
 		<Modal show={showModal} size="md" onClose={onClose} popup>
-			<Modal.Header />
-			<Modal.Body>
+			<Modal.Header className="dark:bg-background-dark" />
+			<Modal.Body className="dark:bg-background-dark">
 				<div className="space-y-6">
 					<h3 className="text-xl font-bold text-gray-900 dark:text-white">
 						Rush Settings

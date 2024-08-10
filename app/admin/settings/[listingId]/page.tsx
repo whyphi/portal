@@ -5,9 +5,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from 'next/navigation';
 import { Listing } from "@/types/listing";
-import { Button, Modal } from 'flowbite-react';
+import { Button, Modal, TextInput } from 'flowbite-react';
 import CustomAlert from "@/components/admin/settings/CustomAlert";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 
 interface FormData {
@@ -154,14 +155,14 @@ export default function ListingSettings({ params }: { params: { listingId: strin
       <div>
         <div className="flex flex-col border rounded mb-6 p-4">
           {formData.questions.length === 0 ? (
-            "None"
+            <p className={AdminTextStyles.default}>None</p>
           ) : (
             formData.questions.map((questionObj, index) => (
               <div className="w-full" key={index}>
                 <div className="flex justify-end">
                   <svg
                     onClick={() => handleRemoveQuestion(index)}
-                    className="w-4 h-4 text-gray-800 dark:text-white"
+                    className="w-4 h-4 text-gray-800 dark:text-white cursor-pointer"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -177,11 +178,11 @@ export default function ListingSettings({ params }: { params: { listingId: strin
                   </svg>
                 </div>
                 <div className="mb-6">
-                  <label className="block mb-2 text-sm font-medium text-gray-900">
+                  <label className={`block ${AdminTextStyles.subtext}`}>
                     Question <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+                  <TextInput
+                    className="block w-full"
                     id={`question-${index}`}
                     type="text"
                     placeholder="Question"
@@ -192,11 +193,11 @@ export default function ListingSettings({ params }: { params: { listingId: strin
                   />
                 </div>
                 <div className="mb-6">
-                  <label className="block mb-2 text-sm font-medium text-gray-900">
+                  <label className={`block ${AdminTextStyles.subtext}`}>
                     Additional Context / Subheadings
                   </label>
-                  <input
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
+                  <TextInput
+                    className="block w-full"
                     id={`additional-${index}`}
                     type="text"
                     placeholder="Add any additional text that explains the question here"
@@ -256,7 +257,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
           timeFormat="HH:mm"
           timeIntervals={15}
           dateFormat="MMMM d, yyyy h:mm aa"
-          className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5"
+          className={`w-full ${AdminTextStyles.datepicker}`}
           wrapperClassName="w-64"
         />
       </div>
@@ -311,26 +312,18 @@ export default function ListingSettings({ params }: { params: { listingId: strin
     setShowAlert(true);
   };
 
-
-  const textStyles = {
-    title: "text-4xl font-bold dark:text-white mb-6 mt-4",
-    subtitle: "mb-4 text-lg font-normal text-gray-500 dark:text-gray-400",
-  };
-
   return (
     <form onSubmit={handleSubmit} className="flex flex-col mb-8">
       {showAlert ? (<CustomAlert message={alertMessage} isError={isErrorAlert} onClose={handleAlertClose} />) : (<></>)}
 
-      <h1 className={textStyles.title}>Settings</h1>
+      <h1 className={AdminTextStyles.title}>Settings</h1>
 
       <div className="flex flex-col border rounded-lg mt-6 p-4">
-        <h3 className="text-md font-medium text-gray-900 mb-2">Title</h3>
-        <input
-          className="mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-          // id={id as string}
-          // type={type}
+        <h3 className={AdminTextStyles.default}>Title</h3>
+        <TextInput
+          className="mb-4 block w-full"
           placeholder={formData.title}
-          value={formData.title as string}
+          value={formData.title}
           onChange={handleTitleChange}
           required={true}
         />
@@ -347,7 +340,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
 
 
       <div className="flex flex-col border rounded-lg mt-6 p-4">
-        <h3 className="text-md font-medium text-gray-900 mb-2">Questions</h3>
+        <h3 className={AdminTextStyles.default}>Questions</h3>
         {renderQuestions()}
         <button
           type="button"
@@ -359,7 +352,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
       </div>
 
       <div className="flex flex-col border rounded-lg mt-6 p-4">
-        <h3 className="text-md font-medium text-gray-900 mb-2">Deadline</h3>
+        <h3 className={AdminTextStyles.default}>Deadline</h3>
         {renderDeadline()}
         <button
           type="button"
@@ -370,24 +363,24 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         </button>
       </div>
 
-      <div className="flex flex-col border border-red-500 rounded-t-lg mt-6 p-4">
-        <h3 className="text-md font-medium text-gray-900 mb-2">Delete Listing</h3>
-        <p className="text-sm font-thin">Permanently remove the listing and all its associated content and data from the Whyphi platform. This action is not reversible, so please continue with caution.</p>
+      <div className="flex flex-col border border-red-500 dark:border-red-400 rounded-t-lg mt-6 p-4">
+        <h3 className={AdminTextStyles.default}>Delete Listing</h3>
+        <p className={AdminTextStyles.subcontent}>Permanently remove the listing and all its associated content and data from the Whyphi platform. This action is not reversible, so please continue with caution.</p>
       </div>
 
-      <div className="flex justify-end border border-red-500 rounded-b-lg p-2 bg-red-200">
-        <button
+      <div className="flex justify-end border border-red-500 dark:border-red-400 rounded-b-lg p-2 bg-red-200 dark:bg-red-300">
+        <Button
           type="button"
-          className="w-24 text-white bg-red-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          gradientMonochrome="failure"
           onClick={() => setOpenModal(true)}
         >
           Delete
-        </button>
+        </Button>
       </div>
 
       <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-        <Modal.Header>Delete Listing</Modal.Header>
-        <Modal.Body>
+        <Modal.Header className="dark:bg-background-dark">Delete Listing</Modal.Header>
+        <Modal.Body className="dark:bg-background-dark">
           <div className="space-y-6">
             <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
               Permanently remove the listing and all its associated content and data from the Whyphi platform. This action is not reversible, so please continue with caution.
@@ -397,8 +390,8 @@ export default function ListingSettings({ params }: { params: { listingId: strin
             </p>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button className="w-24 text-white bg-red-500 hover:red-600 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm text-center" onClick={handleDelete}>Delete</Button>
+        <Modal.Footer className="dark:bg-background-dark">
+          <Button gradientMonochrome="failure" onClick={handleDelete}>Delete</Button>
           <Button color="gray" onClick={() => setOpenModal(false)}>
             Cancel
           </Button>

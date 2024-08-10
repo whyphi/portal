@@ -2,6 +2,7 @@
 import { Card } from 'flowbite-react';
 import Image from 'next/image'
 import { Applicant } from '@/types/applicant';
+import { AdminTextStyles } from '@/styles/TextStyles';
 
 interface ApplicantCardProps {
   listingId: string;
@@ -25,7 +26,7 @@ export default function ApplicantCard({ applicant, index, highlighted, setSelect
 
   return (
     <Card 
-      className={`cursor-pointer hover:bg-purple-50 transition-colors duration-500 ease-in-out ${highlighted ? 'bg-red-100' : ''}`} 
+      className={`${highlighted && "!bg-red-50 dark:!bg-red-300"} ${AdminTextStyles.card}`} 
       onClick={() => {
         // scroll to top of page
         window.scrollTo({

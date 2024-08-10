@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import React from "react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
 import { HiArrowNarrowLeft, HiOutlineQrcode, HiOutlineUserGroup, HiOutlineTable } from "react-icons/hi";
 
 import Loader from "@/components/Loader";
+import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
 
 export default function Event({ params }: { params: { eventId: string } }) {
-  const router = useRouter();
   const { token } = useAuth();
   const [event, setEvent] = React.useState<Timeframe | null>(null);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -45,9 +44,9 @@ export default function Event({ params }: { params: { eventId: string } }) {
         </button>
       </Link>
 
-      <div className="">
-        <h1 className="text-3xl font-bold">{event.name}</h1>
-        <p className="mt-2 text-gray-500">ID: {event._id}</p>
+      <div>
+        <h1 className={AdminTextStyles.subtitle}>{event.name}</h1>
+        <p className={`mt-2 ${DimmedAdminTextStyles.default}`}>ID: {event._id}</p>
       </div>
       <div className="w-full max-w p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
         <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
