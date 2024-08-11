@@ -16,7 +16,6 @@ import Timestamp from "react-timestamp";
 import { addTwoHours } from "@/utils/date";
 import { TbSettings } from "react-icons/tb";
 import SettingsModal from "@/components/admin/rush/SettingsModal";
-import { useRouter } from "next/navigation";
 import { AdminTextStyles } from "@/styles/TextStyles";
 
 export interface EventFormData {
@@ -42,12 +41,10 @@ const initialValues: EventFormData = {
 
 export default function RushEvents() {
   const { token } = useAuth();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialValues);
 

@@ -3,7 +3,7 @@ import { AdminTextStyles } from '@/styles/TextStyles';
 import { Card } from 'flowbite-react';
 
 interface ListingCardProps {
-    title: string;
+    title: any;
     value: any;
 }
 
