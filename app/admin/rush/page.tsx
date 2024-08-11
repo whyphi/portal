@@ -333,7 +333,7 @@ export default function RushEvents() {
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>
                     {rushCategoriesCodeToggled[data._id] ? "Hide Code" : "Show Code"}
                   </Button>
-                  <Button size="xs" color="gray" className="mr-2" onClick={() => router.push(`/admin/rush/${data._id}/analytics`)}>
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => window.open(`/admin/rush/${data._id}/analytics`, '_blank', 'noopener,noreferrer')}>
                     View Analytics
                   </Button>
                   <Button size="xs" color="gray" className="mr-2" disabled>Export Data</Button>

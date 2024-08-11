@@ -52,7 +52,8 @@ export interface RushCategory {
 
 export interface Analytics {
   categoryName: string,
-  attendees: AnalyticsAttendees
+  attendees: AnalyticsAttendees,
+  events: readonly AnalyticsEvent[],
 }
 
 interface AnalyticsAttendees {
