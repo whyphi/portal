@@ -39,7 +39,7 @@ export interface RushEvent {
 interface Attendee {
   name: string;
   email: string;
-  checkInTime: string;
+  checkinTime: string;
 }
 
 export interface RushCategory {
