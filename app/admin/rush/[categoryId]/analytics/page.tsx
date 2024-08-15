@@ -25,8 +25,6 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
     setSelectedAttendeeEmail(null);
   };
 
-  console.log(window.location.origin);
-  
   const handleDetailClick = (eventId: string) => {
     const url = `${getPortalBaseUrl()}/admin/rush/${params.categoryId}/${eventId}`;
     window.open(url, '_blank', 'noopener,noreferrer');
