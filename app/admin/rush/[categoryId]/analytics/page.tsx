@@ -4,6 +4,7 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/AdminLoader";
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { Analytics } from "@/types/admin/events";
+import { getPortalBaseUrl } from "@/utils/getBaseURL";
 import { Badge, Drawer, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 
@@ -24,10 +25,10 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
     setSelectedAttendeeEmail(null);
   };
 
+  console.log(window.location.origin);
+  
   const handleDetailClick = (eventId: string) => {
-    const url = process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
-    ? `http://localhost:3000/admin/rush/${params.categoryId}/${eventId}`
-    : `https://rush.why-phi.com/admin/rush/${params.categoryId}/${eventId}`    
+    const url = `${getPortalBaseUrl()}/admin/rush/${params.categoryId}/${eventId}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 

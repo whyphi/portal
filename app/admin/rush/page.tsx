@@ -17,6 +17,7 @@ import { addTwoHours } from "@/utils/date";
 import { TbSettings } from "react-icons/tb";
 import SettingsModal from "@/components/admin/rush/SettingsModal";
 import { AdminTextStyles } from "@/styles/TextStyles";
+import { getRushBaseUrl } from "@/utils/getBaseURL";
 
 export interface EventFormData {
   eventName: string,
@@ -195,10 +196,7 @@ export default function RushEvents() {
               />
               <a
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => e.stopPropagation()}
-                href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
-                  ? `https://staging--whyphi-rush.netlify.app/checkin/${event._id}`
-                  : `https://rush.why-phi.com/checkin/${event._id}`
-                }
+                href={`${getRushBaseUrl()}/checkin/${event._id}`}
                 target="_blank"
                 rel="noopener"
               >
