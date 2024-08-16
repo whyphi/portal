@@ -116,7 +116,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
     const isDisabled = tags.length >= 3 || tagName === '';
 
     return (
-      <div className="absolute right-6">
+      <div className="absolute right-6 dark:text-white">
         <label
           className={`p-2 flex items-center justify-center h-5 text-xs cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors rounded-full border border-gray-200 dark:border-gray-700 ${isDisabled && 'opacity-50 cursor-not-allowed'}`}
           onClick={() => {
@@ -245,7 +245,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
                     >
                       <HiOutlineX className="h-4 w-4 text-gray-700 hover:text-gray-500" />
                     </button>
-                    <Badge color="gray" className="">
+                    <Badge color="gray">
                       {tag}
                     </Badge>
                   </div>

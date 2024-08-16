@@ -5,6 +5,7 @@ import { HiMenuAlt1, HiDocumentText, HiUserGroup } from 'react-icons/hi';
 import ResponseCard from "@/components/admin/listing/ResponseCard";
 import ApplicantInfoCard from "@/components/admin/listing/ApplicantInfoCard";
 import ApplicantPDFViewer from "@/components/admin/listing/ApplicantPDFViewer";
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 interface ApplicantPageProps {
   applicant: Applicant;
@@ -14,11 +15,11 @@ export default function ApplicantPage({ applicant }: ApplicantPageProps) {
 
   const renderResponses = () => {
     return (
-      applicant?.responses.length === 0 ? (
-        <p>None</p>
+      applicant.responses.length === 0 ? (
+        <p className={AdminTextStyles.default}>None</p>
       ) : (
-        <div className="">
-          {applicant?.responses.map((response, index) => (
+        <div>
+          {applicant.responses.map((response, index) => (
             <ResponseCard
               key={index}
               question={response.question}
@@ -43,7 +44,7 @@ export default function ApplicantPage({ applicant }: ApplicantPageProps) {
 
           <Table.Body className="divide-y">
             {eventNames.map((eventName) => (
-              <Table.Row key={eventName} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <Table.Row key={eventName} className="dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   {eventName}
                 </Table.Cell>
@@ -77,7 +78,6 @@ export default function ApplicantPage({ applicant }: ApplicantPageProps) {
         <Tabs
           className=""
           aria-label="Tabs with underline"
-          style="underline"
         >
 
           <Tabs.Item

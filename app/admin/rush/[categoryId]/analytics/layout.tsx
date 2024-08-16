@@ -1,4 +1,3 @@
-import '../../globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -12,7 +11,7 @@ export default function RootLayout({
 }) {
   return (
 
-    <div className="flex flex-col mx-auto justify-center max-w-screen-lg">
+    <div className="flex flex-col justify-center max-w-screen-lg">
       {children}
     </div>
 
