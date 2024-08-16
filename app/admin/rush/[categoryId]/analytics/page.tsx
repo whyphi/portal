@@ -69,7 +69,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
         </Table.Cell>
         <Table.Cell>{analytics.attendees[email].email}</Table.Cell>
         <Table.Cell>{analytics.attendees[email].eventsAttended.length}</Table.Cell>
-        {/* TODO: create function to determine if the candidate can be accepted for interview */}
+        {/* TODO: create function to determine if the candidate can be accepted for interview (this can be handled potentially via Vault */}
         <Table.Cell>
           {analytics.attendees[email].eventsAttended.length > 4 
             ? <Badge color="success" className="inline-block">True</Badge>
