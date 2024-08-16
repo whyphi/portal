@@ -34,7 +34,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
     const fetchAnalytics = async () => {
       try {
         // Fetch all rush categories and events from the API
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${params.categoryId}/analytics`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/category/${params.categoryId}/analytics`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
