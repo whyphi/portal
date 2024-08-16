@@ -39,7 +39,7 @@ export interface RushEvent {
 interface Attendee {
   name: string;
   email: string;
-  checkInTime: string;
+  checkinTime: string;
 }
 
 export interface RushCategory {
@@ -52,7 +52,8 @@ export interface RushCategory {
 
 export interface Analytics {
   categoryName: string,
-  attendees: AnalyticsAttendees
+  attendees: AnalyticsAttendees,
+  events: readonly AnalyticsEvent[],
 }
 
 interface AnalyticsAttendees {

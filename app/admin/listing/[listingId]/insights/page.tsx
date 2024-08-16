@@ -8,9 +8,6 @@ import { PieChart, Pie, Tooltip, Label } from "recharts";
 import { Table, Tabs } from 'flowbite-react';
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
 import { useAuth } from "@/app/contexts/AuthContext";
-
-import { CustomFlowbiteTheme } from "flowbite-react";
-import Link from "next/link";
 import { selectedApplicantIdKey } from "@/utils/globals";
 import { AdminTextStyles } from "@/styles/TextStyles";
 

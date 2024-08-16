@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Loader from "@/components/Loader";
-  import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card, ButtonGroup, Badge } from "flowbite-react";
+import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card, ButtonGroup, Badge } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
 import { FaRegCopy } from 'react-icons/fa';
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
@@ -16,8 +16,8 @@ import Timestamp from "react-timestamp";
 import { addTwoHours } from "@/utils/date";
 import { TbSettings } from "react-icons/tb";
 import SettingsModal from "@/components/admin/rush/SettingsModal";
-import { useRouter } from "next/navigation";
 import { AdminTextStyles } from "@/styles/TextStyles";
+import { getRushBaseUrl } from "@/utils/getBaseURL";
 
 export interface EventFormData {
   eventName: string,
@@ -42,12 +42,10 @@ const initialValues: EventFormData = {
 
 export default function RushEvents() {
   const { token } = useAuth();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialValues);
 
@@ -198,10 +196,7 @@ export default function RushEvents() {
               />
               <a
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => e.stopPropagation()}
-                href={process.env.NEXT_PUBLIC_API_BASE_URL === 'http://127.0.0.1:8000'
-                  ? `https://staging--whyphi-rush.netlify.app/checkin/${event._id}`
-                  : `https://rush.why-phi.com/checkin/${event._id}`
-                }
+                href={`${getRushBaseUrl()}/checkin/${event._id}`}
                 target="_blank"
                 rel="noopener"
               >
@@ -333,7 +328,7 @@ export default function RushEvents() {
                   <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>
                     {rushCategoriesCodeToggled[data._id] ? "Hide Code" : "Show Code"}
                   </Button>
-                  <Button size="xs" color="gray" className="mr-2" onClick={() => router.push(`/admin/rush/${data._id}/analytics`)}>
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => window.open(`/admin/rush/${data._id}/analytics`, '_blank', 'noopener,noreferrer')}>
                     View Analytics
                   </Button>
                   <Button size="xs" color="gray" className="mr-2" disabled>Export Data</Button>
