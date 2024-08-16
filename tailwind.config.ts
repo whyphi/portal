@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+const flowbite = require("flowbite-react/tailwind");
 
 const config: Config = {
   content: [
@@ -8,7 +9,8 @@ const config: Config = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './node_modules/tw-elements/dist/js/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}'
+    './node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
+    flowbite.content()
   ],
   theme: {
     extend: {
@@ -17,10 +19,14 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      colors: {
+        'background-light': 'var(--bg-light)',
+        'background-dark': 'var(--bg-dark)',
+      },
     },
   },
   plugins: [
-    require('flowbite/plugin'),
+    flowbite.plugin(),
     require("tw-elements/dist/plugin.cjs")
   ],
 }

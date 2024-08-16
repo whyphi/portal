@@ -1,11 +1,9 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { HiOutlineUserGroup, HiOutlinePlus, HiOutlineX } from "react-icons/hi";
-import { Label, TextInput, Button, Select, Badge } from 'flowbite-react';
+import { HiOutlineUserGroup } from "react-icons/hi";
+import { Label, TextInput, Button } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
-import { Timeframe } from "@/types/admin/events";
-import { Spinner } from 'flowbite-react';
 
 interface CreateDrawerProps {
   onClose: () => void; // Prop for close button click handler
@@ -39,7 +37,10 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: categoryName })
+        body: JSON.stringify({
+          name: categoryName,
+          defaultRushCategory: false
+        })
       })
       if (!response.ok) {
         throw new Error(response.statusText);
@@ -51,9 +52,7 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
       console.error(error);
     }
   }
-
-
-
+ 
   return (
     <div
       style={{ transform: `translateX(${translateX})` }}
@@ -76,11 +75,13 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
         <div className="mb-4">
           <div className="mb-2 block">
             <Label htmlFor="graduationYear" value="Name" />
+            <span className="text-red-500"> *</span>
           </div>
           <TextInput
             key="timeframeName"
             required
             id="timeframeName"
+            placeholder="Fall 2024"
             type="text"
             value={categoryName}
             onChange={handleInputchange}

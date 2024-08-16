@@ -2,13 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { }
+:root {
+  --bg-light: #ffffff; /* Light mode background */
+  --bg-dark: #29313e; /* Dark mode background */
+}
 
 @media (prefers-color-scheme: dark) {
   :root { }
 }
-
-body { }
 
 /* Custom CSS for slide-down animation */
 .slide-down-enter-active {
@@ -24,3 +25,36 @@ body { }
   transition: max-height 700ms ease-in-out;
   max-height: 0px;
 }
+
+/* Custom theme styles */
+body {
+  background-color: var(--bg-light);
+}
+
+.dark body {
+  /* Dark mode background color */
+  /* Gray-700 */
+  /* background-color: #374151; */
+  /* Gray-800 */
+  /* background-color: #1f2937; */
+
+  /* Somwhere in between 700 and 800 */
+  background-color: var(--bg-dark);
+}
+
+/* Handle transitions (TO-DO: determine why it is not being applied everywhere) */
+/* html {
+  transition: background-color 300ms ease-in-out, 
+              border-color 300ms ease-in-out, 
+              color 300ms ease-in-out, 
+              fill 300ms ease-in-out, 
+              stroke 300ms ease-in-out;
+}
+
+body {
+  transition: background-color 300ms ease-in-out, 
+              border-color 300ms ease-in-out, 
+              color 300ms ease-in-out, 
+              fill 300ms ease-in-out, 
+              stroke 300ms ease-in-out;
+} */

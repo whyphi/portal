@@ -7,6 +7,7 @@ import Loader from "@/components/Loader";
 import { AgGridReact } from 'ag-grid-react'; // AG Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
+import { AdminTextStyles } from "@/styles/TextStyles";
 
 
 export default function Accountability() {
@@ -69,18 +70,13 @@ export default function Accountability() {
     fetchData();
   }, []);
 
-  const textStyles = {
-    title: "text-4xl font-bold dark:text-white mb-6 mt-4 ",
-    subtitle: "mb-4 text-lg font-normal text-gray-500 dark:text-gray-400",
-  };
-
   if (isLoading) {
     return <Loader />
   }
 
   return (
     <div className="overflow-x-auto">
-      <h1 className={textStyles.title}>Accountability Tracker</h1>
+      <h1 className={AdminTextStyles.title}>Accountability Tracker</h1>
       <div
         className="ag-theme-quartz" // applying the grid theme
         style={{ height: "80vh" }} // the grid will fill the size of the parent container
