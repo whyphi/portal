@@ -32,6 +32,7 @@ export interface RushEvent {
   deadline: string;
   eventCoverImage: string;
   eventCoverImageName: string;
+  eventCoverImageVersion: string;
   attendees: readonly Attendee[];
   numAttendees: number;
 }
