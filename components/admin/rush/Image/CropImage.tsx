@@ -11,6 +11,7 @@ import { CanvasPreview } from './CanvasPreview'
 import { useDebounceEffect } from '@/utils/useDebounceEffect'
 import 'react-image-crop/dist/ReactCrop.css'
 import { Button, FileInput } from 'flowbite-react'
+import ImagePlaceholder from '@/components/admin/rush/Image/ImagePlaceholder'
 
 // This is to demonstate how to make and center a % aspect crop
 // which is a bit trickier so we use some helper functions.
@@ -45,6 +46,7 @@ export default function CropImage({
   eventCoverImageName,
   onChange,
 }: CropyImageProps) {
+  const [loading, setLoading] = useState(true);
   const [imgSrc, setImgSrc] = useState("");
   const [imgName, setImgName] = useState("");
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -215,11 +217,16 @@ export default function CropImage({
       )}
       {/* edge case (first load --> display image) */}
       {isInitialModifyLoad && 
-        <img
-          className="mt-2 rounded"
-          src={eventCoverImage}
-          alt={eventCoverImageName}
-        />
+        <>
+          {loading && <ImagePlaceholder />}
+          <img
+            className={`mt-2 rounded ${loading ? 'hidden' : 'block'}`} // Hide image while loading
+            src={eventCoverImage}
+            alt={eventCoverImageName}
+            onLoad={() => setLoading(false)} // Set loading to false when the image is loaded
+            onError={() => setLoading(false)} // Handle error case
+          />
+        </>
       }
     </div>
   )
