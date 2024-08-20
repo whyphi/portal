@@ -27,6 +27,7 @@ export interface EventFormData {
   eventDeadline: Date,
   eventCoverImage: string,
   eventCoverImageName: string,
+  eventCoverImageVersion: string,
   eventId?: string,
 }
 
@@ -38,6 +39,7 @@ const initialValues: EventFormData = {
   eventCoverImage: "",
   eventCoverImageName: "",
   eventDeadline: addTwoHours(new Date()),
+  eventCoverImageVersion: "v0",
 };
 
 export default function RushEvents() {
@@ -49,6 +51,8 @@ export default function RushEvents() {
 
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialValues);
 
+  console.log(eventFormData);
+  
   // States managing the create event modal
   const [openCreateEventModal, setOpenCreateEventModal] = useState<boolean>(false);
   const [openModifyEventModal, setOpenModifyEventModal] = useState<boolean>(false);
@@ -181,6 +185,7 @@ export default function RushEvents() {
                     eventDeadline: new Date(event.deadline),
                     eventCoverImage: event.eventCoverImage,
                     eventCoverImageName: event.eventCoverImageName,
+                    eventCoverImageVersion: event.eventCoverImageVersion,
                     eventId: event._id,
                   });
                   setOpenModifyEventModal(true);
@@ -237,6 +242,7 @@ export default function RushEvents() {
           deadline: eventFormData.eventDeadline.toISOString(),
           eventCoverImage : eventFormData.eventCoverImage,
           eventCoverImageName : eventFormData.eventCoverImageName,
+          eventCoverImageVersion: eventFormData.eventCoverImageVersion,
           ...(modifying && { _id: eventFormData.eventId })
         })
       })
@@ -363,7 +369,7 @@ export default function RushEvents() {
         setEventFormData={setEventFormData}
         onClose={onCloseModifyEventModal}
         onSubmit={() => handleRusheeEvent(true)}
-        modifyingEvent
+        modifyingEvent={openModifyEventModal}
       />
 
       {/* Custom Settings Component Modal */}
