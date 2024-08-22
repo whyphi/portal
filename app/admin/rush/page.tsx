@@ -51,8 +51,6 @@ export default function RushEvents() {
 
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialValues);
 
-  console.log(eventFormData);
-  
   // States managing the create event modal
   const [openCreateEventModal, setOpenCreateEventModal] = useState<boolean>(false);
   const [openModifyEventModal, setOpenModifyEventModal] = useState<boolean>(false);
