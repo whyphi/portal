@@ -1,5 +1,7 @@
 // getRushBaseUrl : returns base url of rush application (depending on current environment)
 export const getRushBaseUrl = (): string => {
+  console.log("api base url: ", process.env.NEXT_PUBLIC_API_BASE_URL);
+  
   switch(process.env.NEXT_PUBLIC_API_BASE_URL) {
     // local environment
     case "http://127.0.0.1:8000":
