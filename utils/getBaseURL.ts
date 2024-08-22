@@ -1,7 +1,6 @@
 // getRushBaseUrl : returns base url of rush application (depending on current environment)
 export const getRushBaseUrl = (): string => {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
-  console.log("api base url: ", baseUrl);
   switch(baseUrl) {
     // local environment
     case "http://127.0.0.1:8000":
@@ -9,7 +8,6 @@ export const getRushBaseUrl = (): string => {
 
     // staging environment
     case "https://o74hteay05.execute-api.us-east-1.amazonaws.com/api":
-      console.log("made it here, yay!");
       return "https://staging--whyphi-rush.netlify.app";
 
     // production environment
