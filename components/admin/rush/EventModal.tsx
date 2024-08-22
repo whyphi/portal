@@ -6,6 +6,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 import DatePicker from "react-datepicker";
 import CropImage from "./Image/CropImage";
 import { AdminTextStyles } from "@/styles/TextStyles";
+import { useEffect } from "react";
 
 interface EventModalProps {
 	showModal: boolean,
@@ -29,6 +30,21 @@ export default function EventModal({
 	onSubmit,
 	modifyingEvent,
 }: EventModalProps) {
+
+	// helper function (to increment eventCoverImageVersion)
+	const incrementVersion = (version: string) => {
+		const intVersion = parseInt(version.slice(1)) + 1
+		return`v${intVersion}`;
+	};
+
+	// if modifying, increment eventCoverImageVersion
+	useEffect(() => {
+		modifyingEvent && setEventFormData((prevEventFormData) => ({
+			...prevEventFormData, 
+			eventCoverImageVersion: incrementVersion(prevEventFormData.eventCoverImageVersion)
+		}));
+	}, [modifyingEvent])
+
 	return (
 		<Modal  show={showModal} size="2xl" onClose={onClose} popup>
 			<Modal.Header className="dark:bg-background-dark" />
