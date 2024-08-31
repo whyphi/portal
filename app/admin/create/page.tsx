@@ -1,17 +1,15 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useRouter } from 'next/navigation'
-import { Checkbox, Label, TextInput } from 'flowbite-react';
+import { useRouter } from "next/navigation";
+import { Badge, Checkbox, Label, TextInput } from "flowbite-react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { AdminTextStyles } from "@/styles/TextStyles";
 
-
-
 interface FormData {
   title: string;
-  questions: [] | { question: string, context: string }[];
+  questions: [] | { question: string; context: string }[];
   deadline: Date;
   includeEventsAttended: boolean;
 }
@@ -20,7 +18,7 @@ const initialValues: FormData = {
   title: "",
   questions: [] as { question: string; context: string }[], // Specify the type here
   deadline: new Date(),
-  includeEventsAttended: false
+  includeEventsAttended: false,
 };
 
 export default function Create() {
@@ -28,7 +26,6 @@ export default function Create() {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [selectedDate, setSelectedDate] = useState(new Date());
-
 
   const handleSubmit = async () => {
     const currentDate = new Date();
@@ -40,20 +37,22 @@ export default function Create() {
     };
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/create`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formDataWithDates),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/create`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formDataWithDates),
+        }
+      );
 
       if (response.ok) {
         // The request was successful, you can handle the response here if needed.
         console.log("Request successful!");
         router.push("/admin"); // Replace "/admin" with the actual route to your admin page
-
       } else {
         // Handle the case where the request was not successful.
         console.error("Request failed with status:", response.status);
@@ -64,17 +63,16 @@ export default function Create() {
     }
   };
 
-  function flattenQuestions(questions: { [key: string]: string }[]): { [key: string]: string } {
+  function flattenQuestions(questions: { [key: string]: string }[]): {
+    [key: string]: string;
+  } {
     // Flatten the 'questions' array into a flat object
-    const flattenedQuestions = questions.reduce(
-      (acc, question, index) => {
-        Object.keys(question).forEach((key) => {
-          acc[`questions[${index}].${key}`] = question[key];
-        });
-        return acc;
-      },
-      {} as Record<string, string>
-    );
+    const flattenedQuestions = questions.reduce((acc, question, index) => {
+      Object.keys(question).forEach((key) => {
+        acc[`questions[${index}].${key}`] = question[key];
+      });
+      return acc;
+    }, {} as Record<string, string>);
 
     return flattenedQuestions;
   }
@@ -89,21 +87,23 @@ export default function Create() {
     };
 
     // Encode the form data into a query parameter string
-    const { questions, includeEventsAttended, ...formDataStringsOnly } = formDataWithDates;
-    const flattenedQuestions = flattenQuestions(formData.questions)
-    const includeEventsAttendedString = includeEventsAttended.toString()
-
+    const { questions, includeEventsAttended, ...formDataStringsOnly } =
+      formDataWithDates;
+    const flattenedQuestions = flattenQuestions(formData.questions);
+    const includeEventsAttendedString = includeEventsAttended.toString();
 
     const formDataQueryString = new URLSearchParams({
       ...formDataStringsOnly,
       ...flattenedQuestions,
-      'includeEventsAttended': includeEventsAttendedString
+      includeEventsAttended: includeEventsAttendedString,
     });
 
     // Open a new tab and navigate to the preview route with form data as query parameters
-    window.open(`/admin/create/preview/listing?${formDataQueryString}`, '_blank');
-
-  }
+    window.open(
+      `/admin/create/preview/listing?${formDataQueryString}`,
+      "_blank"
+    );
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -137,7 +137,11 @@ export default function Create() {
     }));
   };
 
-  const handleQuestionChange = (index: number, field: string, value: string) => {
+  const handleQuestionChange = (
+    index: number,
+    field: string,
+    value: string
+  ) => {
     const updatedQuestions = [...formData.questions];
     const questionObj = updatedQuestions[index];
 
@@ -151,8 +155,6 @@ export default function Create() {
       }));
     }
   };
-
-
 
   const renderInput = (
     id: keyof FormData,
@@ -178,63 +180,63 @@ export default function Create() {
   const renderQuestions = () => {
     return (
       <div>
-        <div className={`flex flex-col border rounded p-4 ${AdminTextStyles.default}`}>
-          {formData.questions.length === 0 ? (
-            "None"
-          ) : (
-            formData.questions.map((questionObj, index) => (
-              <div className="w-full" key={index}>
-                <div className="flex justify-end">
-                  <svg
-                    onClick={() => handleRemoveQuestion(index)}
-                    className="w-4 h-4 text-gray-800 dark:text-white hover:bg-gray-100"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m13 7-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        <div
+          className={`flex flex-col border rounded p-4 ${AdminTextStyles.default}`}
+        >
+          {formData.questions.length === 0
+            ? "None"
+            : formData.questions.map((questionObj, index) => (
+                <div className="w-full" key={index}>
+                  <div className="flex justify-end">
+                    <svg
+                      onClick={() => handleRemoveQuestion(index)}
+                      className="w-4 h-4 text-gray-800 dark:text-white hover:bg-gray-100"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                      style={{ cursor: "pointer" }}
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m13 7-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                      />
+                    </svg>
+                  </div>
+                  <div className="mb-6">
+                    <label className={`block ${AdminTextStyles.subtext}`}>
+                      Question <span className="text-red-500">*</span>
+                    </label>
+                    <TextInput
+                      id={`question-${index}`} // Set a unique id for each question input
+                      type="text"
+                      placeholder="Question"
+                      value={questionObj.question}
+                      onChange={(e) =>
+                        handleQuestionChange(index, "question", e.target.value)
+                      }
                     />
-                  </svg>
+                  </div>
+                  <div className="mb-6">
+                    <label className={`block ${AdminTextStyles.subtext}`}>
+                      Additional Context / Subheadings
+                    </label>
+                    <TextInput
+                      id={`additional-${index}`} // Set a unique id for each additional input
+                      type="text"
+                      placeholder="Add any additional text that explains the question here"
+                      value={questionObj.context}
+                      onChange={(e) =>
+                        handleQuestionChange(index, "context", e.target.value)
+                      }
+                    />
+                  </div>
+                  <hr className="h-px mb-2 bg-gray-200 border-0 dark:bg-gray-700" />
                 </div>
-                <div className="mb-6">
-                  <label className={`block ${AdminTextStyles.subtext}`}>
-                    Question <span className="text-red-500">*</span>
-                  </label>
-                  <TextInput
-                    id={`question-${index}`} // Set a unique id for each question input
-                    type="text"
-                    placeholder="Question"
-                    value={questionObj.question}
-                    onChange={(e) =>
-                      handleQuestionChange(index, "question", e.target.value)
-                    }
-                  />
-                </div>
-                <div className="mb-6">
-                  <label className={`block ${AdminTextStyles.subtext}`}>
-                    Additional Context / Subheadings
-                  </label>
-                  <TextInput
-                    id={`additional-${index}`} // Set a unique id for each additional input
-                    type="text"
-                    placeholder="Add any additional text that explains the question here"
-                    value={questionObj.context}
-                    onChange={(e) =>
-                      handleQuestionChange(index, "context", e.target.value)
-                    }
-                  />
-                </div>
-                <hr className="h-px mb-2 bg-gray-200 border-0 dark:bg-gray-700" />
-              </div>
-            ))
-          )}
+              ))}
         </div>
         <button
           onClick={handleAddQuestion}
@@ -259,8 +261,6 @@ export default function Create() {
           Add Question
         </button>
       </div>
-
-
     );
   };
 
@@ -296,20 +296,33 @@ export default function Create() {
   const renderAdditionalSection = () => {
     return (
       <div className="w-full mb-6">
-        <label className={`block ${AdminTextStyles.default}`}>
-          Additional
-        </label>
+        <label className={`block ${AdminTextStyles.default}`}>Additional</label>
         <div className="flex items-center gap-2">
           <Checkbox
             checked={formData.includeEventsAttended}
             onChange={handleCheckboxChange}
             id="includeEventsAttended"
-            className="focus:ring-purple-500 dark:focus:ring-purple-600 text-purple-600" />
-          <Label htmlFor="includeEventsAttended" className="font-light">I want to collect <span className="font-medium underline">Events Attended</span> data</Label>
+            className="focus:ring-purple-500 dark:focus:ring-purple-600 text-purple-600"
+          />
+          <Label htmlFor="includeEventsAttended" className="font-light">
+            I want to collect{" "}
+            <span className="font-medium underline">Events Attended</span> data
+            (NOTE: this will automatically create a rush-category at{" "}
+            <a href="https://why-phi.com/admin/rush" target="_blank" rel="noopener noreferrer">
+              <Badge className="inline-block hover:grayscale" color="gray">
+                https://why-phi.com/admin/rush
+              </Badge>
+            </a>
+            called{" "}
+            <Badge className="inline-block" color="gray">
+              {formData.title || "[Lisitng title]"}
+            </Badge>
+            )
+          </Label>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col mb-8">
@@ -317,9 +330,7 @@ export default function Create() {
 
       {renderInput("title", "Title", "text", true)}
 
-      <label className={AdminTextStyles.default}>
-        Questions
-      </label>
+      <label className={AdminTextStyles.default}>Questions</label>
 
       {renderQuestions()}
       {renderDeadline()}
@@ -342,7 +353,6 @@ export default function Create() {
           Preview
         </button>
       </div>
-
     </form>
   );
 }
