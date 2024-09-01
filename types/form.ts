@@ -1,12 +1,5 @@
 import { Session } from "next-auth";
-
-export interface Events {
-  infoSession1: boolean;
-  infoSession2: boolean;
-  resumeWorkshop: boolean;
-  socialEvent: boolean;
-  professionalPanel: boolean;
-}
+import { EventsAttended } from "./applicant";
 
 export interface FormData {
   firstName: string;
@@ -38,7 +31,7 @@ export interface FormData {
     Wheelock: boolean;
     Other: boolean;
   };
-  events: Events | null;
+  events: EventsAttended | null;
   responses: string[];
 }
 
