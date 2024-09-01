@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Form from "@/components/Form";
 import Loader from "@/components/Loader";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface ListingData {
   title: string;
@@ -21,6 +22,8 @@ interface ServerError {
 
 export default function Listing({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const { data: session } = useSession();
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [listingData, setListingData] = useState<ListingData>({
     deadline: "",

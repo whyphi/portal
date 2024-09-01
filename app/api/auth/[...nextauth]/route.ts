@@ -1,11 +1,12 @@
 import NextAuth, { AuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { MongoClient, ServerApiVersion } from 'mongodb'
+import { NextRequest } from 'next/server';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 const mongoUser = process.env.MONGO_USER;
 const mongoPassword = process.env.MONGO_PASSWORD;
 const uri = `mongodb+srv://${mongoUser}:${mongoPassword}@cluster0.9gtht.mongodb.net/?retryWrites=true&w=majority`;
-
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -14,8 +15,6 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
-
-
 
 async function isValidUser(email: string) {
   await client.connect();
@@ -45,7 +44,7 @@ async function getUserInfo(email: string) {
   }
 }
 
-const authOptions: AuthOptions = {
+const adminAuthOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -105,6 +104,41 @@ const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET
 };
 
-const handler = NextAuth(authOptions);
+const publicAuthOptions: AuthOptions = {
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    })
+  ],
+  events: {
+    createUser: async ({ user }) => {
+      // Create user in database
+    },
+  },
+  callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      if (profile && profile.email) {
+        return profile.email.endsWith("@bu.edu")
+      }
+      return false;
+    },
+
+  },
+  // pages: {
+  //   error: "/authError"
+  // },
+  secret: process.env.NEXTAUTH_SECRET
+};
+
+// const handler = NextAuth(adminAuthOptions);
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  // Check the path to decide which auth options to use
+  const isPublicPath = req.url?.startsWith('/api/auth/public');
+
+  const authOptions = isPublicPath ? publicAuthOptions : adminAuthOptions;
+  return NextAuth(req, res, authOptions);
+};
+
 
 export { handler as GET, handler as POST }

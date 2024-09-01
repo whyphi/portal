@@ -1,5 +1,7 @@
 "use client"
+import PublicNavSidebar from '@/components/public/PublicNavSidebar'
 import '../globals.css'
+import AdminSessionProvider from '../providers'
 
 
 export default function RootLayout({
@@ -9,9 +11,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-w-screen min-h-screen">
-          {children}
-      </body>
+      <AdminSessionProvider>
+        <PublicNavSidebar />
+        <body className="min-w-screen min-h-screen mt-16">
+            {children}
+        </body>
+      </AdminSessionProvider>
     </html>
   )
 }
