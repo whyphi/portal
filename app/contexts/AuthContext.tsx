@@ -36,6 +36,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Use type assertion to add the 'token' property
         const sessionWithToken = session as CustomSession;
 
+        console.log("session", sessionWithToken, sessionWithToken.token?.isNewUser);
+        
         // Check if user is a newUser
         if (sessionWithToken && sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
           
