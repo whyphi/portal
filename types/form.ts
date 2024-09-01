@@ -1,3 +1,5 @@
+import { Session } from "next-auth";
+
 export interface Events {
   infoSession1: boolean;
   infoSession2: boolean;
@@ -42,7 +44,8 @@ export interface FormData {
 
 export interface FormProps {
   title: string | null;
-  questions: [] | { question: string, context: string }[];
+  questions: [] | { question: string; context: string }[];
   listingId: string | null;
   isPreview: boolean;
+  session?: Session | null;
 }

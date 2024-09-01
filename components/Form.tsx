@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Label, Alert, TextInput, Checkbox, Textarea, Select } from 'flowbite-react';
 import { AiOutlineLoading } from 'react-icons/ai';
@@ -43,7 +43,7 @@ const initialValues: FormData = {
 };
 
 
-export default function Form({ title, listingId, questions, isPreview }: FormProps) {
+export default function Form({ title, listingId, questions, isPreview, session }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
@@ -61,6 +61,24 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
   const [confirmNotStudyingAbroad, setConfirmNotStudyingAbroad] = useState(false);
 
   const maxWordCount = 200; // Adjust as needed
+
+  useEffect(() => {
+    if (session) {
+      const email = session.user?.email || ""
+      const fullName = session.user?.name || "";
+      const nameParts = fullName.split(" ");
+      
+      const firstName = nameParts[0] || ""; // Get the first part as the first name
+      const lastName = nameParts.slice(1).join(" ") || ""; // Join the rest as the last name
+
+      setFormData((prevData) => ({
+        ...prevData,
+        firstName,
+        lastName,
+        email,
+      }));
+    }
+  }, [session])
 
   const checkRequiredFields = () => {
     const possibleRequiredFields = ['firstName', 'lastName', 'major', 'gradMonth', 'gradYear', 'email', 'phone', 'resume', 'image'];
@@ -376,7 +394,7 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
         value={formData[id] as string}
         onChange={handleChange}
         required={required}
-        disabled={isSubmitting}
+        disabled={isSubmitting || (id == "email" && (session !== null) )}
       />
     </div>
   );

@@ -94,6 +94,7 @@ export default function Listing({ params }: { params: { id: string } }) {
         questions={listingData.questions}
         listingId={listingData.listingId}
         isPreview={false}
+        session={session}
       />
     </main>
   );
