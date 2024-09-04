@@ -70,7 +70,6 @@ export default function PreviewListing() {
         title={listingData.title}
         questions={listingData.questions}
         listingId={null}
-        includeEventsAttended={listingData.includeEventsAttended}
         isPreview={true}
       />
     </main>

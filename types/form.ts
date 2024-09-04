@@ -44,6 +44,5 @@ export interface FormProps {
   title: string | null;
   questions: [] | { question: string, context: string }[];
   listingId: string | null;
-  includeEventsAttended: boolean;
   isPreview: boolean;
 }
