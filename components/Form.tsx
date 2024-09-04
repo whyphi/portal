@@ -491,43 +491,7 @@ export default function Form({ title, listingId, questions, includeEventsAttende
     )
   }
 
-  const RenderEventsAttendedSection = () => {
-
-    // Helper function to convert id to name
-    const renderEventName = (eventId: string) => {
-      const eventIdToName = {
-        infoSession1: "Info Session 1",
-        infoSession2: "Info Session 2",
-        resumeWorkshop: "Resume Workshop",
-        socialEvent: "Social Event",
-        professionalPanel: "Professional Panel"
-      };
-
-      return eventIdToName[eventId as keyof typeof eventIdToName] || "Unknown Event";
-    };
-
-    return (
-      <div className="flex flex-col gap-2">
-        <label className={AdminTextStyles.default}>
-          Events Attended <span className="text-red-500">*</span>
-        </label>
-        <fieldset className="grid gap-2 grid-cols-3 mb-6">
-          {formData.events && Object.entries(formData.events).map(([event, isChecked]) => (
-            <label key={event} className={`flex ${AdminTextStyles.subtext}`}>
-              <Checkbox
-                className="mr-2 focus:ring-purple-300 text-purple-600"
-                name={event}
-                checked={isChecked}
-                onChange={handleEventsAttendedChange}
-                disabled={isSubmitting}
-              />
-              {renderEventName(event)}
-            </label>
-          ))}
-        </fieldset>
-      </div>
-    )
-  };
+  // TODO: make RenderEventsAttendedSection section auto-filled from rushee data and DISABLE editing
 
   const RenderErrorAlert = () => {
     return (
@@ -692,9 +656,6 @@ export default function Form({ title, listingId, questions, includeEventsAttende
       {RenderInput("website", "Website / Portfolio", "text")}
       {RenderFileInput("resume", "Upload Your Resume (PDF)", "file", true)}
       {RenderFileInput("image", "Upload Profile Picture (PNG/JPG/JPEG)", "file", true)}
-
-
-      {includeEventsAttended && RenderEventsAttendedSection()}
 
       {questions && renderResponseInputs()}
 
