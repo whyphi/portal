@@ -43,7 +43,7 @@ const initialValues: FormData = {
 };
 
 
-export default function Form({ title, listingId, questions, isPreview }: FormProps) {
+export default function Form({ title, listingId, questions, includeEventsAttended, isPreview }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
@@ -59,6 +59,16 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
   // Confirmation Checkboxes
   const [confirmUndergraduate, setConfirmUndergraduate] = useState(false);
   const [confirmNotStudyingAbroad, setConfirmNotStudyingAbroad] = useState(false);
+
+  if (includeEventsAttended) {
+    initialValues.events = {
+      infoSession1: false,
+      infoSession2: false,
+      resumeWorkshop: false,
+      socialEvent: false,
+      professionalPanel: false
+    }
+  }
 
   const maxWordCount = 200; // Adjust as needed
 
@@ -359,6 +369,19 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
     }
   }
 
+  const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      events: {
+        ...prevData.events,
+        [name]: checked,
+      },
+    }) as FormData);
+  };
+
+
   const RenderInput = (
     id: keyof FormData,
     label: string,
@@ -468,44 +491,43 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
     )
   }
 
-  // TODO: make this section auto-filled from rushee data and DISABLE editing
-  // const RenderEventsAttendedSection = () => {
+  const RenderEventsAttendedSection = () => {
 
-  //   // Helper function to convert id to name
-  //   const renderEventName = (eventId: string) => {
-  //     const eventIdToName = {
-  //       infoSession1: "Info Session 1",
-  //       infoSession2: "Info Session 2",
-  //       resumeWorkshop: "Resume Workshop",
-  //       socialEvent: "Social Event",
-  //       professionalPanel: "Professional Panel"
-  //     };
+    // Helper function to convert id to name
+    const renderEventName = (eventId: string) => {
+      const eventIdToName = {
+        infoSession1: "Info Session 1",
+        infoSession2: "Info Session 2",
+        resumeWorkshop: "Resume Workshop",
+        socialEvent: "Social Event",
+        professionalPanel: "Professional Panel"
+      };
 
-  //     return eventIdToName[eventId as keyof typeof eventIdToName] || "Unknown Event";
-  //   };
+      return eventIdToName[eventId as keyof typeof eventIdToName] || "Unknown Event";
+    };
 
-  //   return (
-  //     <div className="flex flex-col gap-2">
-  //       <label className={AdminTextStyles.default}>
-  //         Events Attended <span className="text-red-500">*</span>
-  //       </label>
-  //       <fieldset className="grid gap-2 grid-cols-3 mb-6">
-  //         {formData.events && Object.entries(formData.events).map(([event, isChecked]) => (
-  //           <label key={event} className={`flex ${AdminTextStyles.subtext}`}>
-  //             <Checkbox
-  //               className="mr-2 focus:ring-purple-300 text-purple-600"
-  //               name={event}
-  //               checked={isChecked}
-  //               onChange={handleEventsAttendedChange}
-  //               disabled={isSubmitting}
-  //             />
-  //             {renderEventName(event)}
-  //           </label>
-  //         ))}
-  //       </fieldset>
-  //     </div>
-  //   )
-  // };
+    return (
+      <div className="flex flex-col gap-2">
+        <label className={AdminTextStyles.default}>
+          Events Attended <span className="text-red-500">*</span>
+        </label>
+        <fieldset className="grid gap-2 grid-cols-3 mb-6">
+          {formData.events && Object.entries(formData.events).map(([event, isChecked]) => (
+            <label key={event} className={`flex ${AdminTextStyles.subtext}`}>
+              <Checkbox
+                className="mr-2 focus:ring-purple-300 text-purple-600"
+                name={event}
+                checked={isChecked}
+                onChange={handleEventsAttendedChange}
+                disabled={isSubmitting}
+              />
+              {renderEventName(event)}
+            </label>
+          ))}
+        </fieldset>
+      </div>
+    )
+  };
 
   const RenderErrorAlert = () => {
     return (
@@ -641,6 +663,7 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
       {RenderInput("minor", "Minor", "text")}
       {RenderGpaSection()}
       {RenderGradMonthYear()}
+      {/* {RenderInput("gradYear", "Expected Graduation Date (Month Year) | (Example: May 2026)", "text", true)} */}
 
       <div className="flex flex-col gap-1">
         <label className={AdminTextStyles.default}>
@@ -669,6 +692,9 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
       {RenderInput("website", "Website / Portfolio", "text")}
       {RenderFileInput("resume", "Upload Your Resume (PDF)", "file", true)}
       {RenderFileInput("image", "Upload Profile Picture (PNG/JPG/JPEG)", "file", true)}
+
+
+      {includeEventsAttended && RenderEventsAttendedSection()}
 
       {questions && renderResponseInputs()}
 

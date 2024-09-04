@@ -90,6 +90,7 @@ export default function Listing({ params }: { params: { id: string } }) {
         title={listingData.title}
         questions={listingData.questions}
         listingId={listingData.listingId}
+        includeEventsAttended={listingData.includeEventsAttended}
         isPreview={false}
       />
     </main>
