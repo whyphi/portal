@@ -46,6 +46,7 @@ export default function AccountSettings() {
         <h1 className={AdminTextStyles.title}>Account Settings</h1>
         <form className="flex flex-col gap-4" onSubmit={(e) => {
           e.preventDefault();
+          console.log(user);
           fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/member/${_id}`, {
             method: "PUT",
             headers: {
