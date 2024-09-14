@@ -25,7 +25,7 @@ export default function CheckInPage() {
   const eventName = searchParams.get("eventName");
 
   useEffect(() => {
-    if (session?.user) setIsLoading(false);
+    if (session?.user && session?.token) setIsLoading(false);
   }, [session]);
 
   const handleSubmit = () => {
@@ -37,8 +37,8 @@ export default function CheckInPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        id: session?.token?._id, // TODO: fix type-safety errors by using some sort of CustomSession interface in api/auth...
         code: code,
-        name: session?.user?.name,
         email: session?.user?.email,
       }),
     })
