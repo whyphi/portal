@@ -12,8 +12,6 @@ export default function Success() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("mode", mode);
-    
     if (mode) setIsLoading(false);
   },[mode])
 
