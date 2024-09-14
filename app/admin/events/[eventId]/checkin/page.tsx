@@ -8,7 +8,7 @@ import { HiArrowNarrowLeft } from "react-icons/hi";
 import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
 import { Alert, Badge, Button, TextInput } from "flowbite-react";
 import Loader from "@/components/AdminLoader";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 export default function CheckInPage() {
@@ -51,7 +51,7 @@ export default function CheckInPage() {
         return res.json();
       })
       .then((data) => {
-        // router.push("/checkin/success");
+        router.push(`/admin/events/${eventId}/success`);
       })
       .catch((err) => {
         setError(err);
@@ -59,52 +59,21 @@ export default function CheckInPage() {
       });
   };
 
-  // const AlertComponent = () => {
-  //   return (
-  //     error && (
-  //       <Alert
-  //         variant="destructive"
-  //         className="absolute top-0 left-0 w-full m-4 bg-white z-50"
-  //       >
-  //         {/* <AlertCircle className="h-4 w-4" /> */}
-  //         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-4 w-4 lucide lucide-circle-alert"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" /></svg>
-  //         <AlertTitle>Error</AlertTitle>
-  //         <AlertDescription>
-  //           {error.message}
-  //         </AlertDescription>
-  //         <button
-  //           type="button"
-  //           className="absolute top-1 right-1 text-gray-500 hover:text-gray-800 focus:outline-none"
-  //           onClick={() => {
-  //             setError(null);
-
-  //           }}
-  //         >
-  //           <svg
-  //             xmlns="http://www.w3.org/2000/svg"
-  //             width="24"
-  //             height="24"
-  //             viewBox="0 0 24 24"
-  //             fill="none"
-  //             stroke="currentColor"
-  //             stroke-width="2"
-  //             stroke-linecap="round"
-  //             stroke-linejoin="round"
-  //             className="m-1 h-4 w-4 lucide lucide-x"
-  //           >
-  //             <path d="M18 6 6 18" />
-  //             <path d="m6 6 12 12" />
-  //           </svg>
-  //         </button>
-  //       </Alert>
-  //     )
-  //   )
-  // }
+  const AlertComponent = () => {
+    return (
+      error && (
+        <Alert className="mb-4" color="failure">
+          <span className="font-bold">Error checking in.</span> {error.message}
+        </Alert>
+      )
+    );
+  };
 
   if (isLoading) return <Loader />;
 
   return (
     <div className="space-y-6">
+      <AlertComponent />
       <Link href={`/admin/events/${eventId}`} passHref>
         <button className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
           <HiArrowNarrowLeft className="h-5 w-5 mr-2" />
