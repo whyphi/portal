@@ -37,7 +37,7 @@ export default function CheckInPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: session?.token?._id, // TODO: fix type-safety errors by using some sort of CustomSession interface in api/auth...
+        id: session?.token?._id,
         code: code,
         email: session?.user?.email,
       }),
