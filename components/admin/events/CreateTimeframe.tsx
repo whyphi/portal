@@ -1,26 +1,30 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { HiOutlineUserGroup, HiOutlinePlus, HiOutlineX } from "react-icons/hi";
-import { Label, TextInput, Button, Select, Badge } from 'flowbite-react';
+import { Label, TextInput, Button, Select, Badge } from "flowbite-react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
-import { Spinner } from 'flowbite-react';
+import { Spinner } from "flowbite-react";
 
 interface CreateTimeframeProps {
   timeframes: Timeframe[];
   onClose: () => void; // Prop for close button click handler
 }
 
-const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }) => {
+const CreateTimeframe: React.FC<CreateTimeframeProps> = ({
+  onClose,
+  timeframes,
+}) => {
   const { token } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(true);
-  const [translateX, setTranslateX] = useState<string>('0');
+  const [translateX, setTranslateX] = useState<string>("0");
 
   const [timeframeName, setTimeframeName] = useState<string>("");
   const [spreadsheetId, setSpreadsheetId] = useState<string>("");
 
-  const [selectedTimeframeIndex, setSelectedTimeframeIndex] = useState<number>(0);
+  const [selectedTimeframeIndex, setSelectedTimeframeIndex] =
+    useState<number>(0);
   const [eventName, setEventName] = useState<string>("");
   const [eventCode, setEventCode] = useState<string>("");
 
@@ -32,16 +36,18 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
   const [isSheetTabLoading, setIsSheetTabLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setTranslateX(isOpen ? '0' : '100%');
+    setTranslateX(isOpen ? "0" : "100%");
     setIsSheetTabLoading(true);
     const getSheetTabs = async () => {
-
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex]._id}/sheets`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex]._id}/sheets`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         setSheetTabs(data);
         setIsSheetTabLoading(false);
@@ -52,39 +58,45 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
     getSheetTabs();
   }, [selectedTimeframeIndex, timeframes, token, isOpen]);
 
-
-
   const handleCloseButtonClick = () => {
     setIsOpen(false);
     setTimeout(onClose, 200); // Call onClose after transition duration (300ms)
   };
 
   const handleInputchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeframeName(e.target.value)
+    setTimeframeName(e.target.value);
   };
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEventName(e.target.value)
+    setEventName(e.target.value);
   };
 
   const handleEventCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEventCode(e.target.value.trim())
+    setEventCode(e.target.value.trim());
   };
 
-  const handleSpreadsheetIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSpreadsheetId(e.target.value)
+  const handleSpreadsheetIdChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSpreadsheetId(e.target.value);
   };
 
   const handleCreateTimeframe = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: timeframeName, spreadsheetId: spreadsheetId })
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: timeframeName,
+            spreadsheetId: spreadsheetId,
+          }),
+        }
+      );
       if (!response.ok) {
         throw new Error(response.statusText);
       }
@@ -98,12 +110,17 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
   const handleCreateEvent = async () => {
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex]._id}/events`;
     const options = {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name: eventName, tags: tags, sheetTab: selectedSheetTab }),
+      body: JSON.stringify({
+        name: eventName,
+        tags: tags,
+        sheetTab: selectedSheetTab,
+        code: eventCode,
+      }),
     };
 
     try {
@@ -118,16 +135,18 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
   };
 
   const RenderAddTagButton = () => {
-    const isDisabled = tags.length >= 3 || tagName === '';
+    const isDisabled = tags.length >= 3 || tagName === "";
 
     return (
       <div className="absolute right-6 dark:text-white">
         <label
-          className={`p-2 flex items-center justify-center h-5 text-xs cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors rounded-full border border-gray-200 dark:border-gray-700 ${isDisabled && 'opacity-50 cursor-not-allowed'}`}
+          className={`p-2 flex items-center justify-center h-5 text-xs cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors rounded-full border border-gray-200 dark:border-gray-700 ${
+            isDisabled && "opacity-50 cursor-not-allowed"
+          }`}
           onClick={() => {
             if (!isDisabled) {
               setTags([...tags, tagName]);
-              setTagName('');
+              setTagName("");
             }
           }}
         >
@@ -135,16 +154,12 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
           <span className="leading-5 ml-1">Add</span>
         </label>
       </div>
-    )
-
-
-  }
+    );
+  };
 
   const handleRemoveTag = (tag: string) => {
     setTags(tags.filter((t) => t !== tag));
-  }
-
-
+  };
 
   return (
     <div
@@ -156,14 +171,30 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
         onClick={handleCloseButtonClick}
         className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white"
       >
-        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+        <svg
+          className="w-3 h-3"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 14 14"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+          />
         </svg>
         <span className="sr-only">Close menu</span>
       </button>
       <div>
-        <h5 id="drawer-label" className="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400">
-          <HiOutlineUserGroup className="w-3.5 h-3.5 me-2.5" />NEW TIMEFRAME
+        <h5
+          id="drawer-label"
+          className="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
+        >
+          <HiOutlineUserGroup className="w-3.5 h-3.5 me-2.5" />
+          NEW TIMEFRAME
         </h5>
         <div className="mb-4">
           <div className="mb-2 block">
@@ -196,20 +227,34 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
           color="purple"
           onClick={handleCreateTimeframe}
           disabled={timeframeName === ""}
-        >Create Timeframe</Button>
+        >
+          Create Timeframe
+        </Button>
       </div>
       <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
       <div>
-        <h5 id="drawer-label" className="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400">
+        <h5
+          id="drawer-label"
+          className="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400"
+        >
           NEW EVENT
         </h5>
         <div className="mb-4">
           <div className="mb-2 block">
             <Label htmlFor="" value="Choose Timeframe" />
           </div>
-          <Select id="timeframe" required value={selectedTimeframeIndex} onChange={(e) => setSelectedTimeframeIndex(parseInt(e.target.value))}>
+          <Select
+            id="timeframe"
+            required
+            value={selectedTimeframeIndex}
+            onChange={(e) =>
+              setSelectedTimeframeIndex(parseInt(e.target.value))
+            }
+          >
             {timeframes.map((timeframe, index) => (
-              <option key={index} value={index}>{timeframe.name}</option>
+              <option key={index} value={index}>
+                {timeframe.name}
+              </option>
             ))}
           </Select>
           <div className="mt-6 mb-2 block">
@@ -261,9 +306,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
                     >
                       <HiOutlineX className="h-4 w-4 text-gray-700 hover:text-gray-500" />
                     </button>
-                    <Badge color="gray">
-                      {tag}
-                    </Badge>
+                    <Badge color="gray">{tag}</Badge>
                   </div>
                 </div>
               ))}
@@ -273,25 +316,35 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
           <div className="mt-6 mb-2 block">
             <Label htmlFor="" value="Select Sheet Tab" />
           </div>
-          {isSheetTabLoading ? (<Spinner />) : (<Select id="sheetTabs" required value={selectedSheetTab} onChange={(e) => setSelectedSheetTab(e.target.value)}>
-            {sheetTabs && sheetTabs.map((sheetTab) => (
-              <option key={sheetTab} value={sheetTab}>{sheetTab}</option>
-            ))}
-          </Select>)}
-
-
+          {isSheetTabLoading ? (
+            <Spinner />
+          ) : (
+            <Select
+              id="sheetTabs"
+              required
+              value={selectedSheetTab}
+              onChange={(e) => setSelectedSheetTab(e.target.value)}
+            >
+              {sheetTabs &&
+                sheetTabs.map((sheetTab) => (
+                  <option key={sheetTab} value={sheetTab}>
+                    {sheetTab}
+                  </option>
+                ))}
+            </Select>
+          )}
         </div>
         <Button
           className="w-full"
           color="purple"
           onClick={handleCreateEvent}
           disabled={!(eventName && eventCode)}
-        >Create Event</Button>
+        >
+          Create Event
+        </Button>
       </div>
     </div>
   );
 };
 
 export default CreateTimeframe;
-
-
