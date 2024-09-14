@@ -43,7 +43,7 @@ const initialValues: FormData = {
 };
 
 
-export default function Form({ title, listingId, questions, isPreview }: FormProps) {
+export default function Form({ title, listingId, questions, includeEventsAttended, isPreview }: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
@@ -59,6 +59,16 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
   // Confirmation Checkboxes
   const [confirmUndergraduate, setConfirmUndergraduate] = useState(false);
   const [confirmNotStudyingAbroad, setConfirmNotStudyingAbroad] = useState(false);
+
+  if (includeEventsAttended) {
+    initialValues.events = {
+      infoSession1: false,
+      infoSession2: false,
+      resumeWorkshop: false,
+      socialEvent: false,
+      professionalPanel: false
+    }
+  }
 
   const maxWordCount = 200; // Adjust as needed
 
@@ -362,6 +372,19 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
     }
   }
 
+  const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      events: {
+        ...prevData.events,
+        [name]: checked,
+      },
+    }) as FormData);
+  };
+
+
   const RenderInput = (
     id: keyof FormData,
     label: string,
@@ -607,6 +630,7 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
       {RenderInput("minor", "Minor", "text")}
       {RenderGpaSection()}
       {RenderGradMonthYear()}
+      {/* {RenderInput("gradYear", "Expected Graduation Date (Month Year) | (Example: May 2026)", "text", true)} */}
 
       <div className="flex flex-col gap-1">
         <label className={AdminTextStyles.default}>

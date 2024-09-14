@@ -64,7 +64,7 @@ interface AnalyticsAttendees {
 interface AnalyticsAttendee {
   name: string;
   email: string;
-  // checkinTime: string; // TODO: fix this thingy
+  checkinTime: string;
   eventsAttended: readonly AnalyticsEvent[];
 }
 

@@ -96,14 +96,12 @@ export default function ApplicantPage({ applicant }: ApplicantPageProps) {
               <p>No resume available.</p>
             )}
           </Tabs.Item>
-          {/* TODO: may need to remove some of this stuff */}
           {applicant?.events ? (<Tabs.Item
             icon={HiUserGroup}
             title="Events Attended"
-            >
+          >
             {renderEventsAttended(applicant.events)}
           </Tabs.Item>) : ("")}
-            {/* ENDTODO */}
 
         </Tabs>
       </div>

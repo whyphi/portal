@@ -45,9 +45,6 @@ export default function NavSidebar() {
                     <span className="block text-sm">{session?.user?.name}</span>
                     <span className="block truncate text-sm font-medium">{session?.user?.email}</span>
                   </Dropdown.Header>
-                  <Dropdown.Item href="/admin/account-settings">
-                    Settings
-                  </Dropdown.Item>
                   <Dropdown.Item onClick={() => signOut({ callbackUrl: "/" })}>
                     Sign out
                   </Dropdown.Item>
