@@ -2,6 +2,26 @@ import NextAuth, { AuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import { MongoClient, ServerApiVersion } from 'mongodb'
 
+declare module "next-auth" {
+  interface Session {
+    token: {
+      _id: string;
+      email: string;
+      name: string;
+      isNewUser: boolean;
+      role: string;
+    };
+  }
+
+  interface JWT {
+    _id: string;
+    email: string;
+    name: string;
+    isNewUser: boolean;
+    role: string;
+  }
+}
+
 const mongoUser = process.env.MONGO_USER;
 const mongoPassword = process.env.MONGO_PASSWORD;
 const uri = `mongodb+srv://${mongoUser}:${mongoPassword}@cluster0.9gtht.mongodb.net/?retryWrites=true&w=majority`;
@@ -14,8 +34,6 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
-
-
 
 async function isValidUser(email: string) {
   await client.connect();
@@ -93,10 +111,17 @@ const authOptions: AuthOptions = {
       }
       return token;
     },
-    async session({ session, user, token }) {
-      (session as any).token = token; // Type assertion
+    async session({ session, token }) {
+      session.token = {
+        _id: typeof token._id === "string" ? token._id : "",
+        email: typeof token.email === "string" ? token.email : "",
+        name: typeof token.name === "string" ? token.name : "",
+        isNewUser: typeof token.isNewUser === "boolean" ? token.isNewUser : false,
+        role: typeof token.role === "string" ? token.role : "member",
+      };
       return session;
     },
+  
 
   },
   pages: {
