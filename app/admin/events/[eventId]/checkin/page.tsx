@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Link from "next/link";
 import { HiArrowNarrowLeft } from "react-icons/hi";
-import { QrReader } from "@cmdnio/react-qr-reader";
 import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
 import { Alert, Badge, Button, TextInput } from "flowbite-react";
 import Loader from "@/components/AdminLoader";
@@ -25,27 +24,9 @@ export default function CheckInPage() {
   const eventId = searchParams.get("eventId");
   const eventName = searchParams.get("eventName");
 
-  // useEffect(() => {
-  //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${params.id}`, {
-  //     method: "POST",
-  //     body: JSON.stringify({}),
-  //     headers: { "Content-Type": "application/json" },
-  //   })
-  //     .then((res) => {
-  //       if (!res.ok) {
-  //         router.push("/checkin/error");
-  //         throw new Error("Failed to fetch event");
-  //       }
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       setEvent(data);
-  //       setIsLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       setError(err);
-  //     });
-  // }, []);
+  useEffect(() => {
+    if (session?.user) setIsLoading(false);
+  }, [session]);
 
   const handleSubmit = () => {
     setIsButtonDisabled(true);
@@ -120,7 +101,7 @@ export default function CheckInPage() {
   //   )
   // }
 
-  // if (isLoading) return <Loader />;
+  if (isLoading) return <Loader />;
 
   return (
     <div className="space-y-6">
