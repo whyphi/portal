@@ -1,24 +1,126 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import Link from "next/link";
 import { HiArrowNarrowLeft } from "react-icons/hi";
-import { QrReader } from '@cmdnio/react-qr-reader';
-import { AdminTextStyles, DimmedAdminTextStyles } from '@/styles/TextStyles';
-
+import { QrReader } from "@cmdnio/react-qr-reader";
+import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
+import { Alert, Badge, Button, TextInput } from "flowbite-react";
+import Loader from "@/components/AdminLoader";
+import { useRouter } from 'next/navigation'
+import { useSession } from "next-auth/react";
 
 export default function CheckInPage() {
+  const router = useRouter();
   const { token } = useAuth();
-  const [popupMessage, setPopupMessage] = useState<string | null>(null);
-  const [popupCode, setPopupCode] = useState<string | null>(null);
-  const searchParams = useSearchParams()
+  const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const [code, setCode] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  const eventId = searchParams.get("eventId")
+  const eventId = searchParams.get("eventId");
   const eventName = searchParams.get("eventName");
 
-  var isProcessing = false;
+  // useEffect(() => {
+  //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${params.id}`, {
+  //     method: "POST",
+  //     body: JSON.stringify({}),
+  //     headers: { "Content-Type": "application/json" },
+  //   })
+  //     .then((res) => {
+  //       if (!res.ok) {
+  //         router.push("/checkin/error");
+  //         throw new Error("Failed to fetch event");
+  //       }
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       setEvent(data);
+  //       setIsLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       setError(err);
+  //     });
+  // }, []);
+
+  const handleSubmit = () => {
+    setIsButtonDisabled(true);
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/${eventId}/checkin`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code: code,
+        name: session?.user?.name,
+        email: session?.user?.email,
+      }),
+    })
+      .then(async (res) => {
+        setIsButtonDisabled(false);
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.Message);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        // router.push("/checkin/success");
+      })
+      .catch((err) => {
+        setError(err);
+        setIsButtonDisabled(false);
+      });
+  };
+
+  // const AlertComponent = () => {
+  //   return (
+  //     error && (
+  //       <Alert
+  //         variant="destructive"
+  //         className="absolute top-0 left-0 w-full m-4 bg-white z-50"
+  //       >
+  //         {/* <AlertCircle className="h-4 w-4" /> */}
+  //         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-4 w-4 lucide lucide-circle-alert"><circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" /></svg>
+  //         <AlertTitle>Error</AlertTitle>
+  //         <AlertDescription>
+  //           {error.message}
+  //         </AlertDescription>
+  //         <button
+  //           type="button"
+  //           className="absolute top-1 right-1 text-gray-500 hover:text-gray-800 focus:outline-none"
+  //           onClick={() => {
+  //             setError(null);
+
+  //           }}
+  //         >
+  //           <svg
+  //             xmlns="http://www.w3.org/2000/svg"
+  //             width="24"
+  //             height="24"
+  //             viewBox="0 0 24 24"
+  //             fill="none"
+  //             stroke="currentColor"
+  //             stroke-width="2"
+  //             stroke-linecap="round"
+  //             stroke-linejoin="round"
+  //             className="m-1 h-4 w-4 lucide lucide-x"
+  //           >
+  //             <path d="M18 6 6 18" />
+  //             <path d="m6 6 12 12" />
+  //           </svg>
+  //         </button>
+  //       </Alert>
+  //     )
+  //   )
+  // }
+
+  // if (isLoading) return <Loader />;
 
   return (
     <div className="space-y-6">
@@ -30,84 +132,33 @@ export default function CheckInPage() {
       </Link>
 
       <h1 className={AdminTextStyles.subtitle}>{eventName}</h1>
-      <p className={DimmedAdminTextStyles.default}>Scan your personal QR-Code to get checked in to this event!</p>
-      <div>
-        <QrReader
-          className="max-w-md mx-auto rounded-lg"
-          containerStyle={{
-            width: "100%",
-            margin: "0 auto",
-          }}
-          videoContainerStyle={{
-            width: "100%",
-            height: "auto",
-            borderRadius: "5px",
-            border: "3px solid rgba(0, 0, 0, 0.2)",
-            boxShadow: "0 0 rgba(0, 0, 0, 0.2)",
-          }}
-          videoStyle={{
-            width: "100%",
-            height: "100%"
-          }}
-          constraints={{
-            facingMode: "environment"
-          }}
-          scanDelay={500}
-          onResult={async (result) => {
-            if (result && !isProcessing) {
-              const userData = result.getText();
+      <p className={DimmedAdminTextStyles.default}>
+        Enter the event code to get checked in to this event!
+      </p>
 
-              isProcessing = true;
-              try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/${eventId}/checkin`, {
-                  method: 'POST',
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                  },
-                  body: userData
-                });
-                if (!response.ok) {
-                  const { Message, Code } = await response.json();
-                  setPopupMessage(Message);
-                  setPopupCode(Code);
-                } else {
-                  const { message } = await response.json();
-                  setPopupMessage(message);
-                }
-              } catch (error) {
-                setPopupMessage("" + error);
-              } finally {
-                setTimeout(() => {
-                  isProcessing = false
-                  setPopupMessage(null);
-                  setPopupCode(null);
-                }, 2000); // block api requests for 2 seconds
-              }
-            }
-          }}
-        />
-        {popupMessage && (
-          <div
-            className={`p-4 mt-4 text-sm ${popupCode === "NotFoundError" || popupCode === "BadRequestError"
-                ? "bg-red-100 text-red-700"
-                : "bg-green-100 text-green-700"
-              } rounded-lg dark:bg-red-200 dark:text-red-800`}
-            role="alert"
-          >
-            <span className="font-medium">{popupMessage}</span>
-          </div>
-        )}
-
-
-
-
+      <div className="flex flex-col">
+        <p className="flex items-center gap-1 text-gray-600 dark:text-white text-md">
+          Please enter your code to check-in to <Badge>{eventName}</Badge>:
+        </p>
+        <div className="flex items-center space-x-2 mt-2 mb-8">
+          <TextInput
+            className="w-full"
+            type="text"
+            placeholder="Code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+        </div>
+        <Button
+          className="w-24"
+          type="submit"
+          onClick={handleSubmit}
+          disabled={isButtonDisabled}
+          color="purple"
+        >
+          Submit
+        </Button>
       </div>
     </div>
   );
 }
-
-
-
-
-
