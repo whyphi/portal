@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { Timeframe } from "@/types/admin/events";
-import { HiArrowNarrowLeft, HiOutlineQrcode, HiOutlineUserGroup, HiOutlineTable } from "react-icons/hi";
+import { HiArrowNarrowLeft, HiCheckCircle, HiOutlineUserGroup, HiOutlineTable } from "react-icons/hi";
 
 import Loader from "@/components/Loader";
 import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
@@ -58,9 +58,8 @@ export default function Event({ params }: { params: { eventId: string } }) {
               href={`/admin/events/${event._id}/checkin?eventId=${event._id}&eventName=${encodeURIComponent(event.name)}`}
               className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
             >
-              <HiOutlineQrcode className="w-4 h-4" />
-              <span className="flex-1 ms-3 whitespace-nowrap">QR-Code Check-In</span>
-              {/* <span className="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">Popular</span> */}
+              <HiCheckCircle className="w-4 h-4" />
+              <span className="flex-1 ms-3 whitespace-nowrap">Brother Checkin</span>
             </a>
           </li>
           <li>

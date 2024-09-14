@@ -75,9 +75,9 @@ export default function NavSidebar() {
             <Sidebar.Item href="/admin/accountability" icon={HiChartBar}>
               Accountability
             </Sidebar.Item>
-            <Sidebar.Item href="/admin/qr" icon={HiOutlineQrcode}>
+            {/* <Sidebar.Item href="/admin/qr" icon={HiOutlineQrcode}>
               QR Code (Check-in)
-            </Sidebar.Item>
+            </Sidebar.Item> */}
             <Sidebar.Collapse icon={HiShare} label="Events">
               <Sidebar.Item href="/admin/events" icon={HiCube}>Member</Sidebar.Item>
               <Sidebar.Item href="/admin/rush" icon={HiCubeTransparent}>Rush</Sidebar.Item>

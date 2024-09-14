@@ -6,21 +6,11 @@ import jwt from 'jsonwebtoken';
 import { Session } from 'next-auth';
 import { useRouter, usePathname } from 'next/navigation'
 
-
 interface AuthContextProps {
   token: string | null;
   setToken: (token: string | null) => void;
   isLoading: boolean;
 }
-
-interface CustomSession extends Session {
-  token?: {
-    isNewUser?: boolean;
-    _id?: string;
-    // Add other properties as needed
-  };
-}
-
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
@@ -34,7 +24,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     getSession().then((session: Session | null) => {
       if (session) {
         // Use type assertion to add the 'token' property
-        const sessionWithToken = session as CustomSession;
+        const sessionWithToken = session;
         
         // Check if user is a newUser
         if (sessionWithToken && sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {

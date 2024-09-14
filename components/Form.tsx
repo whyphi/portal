@@ -99,6 +99,9 @@ export default function Form({ title, listingId, questions, isPreview }: FormPro
     } else if (!confirmNotStudyingAbroad) {
       alert(`Sorry, you are ineligible to apply to Phi Chi Theta, Zeta Chapter. Please ensure that you are currently a BU undergraduate student and not studying abroad.`);
       return false;
+    } else if (!formData.email.endsWith("@bu.edu")) {
+      alert(`Please be sure to use you "@bu.edu" email.`)
+      return false;
     }
     return true;
   };
