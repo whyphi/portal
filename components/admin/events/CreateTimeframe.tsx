@@ -22,6 +22,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
 
   const [selectedTimeframeIndex, setSelectedTimeframeIndex] = useState<number>(0);
   const [eventName, setEventName] = useState<string>("");
+  const [eventCode, setEventCode] = useState<string>("");
 
   const [tagName, setTagName] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
@@ -64,6 +65,10 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
 
   const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEventName(e.target.value)
+  };
+
+  const handleEventCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEventCode(e.target.value.trim())
   };
 
   const handleSpreadsheetIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,7 +167,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
         </h5>
         <div className="mb-4">
           <div className="mb-2 block">
-            <Label htmlFor="graduationYear" value="Name" />
+            <Label htmlFor="" value="Name" />
           </div>
           <TextInput
             key="timeframeName"
@@ -200,7 +205,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
         </h5>
         <div className="mb-4">
           <div className="mb-2 block">
-            <Label htmlFor="graduationYear" value="Choose Timeframe" />
+            <Label htmlFor="" value="Choose Timeframe" />
           </div>
           <Select id="timeframe" required value={selectedTimeframeIndex} onChange={(e) => setSelectedTimeframeIndex(parseInt(e.target.value))}>
             {timeframes.map((timeframe, index) => (
@@ -208,7 +213,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
             ))}
           </Select>
           <div className="mt-6 mb-2 block">
-            <Label htmlFor="graduationYear" value="Event Name" />
+            <Label htmlFor="" value="Event Name" />
           </div>
           <TextInput
             key="eventName"
@@ -219,7 +224,18 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
             onChange={handleEventNameChange}
           />
           <div className="mt-6 mb-2 block">
-            <Label htmlFor="graduationYear" value="Add Tags (Max 3)" />
+            <Label htmlFor="" value="Code" />
+          </div>
+          <TextInput
+            key="eventCode"
+            required
+            id="eventCode"
+            type="text"
+            value={eventCode}
+            onChange={handleEventCodeChange}
+          />
+          <div className="mt-6 mb-2 block">
+            <Label htmlFor="" value="Add Tags (Max 3)" />
           </div>
           <div className="flex items-center">
             <TextInput
@@ -255,7 +271,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
           )}
 
           <div className="mt-6 mb-2 block">
-            <Label htmlFor="graduationYear" value="Select Sheet Tab" />
+            <Label htmlFor="" value="Select Sheet Tab" />
           </div>
           {isSheetTabLoading ? (<Spinner />) : (<Select id="sheetTabs" required value={selectedSheetTab} onChange={(e) => setSelectedSheetTab(e.target.value)}>
             {sheetTabs && sheetTabs.map((sheetTab) => (
@@ -269,7 +285,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({ onClose, timeframes }
           className="w-full"
           color="purple"
           onClick={handleCreateEvent}
-          disabled={eventName === ""}
+          disabled={!(eventName && eventCode)}
         >Create Event</Button>
       </div>
     </div>
