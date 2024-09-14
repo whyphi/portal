@@ -35,8 +35,6 @@ const client = new MongoClient(uri, {
   }
 });
 
-
-
 async function isValidUser(email: string) {
   await client.connect();
   const db = client.db("vault");
