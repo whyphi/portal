@@ -32,16 +32,32 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
             width={96}
           />
         </div>
-        <h3 className={AdminTextStyles.paragraph}>{`${applicant.firstName} ${applicant.lastName}`}</h3>
-        {applicant.preferredName !== "" && (<h5 className="pb-2 text-sm text-gray-500">({applicant.preferredName})</h5>)}
-        <p className={ThinAdminTextStyles.default}>{`${applicant.gradMonth} ${applicant.gradYear}`}</p>
+        <h3
+          className={AdminTextStyles.paragraph}
+        >{`${applicant.firstName} ${applicant.lastName}`}</h3>
+        {applicant.preferredName !== "" && (
+          <h5 className="pb-2 text-sm text-gray-500">
+            ({applicant.preferredName})
+          </h5>
+        )}
+        <p
+          className={ThinAdminTextStyles.default}
+        >{`${applicant.gradMonth} ${applicant.gradYear}`}</p>
 
         <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
 
-        <p className={ThinAdminTextStyles.default}>College(s): {trueColleges.join(', ')}</p>
+        <p className={ThinAdminTextStyles.default}>
+          College(s): {trueColleges.join(", ")}
+        </p>
         <p className={ThinAdminTextStyles.default}>Major: {applicant?.major}</p>
-        {applicant.minor && <p className={ThinAdminTextStyles.default}>Minor: {applicant.minor}</p>}
-        <p className={ThinAdminTextStyles.default}>GPA: {applicant.hasGpa ? applicant?.gpa : "N/A"}</p>
+        {applicant.minor && (
+          <p className={ThinAdminTextStyles.default}>
+            Minor: {applicant.minor}
+          </p>
+        )}
+        <p className={ThinAdminTextStyles.default}>
+          GPA: {applicant.hasGpa ? applicant?.gpa : "N/A"}
+        </p>
 
         <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
 
@@ -57,27 +73,39 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
             {applicant?.email}
           </span>
         </li>
-        {applicant.linkedin != "" ?
-          (<li className="flex space-x-3 items-center">
+        {applicant.linkedin != "" ? (
+          <li className="flex space-x-3 items-center">
             <AiFillLinkedin className="text-gray-500" />
-            <a href={applicant.linkedin} target="_blank" rel="noopener noreferrer">
-              <Badge>
-                LinkedIn
-              </Badge>
+            <a
+              href={
+                applicant.linkedin.startsWith("http")
+                  ? applicant.linkedin
+                  : `https://${applicant.linkedin}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Badge>LinkedIn</Badge>
             </a>
-          </li>) :
-          (<></>)}
-        {applicant.website != "" ?
-          (<li className="flex space-x-3 items-center">
+          </li>
+        ) : (
+          <></>
+        )}
+        {applicant.website != "" ? (
+          <li className="flex space-x-3 items-center">
             <MdWeb className="text-gray-500" />
-            <a href={applicant.website} target="_blank" rel="noopener noreferrer">
-              <Badge color="purple">
-                Website
-              </Badge>
+            <a
+              href={applicant.website}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Badge color="purple">Website</Badge>
             </a>
-          </li>) :
-          (<></>)}
+          </li>
+        ) : (
+          <></>
+        )}
       </ul>
     </Card>
-  )
+  );
 }
