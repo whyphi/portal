@@ -99,7 +99,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
               href={
                 applicant.website.startsWith("http")
                   ? applicant.website
-                  : `https://${applicant.linkedin}`
+                  : `https://${applicant.website}`
               }
               target="_blank"
               rel="noopener noreferrer"
