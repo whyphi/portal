@@ -7,7 +7,7 @@ import { AiFillLinkedin } from "react-icons/ai";
 import { MdWeb } from "react-icons/md";
 
 import { AdminTextStyles, ThinAdminTextStyles } from '@/styles/TextStyles';
-import { getRushThreshold } from '@/utils/getRushThreshold';
+import { isRushThresholdMet } from '@/utils/getRushThreshold';
 
 interface ApplicantInfoCardProps {
   applicant: Applicant;
@@ -113,7 +113,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
 
             <p className={`flex flex-row gap-2 items-center ${ThinAdminTextStyles.default}`}>
               Event Theshold:
-              {getRushThreshold(applicant.events)
+              {isRushThresholdMet(applicant.events)
               ?
               <Badge color="success">True</Badge>
               :
