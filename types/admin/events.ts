@@ -68,7 +68,7 @@ interface AnalyticsAttendee {
   eventsAttended: readonly AnalyticsEvent[];
 }
 
-interface AnalyticsEvent {
+export interface AnalyticsEvent {
   eventId: string;
   eventName: string;
 }
