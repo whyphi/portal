@@ -96,7 +96,11 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
           <li className="flex space-x-3 items-center">
             <MdWeb className="text-gray-500" />
             <a
-              href={applicant.website}
+              href={
+                applicant.website.startsWith("http")
+                  ? applicant.website
+                  : `https://${applicant.linkedin}`
+              }
               target="_blank"
               rel="noopener noreferrer"
             >
