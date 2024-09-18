@@ -5,6 +5,7 @@ import Loader from "@/components/AdminLoader";
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { Analytics } from "@/types/admin/events";
 import { getPortalBaseUrl } from "@/utils/getBaseURL";
+import { isRushThresholdMetAnalytics } from "@/utils/getRushThreshold";
 import { Badge, Drawer, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 
@@ -71,7 +72,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
         <Table.Cell>{analytics.attendees[email].eventsAttended.length}</Table.Cell>
         {/* TODO: create function to determine if the candidate can be accepted for interview (this can be handled potentially via Vault */}
         <Table.Cell>
-          {analytics.attendees[email].eventsAttended.length > 4 
+          {isRushThresholdMetAnalytics(analytics.attendees[email].eventsAttended) 
             ? <Badge color="success" className="inline-block">True</Badge>
             : <Badge color="failure" className="inline-block">False</Badge>}
         </Table.Cell>
