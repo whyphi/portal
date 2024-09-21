@@ -19,7 +19,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
   const trueColleges = Object.keys(applicant.colleges)
     .filter(college => applicant.colleges[college])
     .map(college => `${college}`); // Modify 
-  
+
   return (
     <Card>
       <ul className="space-y-4">
@@ -86,7 +86,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Badge>LinkedIn</Badge>
+              <Badge>{Constants.LINKEDIN_BADGE_TITLE}</Badge>
             </a>
           </li>
         ) : (
@@ -104,7 +104,7 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Badge color="purple">Website</Badge>
+              <Badge color="purple">{Constants.WEBSITE_BADGE_TITLE}</Badge>
             </a>
           </li>
         ) : (
@@ -116,12 +116,12 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
             <hr className="h-1 mx-auto bg-gray-200 border-0 rounded dark:bg-gray-700" />
 
             <p className={`flex flex-row gap-2 items-center ${ThinAdminTextStyles.default}`}>
-              Event Theshold:
+              {Constants.EVENT_THRESHOLD_TITLE}
               {isRushThresholdMet(applicant.events)
-              ?
-              <Badge color="success">True</Badge>
-              :
-              <Badge color="failure">False</Badge>
+                ?
+                <Badge color="success">True</Badge>
+                :
+                <Badge color="failure">False</Badge>
               }
             </p>
           </>
@@ -129,4 +129,10 @@ export default function ApplicantInfoCard({ applicant }: ApplicantInfoCardProps)
       </ul>
     </Card>
   );
+}
+
+enum Constants {
+  EVENT_THRESHOLD_TITLE = "Event Threshold:",
+  LINKEDIN_BADGE_TITLE = "Website",
+  WEBSITE_BADGE_TITLE = "Website"
 }
