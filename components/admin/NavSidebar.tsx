@@ -69,9 +69,9 @@ export default function NavSidebar() {
             <Sidebar.Item href="/admin/create" icon={HiFolderAdd}>
               Create
             </Sidebar.Item>
-            <Sidebar.Item href="/admin/accountability" icon={HiChartBar}>
+            {/* <Sidebar.Item href="/admin/accountability" icon={HiChartBar}>
               Accountability
-            </Sidebar.Item>
+            </Sidebar.Item> */}
             {/* <Sidebar.Item href="/admin/qr" icon={HiOutlineQrcode}>
               QR Code (Check-in)
             </Sidebar.Item> */}
@@ -79,12 +79,12 @@ export default function NavSidebar() {
               <Sidebar.Item href="/admin/events" icon={HiCube}>Member</Sidebar.Item>
               <Sidebar.Item href="/admin/rush" icon={HiCubeTransparent}>Rush</Sidebar.Item>
             </Sidebar.Collapse>
-            <Sidebar.Item href="/admin/members" icon={HiDatabase}>
+            {/* <Sidebar.Item href="/admin/members" icon={HiDatabase}>
               Member Database
-            </Sidebar.Item>
-            <Sidebar.Item href="/admin/family-tree" icon={HiUserGroup}>
+            </Sidebar.Item> */}
+            {/* <Sidebar.Item href="/admin/family-tree" icon={HiUserGroup}>
               Family Tree
-            </Sidebar.Item>
+            </Sidebar.Item> */}
           </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>
