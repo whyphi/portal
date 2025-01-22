@@ -50,6 +50,7 @@ export default function Admin() {
               listingId={listing.listingId}
               title={listing.title}
               active={listing.isVisible}
+              isEncrypted={listing.isEncrypted}
               deadline={listing.deadline}
               dateCreated={listing.dateCreated}
             />
