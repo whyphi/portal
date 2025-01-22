@@ -9,6 +9,7 @@ interface Listing {
   title: string;
   active: boolean;
   deadline: string;
+  isEncrypted: boolean;
   dateCreated: string;
   isVisible: boolean;
 }
