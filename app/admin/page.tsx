@@ -9,6 +9,7 @@ interface Listing {
   title: string;
   active: boolean;
   deadline: string;
+  isEncrypted: boolean;
   dateCreated: string;
   isVisible: boolean;
 }
@@ -50,6 +51,7 @@ export default function Admin() {
               listingId={listing.listingId}
               title={listing.title}
               active={listing.isVisible}
+              isEncrypted={listing.isEncrypted}
               deadline={listing.deadline}
               dateCreated={listing.dateCreated}
             />
