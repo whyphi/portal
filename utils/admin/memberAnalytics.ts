@@ -93,8 +93,8 @@ export const calculateMemberParticipationRate = (events: any[], activeMemberCoun
 
     return {
       name: event.name,
-      participationRate: participationRate,
-      avgParticipationRate: averageParticipationRate,
+      participationRate: parseFloat(participationRate.toFixed(4)),
+      avgParticipationRate: parseFloat(averageParticipationRate.toFixed(4)),
     };
   });
 
