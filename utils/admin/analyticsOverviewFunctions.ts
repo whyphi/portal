@@ -157,3 +157,51 @@ export const getNumRushApplicantsCount = async (token: any) => {
     throw error;
   }
 }
+
+/**
+ * Fetches the distribution of members by college.
+ *
+ * This function performs the following steps:
+ * 1. Calls the API to get all member data.
+ * 2. Extracts the count of members for each college.
+ * 3. Formats the data into an array of objects containing college names and their respective member counts.
+ *
+ * @param {any} token - The authorization token to access the API.
+ * @returns {Promise<Array<{ college: string, count: number }>>} A promise that resolves to an array of objects containing college names and their respective member counts.
+ * @throws Will throw an error if the API call fails.
+ */
+export const getMemberCollegeDistributionData = async (token: any) => {
+  try {
+    // Call the API to get all member data
+    const memberDataResponse = await fetch(`${API_BASE_URL}/members`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Parse the response to JSON
+    const members = await memberDataResponse.json();
+
+    // Extract count and college from the data
+    const collegeDistribution = members.reduce((acc: { [key: string]: number }, member: any) => {
+      if (member.college) {
+        acc[member.college] = (acc[member.college] || 0) + 1;
+      }
+      return acc;
+    }, {});
+
+    // Format the data into an array of objects
+    const formattedCollegeDistribution = Object.entries(collegeDistribution).map(([college, count]) => ({
+      college,
+      count,
+    }));
+
+    console.log(formattedCollegeDistribution);
+    return formattedCollegeDistribution;
+  } catch (error) {
+    console.error('Error fetching member data:', error);
+    throw error;
+  }
+};

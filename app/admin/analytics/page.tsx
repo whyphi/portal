@@ -4,7 +4,7 @@ import Loader from "@/components/Loader";
 import { Card } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
 import { AdminTextStyles } from "@/styles/TextStyles";
-import { getAllEventData, calculateMemberParticipationRate, getNumRushApplicantsCount } from "@/utils/admin/analyticsOverviewFunctions";
+import { getAllEventData, calculateMemberParticipationRate, getNumRushApplicantsCount, getMemberCollegeDistributionData } from "@/utils/admin/analyticsOverviewFunctions";
 
 
 import {
@@ -18,7 +18,9 @@ import {
   Bar,
   Area,
   BarChart,
-  LabelList
+  LabelList,
+  PieChart,
+  Pie
 } from "recharts";
 
 export default function Analytics() {
@@ -32,6 +34,9 @@ export default function Analytics() {
 
   const [isRushApplicantCountLoading, setIsRushApplicantCountLoading] = useState<boolean>(true);
   const [rushApplicantCountData, setRushApplicantCountData] = useState<any[]>([]);
+
+  const [isMemberCollegeDistributionLoading, setIsMemberCollegeDistributionLoading] = useState<boolean>(true);
+  const [memberCollegeDistributionData, setMemberCollegeDistributionData] = useState<any[]>([]);
 
   const ACTIVE_MEMBER_COUNT = 89;
 
@@ -56,6 +61,15 @@ export default function Analytics() {
       const data = await getNumRushApplicantsCount(token);
       setRushApplicantCountData(data);
       setIsRushApplicantCountLoading(false);
+    }
+    fetchData();
+  }, [token]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getMemberCollegeDistributionData(token);
+      setMemberCollegeDistributionData(data);
+      setIsMemberCollegeDistributionLoading(false);
     }
     fetchData();
   }, [token]);
@@ -94,11 +108,11 @@ export default function Analytics() {
       </div>
     )
   }
+
   const rushApplicantCountGraph = () => {
     return (
       <div>
-        <h2>Number of Applications Submitted for Rush</h2>
-        <p className="text-xs text-gray-500 mb-4">Note: This graph shows the top 10 pages visited in the last 30 days.</p>
+        <h2 className="mb-4">Number of Applications Submitted for Rush</h2>
 
         <ResponsiveContainer width="100%" height={300}>
           {isRushApplicantCountLoading ? (
@@ -120,6 +134,27 @@ export default function Analytics() {
     );
   }
 
+  const memberCollegeDistributionGraph = () => {
+    return (
+      <div>
+        <h2>College Distribution Pie Chart</h2>
+        <p className="text-xs text-gray-500 mb-4">Note: This pie chart displays data only for members who have registered with WhyPhi.</p>
+
+        <ResponsiveContainer width="100%" height={300}>
+          {isMemberCollegeDistributionLoading ? (
+            innerCardLoader()
+          ) : (
+            <PieChart>
+              <Pie data={memberCollegeDistributionData} dataKey="count" nameKey="college" cx="50%" cy="50%" fill="#8884d8" label={true}>
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          )}
+        </ResponsiveContainer>
+      </div>
+    );
+  };
+
   return (
     <div>
       <h1 className={AdminTextStyles.subtitle}>Analytics Overview</h1>
@@ -130,10 +165,9 @@ export default function Analytics() {
         <Card>
           {rushApplicantCountGraph()}
         </Card>
-        {/* <Card>
-          <h2>Card 2</h2>
-          <p>Content for the second card.</p>
-        </Card> */}
+        <Card>
+          {memberCollegeDistributionGraph()}
+        </Card>
       </div>
 
     </div>
