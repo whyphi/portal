@@ -92,7 +92,7 @@ export const calculateMemberParticipationRate = (events: any[], activeMemberCoun
     const averageParticipationRate = cumulativeSum / (index + 1);
 
     return {
-      name: event.name,
+      name: `${event.name} (${new Date(event.dateCreated).toLocaleDateString()})`,
       participationRate: parseFloat(participationRate.toFixed(4)),
       avgParticipationRate: parseFloat(averageParticipationRate.toFixed(4)),
     };
