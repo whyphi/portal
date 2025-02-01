@@ -9,7 +9,8 @@ import { isRushThresholdMetAnalytics } from "@/utils/getRushThreshold";
 import { Badge, Drawer, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
-import { getMostPopularEvent, getNumRegisteredRushees, getPercentageRushThresholdMet } from "@/utils/admin/rush/analytics";
+import { getEventCounts, getMostPopularEvent, getNumRegisteredRushees, getPercentageRushThresholdMet } from "@/utils/admin/rush/analytics";
+import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, ResponsiveContainer } from "recharts";
 
 export default function RushAnalytics({ params }: { params: { categoryId: string } }) {
   const { token } = useAuth();
@@ -105,6 +106,38 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
     ))
   }
 
+  /**
+   * Renders a bar chart displaying the number of events attended.
+   *
+   * @returns {JSX.Element | undefined} A JSX element containing the bar chart, or undefined if analytics data is not available.
+   *
+   * @remarks
+   * - The chart is wrapped in a responsive container to ensure it adjusts to different screen sizes.
+   * - The `getEventCounts` function is used to process the analytics data into a format suitable for the chart.
+   * - The chart includes a Cartesian grid, X and Y axes, tooltips, and a legend for better readability.
+   * - The bar color is set to a shade of purple (#8884d8).
+   */
+  const eventsAttendedBarChart = () => {
+    if (!analytics) return;
+
+    const data = getEventCounts(analytics);
+
+    return (
+      <div className="mb-8">
+        <ResponsiveContainer width="90%" height={250}>
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="6 6" />
+            <XAxis dataKey="name" />
+            <YAxis allowDecimals={false} />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="count" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    )
+  }
+
   if (isLoading || !analytics) return <Loader />;
 
   return (
@@ -120,6 +153,9 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
           <SummaryCard title="Most Popular Event" value={getMostPopularEvent(analytics)} />
         </div>
       </div>
+
+      {eventsAttendedBarChart()}
+
       <Table hoverable>
         <Table.Head>
           <Table.HeadCell>Name</Table.HeadCell>
