@@ -8,6 +8,8 @@ import { getPortalBaseUrl } from "@/utils/getBaseURL";
 import { isRushThresholdMetAnalytics } from "@/utils/getRushThreshold";
 import { Badge, Drawer, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
+import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
+import { getMostPopularEvent, getNumRegisteredRushees, getPercentageRushThresholdMet } from "@/utils/admin/rush/analytics";
 
 export default function RushAnalytics({ params }: { params: { categoryId: string } }) {
   const { token } = useAuth();
@@ -54,13 +56,13 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
       }
     };
 
-    {token && fetchAnalytics();}
+    { token && fetchAnalytics(); }
   }, [token]);
 
   const renderAnalyticsTable = () => {
     if (!analytics) return;
     return Object.keys(analytics.attendees).map((email) => (
-      <Table.Row 
+      <Table.Row
         onClick={() => handleOpen(email)}
         key={email}
         className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
@@ -72,7 +74,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
         <Table.Cell>{analytics.attendees[email].eventsAttended.length}</Table.Cell>
         {/* TODO: create function to determine if the candidate can be accepted for interview (this can be handled potentially via Vault */}
         <Table.Cell>
-          {isRushThresholdMetAnalytics(analytics.attendees[email].eventsAttended) 
+          {isRushThresholdMetAnalytics(analytics.attendees[email].eventsAttended)
             ? <Badge color="success" className="inline-block">True</Badge>
             : <Badge color="failure" className="inline-block">False</Badge>}
         </Table.Cell>
@@ -83,7 +85,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
   const renderAnalyticsDetailTable = () => {
     if (!(analytics && selectedAttendeeEmail)) return;
     return analytics.events.map((event) => (
-      <Table.Row 
+      <Table.Row
         onClick={() => handleDetailClick(event.eventId)}
         key={event.eventId}
         className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
@@ -93,10 +95,10 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
         </Table.Cell>
         <Table.Cell>
           {analytics.attendees[selectedAttendeeEmail].eventsAttended.find((attendeeEvent) => attendeeEvent.eventId == event.eventId)
-          ?
-          <Badge color="success" className="inline-block">Yes</Badge>
-          :
-          <Badge color="failure" className="inline-block">No</Badge>
+            ?
+            <Badge color="success" className="inline-block">Yes</Badge>
+            :
+            <Badge color="failure" className="inline-block">No</Badge>
           }
         </Table.Cell>
       </Table.Row>
@@ -111,6 +113,13 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
         Rush Analytics
         <Badge size="lg">{analytics.categoryName}</Badge>
       </h1>
+      <div>
+        <div className="mb-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <SummaryCard title="Number of Registered Rushees" value={getNumRegisteredRushees(analytics)} />
+          <SummaryCard title="Percentage of Rushees Meeting Event Criteria" value={getPercentageRushThresholdMet(analytics)} />
+          <SummaryCard title="Most Popular Event" value={getMostPopularEvent(analytics)} />
+        </div>
+      </div>
       <Table hoverable>
         <Table.Head>
           <Table.HeadCell>Name</Table.HeadCell>
@@ -123,7 +132,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
         </Table.Body>
       </Table>
 
-      <Drawer 
+      <Drawer
         className="z-50 mt-16 bg-gray-50"
         backdrop={false}
         open={isOpen}
@@ -141,7 +150,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
               {renderAnalyticsDetailTable()}
             </Table.Body>
           </Table>
-          
+
         </Drawer.Items>
       </Drawer>
     </div>
