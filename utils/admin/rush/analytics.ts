@@ -60,3 +60,27 @@ export const getMostPopularEvent = (analyticsData: Analytics) => {
 
     return mostPopularEvent;
 }
+
+/**
+ * Retrieves the counts of each event from the provided analytics data.
+ *
+ * @param analyticsData - The analytics data containing information about attendees and the events they attended.
+ * @returns A list of objects, each containing the event name and its count.
+ */
+export const getEventCounts = (analyticsData: Analytics) => {
+    const eventCounts: { [eventName: string]: number } = {};
+
+    // Iterate over each attendee's events and count occurrences of each event
+    Object.values(analyticsData.attendees).forEach(attendee => {
+        attendee.eventsAttended.forEach(event => {
+            if (eventCounts[event.eventName]) {
+                eventCounts[event.eventName]++;
+            } else {
+                eventCounts[event.eventName] = 1;
+            }
+        });
+    });
+
+    // Convert the eventCounts object to a list of objects with "name" and "count"
+    return Object.entries(eventCounts).map(([name, count]) => ({ name, count }));
+}
