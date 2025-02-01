@@ -2,63 +2,61 @@
 import React, { useState, useEffect, useRef } from "react";
 import Loader from "@/components/Loader";
 import { Applicant } from "@/types/applicant";
-import { Tabs, TabsRef, Table, Button, Pagination } from 'flowbite-react';
+import { Tabs, TabsRef, Table, Button, Pagination, Card } from 'flowbite-react';
 import { useAuth } from "@/app/contexts/AuthContext";
 import { AdminTextStyles } from "@/styles/TextStyles";
+import { getAllEventData, calculateMemberParticipationRate } from "@/utils/admin/memberAnalytics";
+
+
+import { ComposedChart, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Area } from "recharts";
 
 export default function Analytics() {
   const { token } = useAuth();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [eventData, setEventData] = useState<any[]>([]);
+  const [memberParticipationRateData, setMemberParticipationRateData] = useState<any[]>([]);
+  const ACTIVE_MEMBER_COUNT = 89;
 
   useEffect(() => {
-    // // Fetch listings data from your /listings API endpoint
-    // fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/applicants/${params.listingId}`, {
-    //   method: "GET",
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //     "Content-Type": "application/json",
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((data: [Applicant]) => {
-    //     // update applicantData, highlighted applicants, and loading status
-    //     setApplicantData(data);
-    //     setApplicantHighlighted(Array(data.length).fill(false));
-    //     setIsLoading(false);
+    const fetchData = async () => {
+      try {
+        const data = await getAllEventData(token);
+        setEventData(data);
+        const participationRateData = calculateMemberParticipationRate(data, ACTIVE_MEMBER_COUNT);
+        setMemberParticipationRateData(participationRateData);
+      } catch (error) {
+        console.error("Error fetching event data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    //     // after fetching listings -> use localStorage to check if selectedApplicant is defined
-    //     const selectedApplicantId =localStorage.getItem(selectedApplicantIdKey);
-
-    //     // check that applicant exists in localStorage
-    //     if (selectedApplicantId) {
-    //       // Find the index of the applicant in the applicantData array
-    //       const applicantIndex = data.findIndex(applicant => selectedApplicantId == applicant.applicantId);
-
-    //       // Check if an applicant was found
-    //       if (applicantIndex !== -1) {
-    //         const applicant = data[applicantIndex];
-
-    //         // Check that applicant is still valid (otherwise we go back to All Applicants screen)
-    //         if (applicant) {
-    //           setSelectedApplicant(applicant);
-    //           setSelectedApplicantIndex(applicantIndex);
-    //         }
-    //       }
-    //     }
-    //   })
-    //   .catch((error) => console.error("Error fetching listings:", error));
-    setIsLoading(false);
+    fetchData();
   }, [token]);
 
-  if (isLoading) return (<Loader />)
+  if (isLoading) return (<Loader />);
 
-  const ACTIVE_MEMBER_COUNT = 89;
 
   return (
     <div>
-      <h1 className={AdminTextStyles.subtitle}>Member-related Data</h1>
-
+      <h1 className={AdminTextStyles.subtitle}>Analytics Overview</h1>
+      <Card className="mb-4">
+        <h2>Member Event Participation Rate Over Time</h2>
+        <ResponsiveContainer width="100%" height={250}>
+          <ComposedChart
+            data={memberParticipationRateData}
+          >
+            <CartesianGrid stroke="#f5f5f5" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="participationRate" barSize={20} fill="#413ea0" />
+            <Area type="monotone" dataKey="avgParticipationRate" fill="#8884d8" stroke="#8884d8" />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </Card>
 
     </div>
   )
