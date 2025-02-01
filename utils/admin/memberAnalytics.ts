@@ -1,5 +1,19 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+/**
+ * Fetches all event data from the API.
+ *
+ * This function performs the following steps:
+ * 1. Calls the API to get all timeframe IDs.
+ * 2. Fetches event data for each timeframe.
+ * 3. Extracts events from each timeframe.
+ * 4. Fetches detailed event data for each event.
+ * 5. Sorts events by `dateCreated` from most recent to latest.
+ *
+ * @param {any} token - The authorization token to access the API.
+ * @returns {Promise<any[]>} A promise that resolves to an array of detailed event data.
+ * @throws Will throw an error if the API calls fail.
+ */
 export const getAllEventData = async (token: any) => {
   try {
     // Call the API to get all timeframe IDs
@@ -11,6 +25,7 @@ export const getAllEventData = async (token: any) => {
       },
     });
 
+    // Parse the response to JSON
     const timeframes = await timeframesResponse.json();
 
     // Fetch event data for each timeframe
@@ -24,6 +39,7 @@ export const getAllEventData = async (token: any) => {
       }).then(response => response.json())
     );
 
+    // Wait for all event data to be fetched
     const eventsData = await Promise.all(eventPromises);
 
     // Extract events from each timeframe
@@ -40,6 +56,7 @@ export const getAllEventData = async (token: any) => {
       }).then(response => response.json())
     );
 
+    // Wait for all detailed event data to be fetched
     const detailedEventsData = await Promise.all(detailedEventPromises);
 
     // Sort events by dateCreated from most recent to latest
@@ -50,13 +67,29 @@ export const getAllEventData = async (token: any) => {
     throw error;
   }
 };
+
+/**
+ * Calculates the member participation rate for each event.
+ *
+ * This function performs the following steps:
+ * 1. Iterates over each event.
+ * 2. Calculates the participation rate for each event.
+ * 3. Calculates the cumulative average participation rate.
+ *
+ * @param {any[]} events - An array of event data.
+ * @param {number} activeMemberCount - The number of active members.
+ * @returns {any[]} An array of objects containing event name, participation rate, and average participation rate.
+ */
 export const calculateMemberParticipationRate = (events: any[], activeMemberCount: number) => {
   let cumulativeSum = 0;
   const memberParticipationRateData = events.map((event: any, index: number) => {
+    // Calculate the participation rate for the event
+    // NOTE: The currentMemberCount is not always available, so we use the activeMemberCount as a fallback
     const participationRate = event.usersAttended.length / (event.currentMemberCount || activeMemberCount);
     cumulativeSum += participationRate;
+    
+    // Calculate the average participation rate up to the current event
     const averageParticipationRate = cumulativeSum / (index + 1);
-
 
     return {
       name: event.name,
