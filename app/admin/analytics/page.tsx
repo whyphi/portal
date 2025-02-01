@@ -53,9 +53,11 @@ export default function Analytics() {
 
   if (isLoading) return (<Loader />)
 
+  const ACTIVE_MEMBER_COUNT = 89;
+
   return (
     <div>
-      <h1 className={AdminTextStyles.subtitle}>Analytics</h1>
+      <h1 className={AdminTextStyles.subtitle}>Member-related Data</h1>
 
 
     </div>

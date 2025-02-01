@@ -27,7 +27,7 @@ export default function NavSidebar() {
                 className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               >
                 <span className="sr-only">Open sidebar</span>
-                <HiMenuAlt2 size={25}/>
+                <HiMenuAlt2 size={25} />
               </button>
               <a href="/admin" className="flex ml-2 md:mr-24">
                 <img src={mode === 'dark' ? '/pct-logo-dark.png' : '/pct-logo.png'} className="h-8 mr-3" alt="PCT Logo" />
@@ -85,6 +85,9 @@ export default function NavSidebar() {
             {/* <Sidebar.Item href="/admin/family-tree" icon={HiUserGroup}>
               Family Tree
             </Sidebar.Item> */}
+            <Sidebar.Item href="/admin/analytics" icon={HiChartBar}>
+              Analytics Overview
+            </Sidebar.Item>
           </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>
