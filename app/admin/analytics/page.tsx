@@ -85,10 +85,25 @@ export default function Analytics() {
   }
 
   const memberEventParticipationRateGraph = () => {
+
+    const CustomTooltip = ({ active, payload, label }: { active?: boolean, payload?: any[], label?: string }) => {
+      if (active && payload && payload.length) {
+        return (
+          <Card>
+            <p className="text-sm font-semibold">{`${label}`}</p>
+            <p className="text-xs">{`Participation %: ${payload[0].value}`}</p>
+            <p className="text-xs">{`Avg Participation %: ${payload[1].value}`}</p>
+          </Card>
+        );
+      }
+
+      return null;
+    };
+
     return (
       <div>
         <h2>Member Event Participation Rate Over Time</h2>
-        <p className="text-xs text-gray-500 mb-4">Note: Events with a participation rate of less than 0.05% have been removed as outliers to prevent fluctuations in the average attendance rate.</p>
+        <p className="text-xs text-gray-500 mb-4">Note: Events with a participation rate of less than 5% have been removed as outliers to prevent fluctuations in the average attendance rate.</p>
         <ResponsiveContainer width="100%" height={250}>
           {isMemberParticipationRateLoading ? (
             innerCardLoader()
@@ -97,7 +112,7 @@ export default function Analytics() {
               <CartesianGrid stroke="#f5f5f5" />
               <XAxis dataKey="name" />
               <YAxis />
-              <Tooltip />
+              <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Bar dataKey="participationRate" barSize={20} fill="#413ea0" />
               <Area type="monotone" dataKey="avgParticipationRate" fill="#8884d8" stroke="#8884d8" />
