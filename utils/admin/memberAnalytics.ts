@@ -82,19 +82,21 @@ export const getAllEventData = async (token: any) => {
  */
 export const calculateMemberParticipationRate = (events: any[], activeMemberCount: number) => {
   let cumulativeSum = 0;
+  let eventCount = 0;
   const memberParticipationRateData = events.map((event: any, index: number) => {
     // Calculate the participation rate for the event
     // NOTE: The currentMemberCount is not always available, so we use the activeMemberCount as a fallback
     const participationRate = event.usersAttended.length / (event.currentMemberCount || activeMemberCount);
-    
+
     // If participationRate is below 0.05, exclude it as an outlier
     if (participationRate < 0.05) {
       return null;
     }
     cumulativeSum += participationRate;
+    eventCount += 1;
 
     // Calculate the average participation rate up to the current event
-    const averageParticipationRate = cumulativeSum / (index + 1);
+    const averageParticipationRate = cumulativeSum / eventCount;
 
     return {
       name: `${event.name} (${new Date(event.dateCreated).toLocaleDateString()})`,

@@ -43,6 +43,7 @@ export default function Analytics() {
       <h1 className={AdminTextStyles.subtitle}>Analytics Overview</h1>
       <Card className="mb-4">
         <h2>Member Event Participation Rate Over Time</h2>
+        <p className="text-xs text-gray-500 mb-4">Note: Events with a participation rate of less than 0.05% have been removed as outliers to prevent fluctuations in the average attendance rate.</p>
         <ResponsiveContainer width="100%" height={250}>
           <ComposedChart
             data={memberParticipationRateData}
