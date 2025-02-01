@@ -91,8 +91,8 @@ export default function Analytics() {
         return (
           <Card>
             <p className="text-sm font-semibold">{`${label}`}</p>
-            <p className="text-xs">{`Participation %: ${payload[0].value}`}</p>
-            <p className="text-xs">{`Avg Participation %: ${payload[1].value}`}</p>
+            <p className="text-xs">{`Participation %: ${payload[0].value*100}%`}</p>
+            <p className="text-xs">{`Avg Participation %: ${payload[1].value*100}%`}</p>
           </Card>
         );
       }
