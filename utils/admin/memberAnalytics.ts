@@ -86,8 +86,13 @@ export const calculateMemberParticipationRate = (events: any[], activeMemberCoun
     // Calculate the participation rate for the event
     // NOTE: The currentMemberCount is not always available, so we use the activeMemberCount as a fallback
     const participationRate = event.usersAttended.length / (event.currentMemberCount || activeMemberCount);
-    cumulativeSum += participationRate;
     
+    // If participationRate is below 0.05, exclude it as an outlier
+    if (participationRate < 0.05) {
+      return null;
+    }
+    cumulativeSum += participationRate;
+
     // Calculate the average participation rate up to the current event
     const averageParticipationRate = cumulativeSum / (index + 1);
 
@@ -98,5 +103,6 @@ export const calculateMemberParticipationRate = (events: any[], activeMemberCoun
     };
   });
 
-  return memberParticipationRateData;
+  const filteredMemberParticipationRateData = memberParticipationRateData.filter(data => data !== null);
+  return filteredMemberParticipationRateData;
 };
