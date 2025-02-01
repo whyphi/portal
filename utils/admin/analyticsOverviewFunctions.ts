@@ -108,3 +108,52 @@ export const calculateMemberParticipationRate = (events: any[], activeMemberCoun
   const filteredMemberParticipationRateData = memberParticipationRateData.filter(data => data !== null);
   return filteredMemberParticipationRateData;
 };
+
+/**
+ * Fetches the number of rush applicants for each listing and returns the data sorted by deadline.
+ *
+ * @param {any} token - The authorization token to access the API.
+ * @returns {Promise<Array<{ title: string, applicantCount: number, deadline: string }>>} - A promise that resolves to an array of objects containing the title, applicant count, and deadline for each listing.
+ * @throws Will throw an error if the API call fails.
+ */
+export const getNumRushApplicantsCount = async (token: any) => {
+  try {
+    // Call the API to get all timeframe IDs
+    const listingsResponse = await fetch(`${API_BASE_URL}/listings`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Parse the response to JSON
+    const listings = await listingsResponse.json();
+
+    // Fetch event data for each timeframe
+    const listingPromises = listings.map((listing: { listingId: string, title: string, deadline: string }) =>
+      fetch(`${API_BASE_URL}/applicants/${listing.listingId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }).then(response => response.json().then(data => ({
+        title: listing.title,
+        applicantCount: data.length,
+        deadline: listing.deadline
+      })))
+    );
+
+    // Wait for all listing data to be fetched
+    const listingData = await Promise.all(listingPromises);
+
+    // Sort events by dateCreated from most recent to latest
+    listingData.sort((a, b) => new Date(b.deadline).getTime() - new Date(a.deadline).getTime());
+    return listingData;
+
+  } catch (error) {
+    console.error('Error fetching event data:', error);
+    throw error;
+  }
+}
