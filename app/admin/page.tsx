@@ -5,7 +5,7 @@ import Loader from "@/components/Loader";
 import { useAuth } from "../contexts/AuthContext";
 
 interface Listing {
-  listingId: string;
+  id: string;
   title: string;
   active: boolean;
   deadline: string;
@@ -48,7 +48,7 @@ export default function Admin() {
         {listings.map((listing, index) => (
           <div key={index} className="col-span-1">
             <ListingCard
-              listingId={listing.listingId}
+              listingId={listing.id}
               title={listing.title}
               active={listing.isVisible}
               isEncrypted={listing.isEncrypted}
