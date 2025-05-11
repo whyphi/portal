@@ -1,6 +1,6 @@
-import NextAuth, { AuthOptions } from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
-import { MongoClient, ServerApiVersion } from 'mongodb'
+import { MongoClient, ServerApiVersion } from 'mongodb';
+import NextAuth, { AuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 
 declare module "next-auth" {
   interface Session {
@@ -9,7 +9,7 @@ declare module "next-auth" {
       email: string;
       name: string;
       isNewUser: boolean;
-      role: string;
+      roles: string[];
     };
   }
 
@@ -18,7 +18,7 @@ declare module "next-auth" {
     email: string;
     name: string;
     isNewUser: boolean;
-    role: string;
+    roles: string[];
   }
 }
 
@@ -87,26 +87,27 @@ const authOptions: AuthOptions = {
         const userInfo = await getUserInfo(token.email ?? '');
         // Destructure userInfo and add its properties to the top level of the token
         if (userInfo) {
-          const { _id, name, email, isNewUser, role } = userInfo;
+          const { _id, name, email, isNewUser, roles } = userInfo;
           token._id = _id;
           token.name = name;
           token.email = email;
           token.isNewUser = isNewUser;
-          token.role = role;
+          token.roles = roles;
         }
       }
 
       if (profile) {
         const userInfo = await getUserInfo(profile.email ?? '');
+        console.log(userInfo);
 
         // Destructure userInfo and add its properties to the top level of the token
         if (userInfo) {
-          const { _id, name, email, isNewUser, role } = userInfo;
+          const { _id, name, email, isNewUser, roles } = userInfo;
           token._id = _id;
           token.name = name;
           token.email = email;
           token.isNewUser = isNewUser;
-          token.role = role;
+          token.roles = roles;
         }
       }
       return token;
@@ -117,7 +118,7 @@ const authOptions: AuthOptions = {
         email: typeof token.email === "string" ? token.email : "",
         name: typeof token.name === "string" ? token.name : "",
         isNewUser: typeof token.isNewUser === "boolean" ? token.isNewUser : false,
-        role: typeof token.role === "string" ? token.role : "member",
+        roles: Array.isArray(token.roles) ? token.roles : ["member"],
       };
       return session;
     },
@@ -132,4 +133,4 @@ const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST }
+export { handler as GET, handler as POST };
