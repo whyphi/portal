@@ -98,8 +98,6 @@ const authOptions: AuthOptions = {
 
       if (profile) {
         const userInfo = await getUserInfo(profile.email ?? '');
-        console.log(userInfo);
-
         // Destructure userInfo and add its properties to the top level of the token
         if (userInfo) {
           const { _id, name, email, isNewUser, roles } = userInfo;
