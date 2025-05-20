@@ -35,7 +35,7 @@ export default function Create() {
     const formattedDeadline = selectedDate.toISOString();
     const formDataWithDates = {
       ...formData,
-      dateCreated: currentDate.toISOString(),
+      // dateCreated: currentDate.toISOString(),
       deadline: formattedDeadline,
     };
 
