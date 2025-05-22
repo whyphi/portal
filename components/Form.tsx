@@ -138,8 +138,8 @@ export default function Form({ title, listingId, questions, includeEventsAttende
         responses: responseObjects, // Replace the 'responses' array with response objects
       };
 
-      // Make a POST request to the /submit API endpoint
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/submit`, {
+      // Make a POST request to the /apply API endpoint
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
