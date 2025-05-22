@@ -127,7 +127,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
   const handleAddQuestion = () => {
     setFormData((prevData) => ({
       ...prevData,
-      questions: [...prevData.questions, { question: "", additional: "" }],
+      questions: [...prevData.questions, { question: "", context: "" }],
     }));
   };
 
@@ -194,16 +194,16 @@ export default function ListingSettings({ params }: { params: { listingId: strin
                 </div>
                 <div className="mb-6">
                   <label className={`block ${AdminTextStyles.subtext}`}>
-                    Additional Context / Subheadings
+                    Addtional Context / Subheadings
                   </label>
                   <TextInput
                     className="block w-full"
-                    id={`additional-${index}`}
+                    id={`context-${index}`}
                     type="text"
-                    placeholder="Add any additional text that explains the question here"
-                    value={questionObj.additional}
+                    placeholder="Add any context text that explains the question here"
+                    value={questionObj.context}
                     onChange={(e) =>
-                      handleQuestionChange(index, "additional", e.target.value)
+                      handleQuestionChange(index, "context", e.target.value)
                     }
                   />
                 </div>
