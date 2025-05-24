@@ -1,27 +1,35 @@
-'use client'
+"use client";
 import { useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Label, Alert, TextInput, Checkbox, Textarea, Select } from 'flowbite-react';
-import { AiOutlineLoading } from 'react-icons/ai';
+import {
+  Button,
+  Label,
+  Alert,
+  TextInput,
+  Checkbox,
+  Textarea,
+  Select,
+} from "flowbite-react";
+import { AiOutlineLoading } from "react-icons/ai";
 import { HiOutlineX } from "react-icons/hi";
-import { FormData, FormProps } from "@/types/form"
+import { FormData, FormProps } from "@/types/form";
 import { AdminTextStyles, ThinAdminTextStyles } from "@/styles/TextStyles";
 import YearSelect from "./public/YearSelect";
 
 const initialValues: FormData = {
   gradYear: new Date().getFullYear() + 4,
-  gradMonth: '',
-  firstName: '',
-  lastName: '',
-  preferredName: '',
-  major: '',
-  minor: '',
-  gpa: '',
+  gradMonth: "",
+  firstName: "",
+  lastName: "",
+  preferredName: "",
+  major: "",
+  minor: "",
+  gpa: "",
   hasGpa: true,
-  email: '',
-  phone: '',
-  linkedin: '',
-  website: '',
+  email: "",
+  phone: "",
+  linkedin: "",
+  website: "",
   resume: null,
   image: null,
   colleges: {
@@ -38,47 +46,67 @@ const initialValues: FormData = {
     Wheelock: false,
     Other: false,
   },
-  events: null,
-  responses: []
+  responses: [],
 };
 
-
-export default function Form({ title, listingId, questions, includeEventsAttended, isPreview }: FormProps) {
+export default function Form({
+  title,
+  listingId,
+  questions,
+  includeEventsAttended,
+  isPreview,
+}: FormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialValues);
   const [resumeFileName, setResumeFileName] = useState<String>("");
   const [imageFileName, setImageFileName] = useState<String>("");
   const [resumeFileSize, setResumeFileSize] = useState<number>(0);
   const [imageFileSize, setImageFileSize] = useState<number>(0);
-  const MAX_FILE_SIZE_BYTES = 6 * 1000 * 1000 - 1
+  const MAX_FILE_SIZE_BYTES = 6 * 1000 * 1000 - 1;
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [isInfoAlert, setIsInfoAlert] = useState<boolean>(true);
-  
+
   // Confirmation Checkboxes
   const [confirmUndergraduate, setConfirmUndergraduate] = useState(false);
-  const [confirmNotStudyingAbroad, setConfirmNotStudyingAbroad] = useState(false);
+  const [confirmNotStudyingAbroad, setConfirmNotStudyingAbroad] =
+    useState(false);
 
-  if (includeEventsAttended) {
-    initialValues.events = {
-      infoSession1: false,
-      infoSession2: false,
-      resumeWorkshop: false,
-      socialEvent: false,
-      professionalPanel: false
-    }
-  }
+  // if (includeEventsAttended) {
+  //   initialValues.events = {
+  //     infoSession1: false,
+  //     infoSession2: false,
+  //     resumeWorkshop: false,
+  //     socialEvent: false,
+  //     professionalPanel: false
+  //   }
+  // }
 
   const maxWordCount = 200; // Adjust as needed
 
   const checkRequiredFields = () => {
-    const possibleRequiredFields = ['firstName', 'lastName', 'major', 'gradMonth', 'gradYear', 'email', 'phone', 'resume', 'image'];
-    const requiredFields = formData.hasGpa ? [...possibleRequiredFields, 'gpa'] : possibleRequiredFields
+    const possibleRequiredFields = [
+      "firstName",
+      "lastName",
+      "major",
+      "gradMonth",
+      "gradYear",
+      "email",
+      "phone",
+      "resume",
+      "image",
+    ];
+    const requiredFields = formData.hasGpa
+      ? [...possibleRequiredFields, "gpa"]
+      : possibleRequiredFields;
     const incompleteFields: string[] = [];
 
     Object.entries(formData).forEach(([field, value]) => {
-      if (requiredFields.includes(field) && (!value || (typeof value === 'string' && !value.trim()))) {
+      if (
+        requiredFields.includes(field) &&
+        (!value || (typeof value === "string" && !value.trim()))
+      ) {
         incompleteFields.push(field);
       }
     });
@@ -88,34 +116,41 @@ export default function Form({ title, listingId, questions, includeEventsAttende
       return false;
     } else if (
       formData.responses.length < questions.length ||
-      formData.responses.some(response => typeof response === 'string' && response.trim() === '')
+      formData.responses.some(
+        (response) => typeof response === "string" && response.trim() === ""
+      )
     ) {
       alert(`Incomplete fields. Please fill in all required fields.`);
       return false;
     } else if (
-      formData.responses.some(response => {
-        if (typeof response === 'string') {
+      formData.responses.some((response) => {
+        if (typeof response === "string") {
           const wordCount = response.trim().split(/\s+/).filter(Boolean).length;
           return wordCount > maxWordCount;
         }
         return false;
       })
     ) {
-      alert(`One or more responses are over the maximum word count. Please edit your response.`);
+      alert(
+        `One or more responses are over the maximum word count. Please edit your response.`
+      );
       return false;
     } else if (!confirmUndergraduate) {
-      alert(`Sorry, you are ineligible to apply to Phi Chi Theta, Zeta Chapter. Please ensure that you are currently a BU undergraduate student and not studying abroad.`);
+      alert(
+        `Sorry, you are ineligible to apply to Phi Chi Theta, Zeta Chapter. Please ensure that you are currently a BU undergraduate student and not studying abroad.`
+      );
       return false;
     } else if (!confirmNotStudyingAbroad) {
-      alert(`Sorry, you are ineligible to apply to Phi Chi Theta, Zeta Chapter. Please ensure that you are currently a BU undergraduate student and not studying abroad.`);
+      alert(
+        `Sorry, you are ineligible to apply to Phi Chi Theta, Zeta Chapter. Please ensure that you are currently a BU undergraduate student and not studying abroad.`
+      );
       return false;
     } else if (!formData.email.endsWith("@bu.edu")) {
-      alert(`Please be sure to use you "@bu.edu" email.`)
+      alert(`Please be sure to use you "@bu.edu" email.`);
       return false;
     }
     return true;
   };
-
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -139,13 +174,16 @@ export default function Form({ title, listingId, questions, includeEventsAttende
       };
 
       // Make a POST request to the /apply API endpoint
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apply`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
 
       if (response.ok) {
         router.push(`/public/success`);
@@ -156,16 +194,22 @@ export default function Form({ title, listingId, questions, includeEventsAttende
           setErrorMsg(responseText);
           setIsError(true);
         } else {
-          console.error('Error submitting form');
-          alert(`Error submitting form. Please contact PCT with a screenshot of the error!`);
+          console.error("Error submitting form");
+          alert(
+            `Error submitting form. Please contact PCT with a screenshot of the error!`
+          );
         }
         setIsSubmitting(false);
       }
     } catch (error) {
       // Handle any unexpected errors here
       setIsSubmitting(false);
-      console.error('An error occurred:', error);
-      alert(`An error occurred: ` + error + `. Please contact PCT with a screenshot of the error!`);
+      console.error("An error occurred:", error);
+      alert(
+        `An error occurred: ` +
+          error +
+          `. Please contact PCT with a screenshot of the error!`
+      );
     }
   };
 
@@ -192,7 +236,8 @@ export default function Form({ title, listingId, questions, includeEventsAttende
     return questions.map((question, index) => (
       <div key={index} className="flex flex-col gap-1 mb-6">
         <label className={AdminTextStyles.default}>
-          {question.question} (Max {maxWordCount} words) <span className="text-red-500">*</span>
+          {question.question} (Max {maxWordCount} words){" "}
+          <span className="text-red-500">*</span>
         </label>
         <Textarea
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 h-32"
@@ -203,7 +248,9 @@ export default function Form({ title, listingId, questions, includeEventsAttende
         />
         <p className="text-sm text-gray-500">
           {maxWordCount - getWordCount(formData.responses[index]) + 1 >= 0
-            ? `Remaining words: ${maxWordCount - getWordCount(formData.responses[index])}`
+            ? `Remaining words: ${
+                maxWordCount - getWordCount(formData.responses[index])
+              }`
             : "Remaining words: Over word count!"}
         </p>
       </div>
@@ -237,14 +284,16 @@ export default function Form({ title, listingId, questions, includeEventsAttende
     }
   };
 
-  const handleDropdownChange = (e: ChangeEvent<HTMLSelectElement>, fieldName: string) => {
+  const handleDropdownChange = (
+    e: ChangeEvent<HTMLSelectElement>,
+    fieldName: string
+  ) => {
     const value = e.target.value;
     setFormData((prevData) => ({
       ...prevData,
       [fieldName]: value,
     }));
   };
-
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = e.target;
@@ -258,16 +307,19 @@ export default function Form({ title, listingId, questions, includeEventsAttende
     // File conversion helper function
     const convertToMB = (bytes: number) => {
       // 1 megabyte = 1e6 bytes
-      const megabytes = bytes / (1e6);
+      const megabytes = bytes / 1e6;
       return megabytes.toFixed(2);
-    }
+    };
 
     // File validation helper function
     const allowedTypes = {
-      resume: ['application/pdf'],
-      image: ['image/jpeg', 'image/png']
-    }
-    const validateFileType = (selectedFile: File | null, fileId: keyof typeof allowedTypes): boolean => {
+      resume: ["application/pdf"],
+      image: ["image/jpeg", "image/png"],
+    };
+    const validateFileType = (
+      selectedFile: File | null,
+      fileId: keyof typeof allowedTypes
+    ): boolean => {
       return !!selectedFile && allowedTypes[fileId].includes(selectedFile.type);
     };
 
@@ -285,22 +337,28 @@ export default function Form({ title, listingId, questions, includeEventsAttende
       if (!validateFileType(file, id)) {
         switch (id) {
           case "resume":
-            alert('Invalid file type. Please upload a PDF file.');
+            alert("Invalid file type. Please upload a PDF file.");
             break;
           case "image":
-            alert('Invalid file type. Please upload a JPG, JPEG, or PNG file.');
+            alert("Invalid file type. Please upload a JPG, JPEG, or PNG file.");
             break;
         }
         return;
       }
 
       // extract fileSize from file object
-      const fileSize = file.size
+      const fileSize = file.size;
 
       if (id === "resume") {
         // handle large files
         if (imageFileSize + fileSize > MAX_FILE_SIZE_BYTES) {
-          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES - imageFileSize)} MB available.`);
+          alert(
+            `Image file size of ${convertToMB(
+              fileSize
+            )} MB is too large. Total of ${convertToMB(
+              MAX_FILE_SIZE_BYTES - imageFileSize
+            )} MB available.`
+          );
           return;
         }
 
@@ -309,7 +367,13 @@ export default function Form({ title, listingId, questions, includeEventsAttende
       } else if (id === "image") {
         // handle large files
         if (resumeFileSize + fileSize > MAX_FILE_SIZE_BYTES) {
-          alert(`Image file size of ${convertToMB(fileSize)} MB is too large. Total of ${convertToMB(MAX_FILE_SIZE_BYTES - resumeFileSize)} MB available.`);
+          alert(
+            `Image file size of ${convertToMB(
+              fileSize
+            )} MB is too large. Total of ${convertToMB(
+              MAX_FILE_SIZE_BYTES - resumeFileSize
+            )} MB available.`
+          );
           return;
         }
 
@@ -327,7 +391,6 @@ export default function Form({ title, listingId, questions, includeEventsAttende
       };
       reader.readAsDataURL(file);
     } else {
-
       // reset file size validation
       if (id === "resume") {
         setResumeFileSize(0);
@@ -370,20 +433,7 @@ export default function Form({ title, listingId, questions, includeEventsAttende
         [name]: !checked,
       }));
     }
-  }
-
-  const handleEventsAttendedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      events: {
-        ...prevData.events,
-        [name]: checked,
-      },
-    }) as FormData);
   };
-
 
   const RenderInput = (
     id: keyof FormData,
@@ -393,7 +443,8 @@ export default function Form({ title, listingId, questions, includeEventsAttende
   ) => (
     <div className="flex flex-col gap-1 mb-6">
       <label className={`${AdminTextStyles.default}`}>
-        {label !== 'gpa' && label} {required && <span className="text-red-500">*</span>}
+        {label !== "gpa" && label}{" "}
+        {required && <span className="text-red-500">*</span>}
       </label>
       <TextInput
         id={id}
@@ -421,8 +472,8 @@ export default function Form({ title, listingId, questions, includeEventsAttende
           N/A
         </label>
       </div>
-    )
-  }
+    );
+  };
 
   const RenderGpaSection = () => {
     return (
@@ -430,7 +481,7 @@ export default function Form({ title, listingId, questions, includeEventsAttende
         <label className={AdminTextStyles.default}>
           GPA (N/A if not applicable) <span className="text-red-500">*</span>
         </label>
-        {formData.hasGpa ?
+        {formData.hasGpa ? (
           <div className="relative">
             <TextInput
               id="gpa"
@@ -443,7 +494,7 @@ export default function Form({ title, listingId, questions, includeEventsAttende
             />
             {RenderGpaCheckbox()}
           </div>
-          :
+        ) : (
           <div className="relative">
             <TextInput
               id="gpa"
@@ -456,11 +507,10 @@ export default function Form({ title, listingId, questions, includeEventsAttende
             />
             {RenderGpaCheckbox()}
           </div>
-        }
+        )}
       </div>
-
-    )
-  }
+    );
+  };
 
   const RenderGradMonthYear = () => {
     return (
@@ -476,7 +526,9 @@ export default function Form({ title, listingId, questions, includeEventsAttende
             onChange={(e) => handleDropdownChange(e, "gradMonth")} // Pass the field name to handleChange
             className="w-1/2"
           >
-            <option value="" disabled>Select Month</option>
+            <option value="" disabled>
+              Select Month
+            </option>
             <option value="January">January</option>
             <option value="May">May</option>
           </Select>
@@ -491,8 +543,8 @@ export default function Form({ title, listingId, questions, includeEventsAttende
           />
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   // TODO: make RenderEventsAttendedSection section auto-filled from rushee data and DISABLE editing
 
@@ -525,16 +577,20 @@ export default function Form({ title, listingId, questions, includeEventsAttende
             setIsInfoAlert(false);
           }}
         >
-          <span className="font-medium">Important Notice:</span> To ensure timely processing in anticipation of high application volume, kindly submit your application a few minutes prior to the designated deadline.
-    
+          <span className="font-medium">Important Notice:</span> To ensure
+          timely processing in anticipation of high application volume, kindly
+          submit your application a few minutes prior to the designated
+          deadline.
           <br />
           <br />
-          
-          <span className="font-medium">For Assistance:</span> In case of technical difficulties during submission, please email <span className="underline">pct.bostonu@gmail.com</span> with a PDF containing all required application elements (outlined in the website), your photo and updated resume before the deadline.
+          <span className="font-medium">For Assistance:</span> In case of
+          technical difficulties during submission, please email{" "}
+          <span className="underline">pct.bostonu@gmail.com</span> with a PDF
+          containing all required application elements (outlined in the
+          website), your photo and updated resume before the deadline.
         </Alert>
       </div>
     );
-    
   };
 
   const RenderFileInput = (
@@ -548,17 +604,19 @@ export default function Form({ title, listingId, questions, includeEventsAttende
 
     // Function to clear the input value
     const clearFileInput = (e: React.MouseEvent<HTMLButtonElement>) => {
-      console.log("clearing file")
+      console.log("clearing file");
       e.stopPropagation();
       if (fileInputRef.current) {
         // update resume/image name variables
         if (fileInputRef.current.id === "resume") {
-          setResumeFileName("")
+          setResumeFileName("");
         } else if (fileInputRef.current.id === "image") {
-          setImageFileName("")
+          setImageFileName("");
         }
-        fileInputRef.current.value = '';  // Clear the input value
-        handleFileChange({ target: { id, files: null } } as ChangeEvent<HTMLInputElement>);
+        fileInputRef.current.value = ""; // Clear the input value
+        handleFileChange({
+          target: { id, files: null },
+        } as ChangeEvent<HTMLInputElement>);
       }
     };
 
@@ -586,36 +644,33 @@ export default function Form({ title, listingId, questions, includeEventsAttende
           </button>
         </div>
         {/* render either resume or image depending on id */}
-        {id === 'resume' ?
-          resumeFileName &&
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-gray-500 text-xs">{resumeFileName}</p>
-            <HiOutlineX
-              className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
-              onClick={(e: any) => clearFileInput(e)}
-              // disabled={isSubmitting}
-            />
-          </div>
-          :
-          imageFileName &&
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-gray-500 text-xs">{imageFileName}</p>
-            <HiOutlineX
-              className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
-              onClick={(e: any) => clearFileInput(e)}
-              // disabled={isSubmitting}
-            />
-          </div>
-        }
+        {id === "resume"
+          ? resumeFileName && (
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-gray-500 text-xs">{resumeFileName}</p>
+                <HiOutlineX
+                  className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
+                  onClick={(e: any) => clearFileInput(e)}
+                  // disabled={isSubmitting}
+                />
+              </div>
+            )
+          : imageFileName && (
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-gray-500 text-xs">{imageFileName}</p>
+                <HiOutlineX
+                  className="text-gray-500 hover:text-gray-600 text-center cursor-pointer"
+                  onClick={(e: any) => clearFileInput(e)}
+                  // disabled={isSubmitting}
+                />
+              </div>
+            )}
       </div>
     );
-  }
-
+  };
 
   return (
-
     <form onSubmit={handleSubmit} className="flex flex-col mb-8 w-full">
-
       {isInfoAlert && RenderInfoAlert()}
       {isError && RenderErrorAlert()}
 
@@ -658,7 +713,12 @@ export default function Form({ title, listingId, questions, includeEventsAttende
       {RenderInput("linkedin", "LinkedIn Profile", "text")}
       {RenderInput("website", "Website / Portfolio", "text")}
       {RenderFileInput("resume", "Upload Your Resume (PDF)", "file", true)}
-      {RenderFileInput("image", "Upload Profile Picture (PNG/JPG/JPEG)", "file", true)}
+      {RenderFileInput(
+        "image",
+        "Upload Profile Picture (PNG/JPG/JPEG)",
+        "file",
+        true
+      )}
 
       {questions && renderResponseInputs()}
 
@@ -666,7 +726,7 @@ export default function Form({ title, listingId, questions, includeEventsAttende
         <Checkbox
           className="mr-2 focus:ring-purple-300 text-purple-600"
           checked={confirmUndergraduate}
-          onChange={() => setConfirmUndergraduate(prevValue => !prevValue)}
+          onChange={() => setConfirmUndergraduate((prevValue) => !prevValue)}
           required={true}
           disabled={isSubmitting}
         />
@@ -680,7 +740,9 @@ export default function Form({ title, listingId, questions, includeEventsAttende
         <Checkbox
           className="mr-2 focus:ring-purple-300 text-purple-600"
           checked={confirmNotStudyingAbroad}
-          onChange={() => setConfirmNotStudyingAbroad(prevValue => !prevValue)}
+          onChange={() =>
+            setConfirmNotStudyingAbroad((prevValue) => !prevValue)
+          }
           required={true}
           disabled={isSubmitting}
         />
@@ -695,12 +757,13 @@ export default function Form({ title, listingId, questions, includeEventsAttende
         onClick={handleSubmit}
         gradientMonochrome="purple"
         isProcessing={isSubmitting}
-        processingSpinner={<AiOutlineLoading className="h-6 w-6 animate-spin" />}
+        processingSpinner={
+          <AiOutlineLoading className="h-6 w-6 animate-spin" />
+        }
         disabled={isSubmitting || isPreview}
       >
         Submit
       </Button>
-
-    </form >
-  )
+    </form>
+  );
 }

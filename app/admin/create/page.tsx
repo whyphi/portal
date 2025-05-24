@@ -31,11 +31,9 @@ export default function Create() {
 
 
   const handleSubmit = async () => {
-    const currentDate = new Date();
     const formattedDeadline = selectedDate.toISOString();
     const formDataWithDates = {
       ...formData,
-      // dateCreated: currentDate.toISOString(),
       deadline: formattedDeadline,
     };
 

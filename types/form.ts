@@ -36,13 +36,12 @@ export interface FormData {
     Wheelock: boolean;
     Other: boolean;
   };
-  events: Events | null;
   responses: string[];
 }
 
 export interface FormProps {
   title: string | null;
-  questions: [] | { question: string, context: string }[];
+  questions: [] | { question: string; context: string }[];
   listingId: string | null;
   includeEventsAttended: boolean;
   isPreview: boolean;
