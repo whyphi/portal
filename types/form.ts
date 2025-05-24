@@ -14,7 +14,7 @@ export interface FormData {
   minor: string;
   gpa: string;
   hasGpa: boolean;
-  gradYear: string;
+  gradYear: number;
   gradMonth: string;
   email: string;
   phone: string;

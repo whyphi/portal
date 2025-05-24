@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 interface ListingData {
   title: string;
   questions: [] | [{ question: string; context: string }];
-  listingId: string;
+  id: string;
   deadline: string;
   isVisible: boolean;
   includeEventsAttended: boolean;
@@ -24,7 +24,7 @@ export default function Listing({ params }: { params: { id: string } }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [listingData, setListingData] = useState<ListingData>({
     deadline: "",
-    listingId: "",
+    id: "",
     questions: [],
     title: "",
     isVisible: true,
@@ -89,7 +89,7 @@ export default function Listing({ params }: { params: { id: string } }) {
       <Form
         title={listingData.title}
         questions={listingData.questions}
-        listingId={listingData.listingId}
+        listingId={listingData.id}
         includeEventsAttended={listingData.includeEventsAttended}
         isPreview={false}
       />

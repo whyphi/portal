@@ -9,7 +9,7 @@ import { AdminTextStyles, ThinAdminTextStyles } from "@/styles/TextStyles";
 import YearSelect from "./public/YearSelect";
 
 const initialValues: FormData = {
-  gradYear: '',
+  gradYear: new Date().getFullYear() + 4,
   gradMonth: '',
   firstName: '',
   lastName: '',
@@ -133,8 +133,8 @@ export default function Form({ title, listingId, questions, includeEventsAttende
       }));
 
       const dataToSend = {
-        listingId: listingId,
         ...formData,
+        listingId: listingId,
         responses: responseObjects, // Replace the 'responses' array with response objects
       };
 
@@ -225,7 +225,7 @@ export default function Form({ title, listingId, questions, includeEventsAttende
       if (Number.isInteger(Number(value)) && Number(value) >= 0) {
         setFormData((prevData) => ({
           ...prevData,
-          [id]: value,
+          [id]: parseInt(value),
         }));
       }
     } else {
@@ -483,7 +483,7 @@ export default function Form({ title, listingId, questions, includeEventsAttende
           <YearSelect
             startYear={2020}
             endYear={2050}
-            value={formData["gradYear"]}
+            value={formData["gradYear"].toString()}
             onChange={(e) => handleDropdownChange(e, "gradYear")} // Pass the field name to handleChange
             className="w-1/2"
             placeholder="Year"
