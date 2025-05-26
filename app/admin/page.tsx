@@ -9,9 +9,9 @@ interface Listing {
   title: string;
   active: boolean;
   deadline: string;
-  isEncrypted: boolean;
-  dateCreated: string;
-  isVisible: boolean;
+  is_encrypted: boolean;
+  date_created: string;
+  is_visible: boolean;
 }
 
 export default function Admin() {
@@ -50,10 +50,10 @@ export default function Admin() {
             <ListingCard
               listingId={listing.id}
               title={listing.title}
-              active={listing.isVisible}
-              isEncrypted={listing.isEncrypted}
+              active={listing.is_visible}
+              isEncrypted={listing.is_encrypted}
               deadline={listing.deadline}
-              dateCreated={listing.dateCreated}
+              dateCreated={listing.date_created}
             />
           </div>
         ))}
