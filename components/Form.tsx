@@ -12,20 +12,25 @@ import {
 } from "flowbite-react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { HiOutlineX } from "react-icons/hi";
-import { FormData, FormProps } from "@/types/form";
+import {
+  DataToSend,
+  FormData,
+  FormProps,
+  RequiredFormFields,
+} from "@/types/form";
 import { AdminTextStyles, ThinAdminTextStyles } from "@/styles/TextStyles";
 import YearSelect from "./public/YearSelect";
 
 const initialValues: FormData = {
-  gradYear: new Date().getFullYear() + 4,
-  gradMonth: "",
-  firstName: "",
-  lastName: "",
-  preferredName: "",
+  grad_year: new Date().getFullYear() + 4,
+  grad_month: "",
+  first_name: "",
+  last_name: "",
+  preferred_name: "",
   major: "",
   minor: "",
   gpa: "",
-  hasGpa: true,
+  has_gpa: true,
   email: "",
   phone: "",
   linkedin: "",
@@ -86,18 +91,18 @@ export default function Form({
   const maxWordCount = 200; // Adjust as needed
 
   const checkRequiredFields = () => {
-    const possibleRequiredFields = [
-      "firstName",
-      "lastName",
+    const possibleRequiredFields: RequiredFormFields = [
+      "first_name",
+      "last_name",
       "major",
-      "gradMonth",
-      "gradYear",
+      "grad_month",
+      "grad_year",
       "email",
       "phone",
       "resume",
       "image",
     ];
-    const requiredFields = formData.hasGpa
+    const requiredFields = formData.has_gpa
       ? [...possibleRequiredFields, "gpa"]
       : possibleRequiredFields;
     const incompleteFields: string[] = [];
@@ -161,15 +166,22 @@ export default function Form({
         setIsSubmitting(false);
         return;
       }
+
+      if (!listingId) {
+        alert("Unexpected error. Could not find listing.");
+        setIsSubmitting(false);
+        return;
+      }
+
       // Construct the data object to send to the API
       const responseObjects = questions.map((question, index) => ({
         question: question.question,
         response: formData.responses[index],
       }));
 
-      const dataToSend = {
+      const dataToSend: DataToSend = {
         ...formData,
-        listingId: listingId,
+        listing_id: listingId,
         responses: responseObjects, // Replace the 'responses' array with response objects
       };
 
@@ -257,7 +269,11 @@ export default function Form({
     ));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement> & {
+      target: { id: keyof FormData };
+    }
+  ) => {
     const { id, value } = e.target;
     if (id === "gpa") {
       // case 1 : only update `gpa` if valid
@@ -267,7 +283,7 @@ export default function Form({
           [id]: value,
         }));
       }
-    } else if (id === "gradYear") {
+    } else if (id === "grad_year") {
       // case 2 : handle grad year (only accept positive integers)
       if (Number.isInteger(Number(value)) && Number(value) >= 0) {
         setFormData((prevData) => ({
@@ -286,7 +302,7 @@ export default function Form({
 
   const handleDropdownChange = (
     e: ChangeEvent<HTMLSelectElement>,
-    fieldName: string
+    fieldName: keyof FormData
   ) => {
     const value = e.target.value;
     setFormData((prevData) => ({
@@ -464,8 +480,8 @@ export default function Form({
         <label className={`flex text-xs ${ThinAdminTextStyles.subtext}`}>
           <Checkbox
             className="mr-2 dark:bg-gray-400 focus:ring-purple-300 text-purple-600"
-            name="hasGpa"
-            checked={!formData.hasGpa}
+            name="has_gpa"
+            checked={!formData.has_gpa}
             onChange={handleHasGpaChange}
             disabled={isSubmitting}
           />
@@ -481,7 +497,7 @@ export default function Form({
         <label className={AdminTextStyles.default}>
           GPA (N/A if not applicable) <span className="text-red-500">*</span>
         </label>
-        {formData.hasGpa ? (
+        {formData.has_gpa ? (
           <div className="relative">
             <TextInput
               id="gpa"
@@ -520,10 +536,10 @@ export default function Form({
         </label>
         <div className="flex gap-2 mb-6">
           <Select
-            id="gradMonth"
+            id="grad_month"
             placeholder="Month"
-            value={formData["gradMonth"]}
-            onChange={(e) => handleDropdownChange(e, "gradMonth")} // Pass the field name to handleChange
+            value={formData["grad_month"]}
+            onChange={(e) => handleDropdownChange(e, "grad_month")} // Pass the field name to handleChange
             className="w-1/2"
           >
             <option value="" disabled>
@@ -535,8 +551,8 @@ export default function Form({
           <YearSelect
             startYear={2020}
             endYear={2050}
-            value={formData["gradYear"].toString()}
-            onChange={(e) => handleDropdownChange(e, "gradYear")} // Pass the field name to handleChange
+            value={formData["grad_year"].toString()}
+            onChange={(e) => handleDropdownChange(e, "grad_year")} // Pass the field name to handleChange
             className="w-1/2"
             placeholder="Year"
             disabled={isSubmitting}
@@ -678,9 +694,9 @@ export default function Form({
         <h1 className={AdminTextStyles.title}>{title}</h1>
       </div>
 
-      {RenderInput("firstName", "First Name", "text", true)}
-      {RenderInput("lastName", "Last Name", "text", true)}
-      {RenderInput("preferredName", "Preferred Name")}
+      {RenderInput("first_name", "First Name", "text", true)}
+      {RenderInput("last_name", "Last Name", "text", true)}
+      {RenderInput("preferred_name", "Preferred Name")}
       {RenderInput("major", "Major", "text", true)}
       {RenderInput("minor", "Minor", "text")}
       {RenderGpaSection()}
