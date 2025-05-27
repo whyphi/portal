@@ -3,16 +3,9 @@ import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
 import Loader from "@/components/Loader";
 import { useAuth } from "../contexts/AuthContext";
+import { Listing } from "@/types/listing";
 
-interface Listing {
-  id: string;
-  title: string;
-  active: boolean;
-  deadline: string;
-  is_encrypted: boolean;
-  date_created: string;
-  is_visible: boolean;
-}
+
 
 export default function Admin() {
   const { token } = useAuth();

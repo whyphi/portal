@@ -1,18 +1,10 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Form from "@/components/Form";
 import Loader from "@/components/Loader";
 import { useRouter } from "next/navigation";
-
-interface ListingData {
-  title: string;
-  questions: [] | [{ question: string; context: string }];
-  id: string;
-  deadline: string;
-  isVisible: boolean;
-  includeEventsAttended: boolean;
-}
+import { Listing as ListingData } from "@/types/listing";
 
 interface ServerError {
   Code: string;
@@ -23,12 +15,15 @@ export default function Listing({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [listingData, setListingData] = useState<ListingData>({
+    date_created: "",
     deadline: "",
     id: "",
     questions: [],
     title: "",
-    isVisible: true,
-    includeEventsAttended: false
+    is_visible: true,
+    include_events_attended: false,
+    is_encrypted: false,
+    active: true,
   });
 
   useEffect(() => {
@@ -55,7 +50,9 @@ export default function Listing({ params }: { params: { id: string } }) {
           const deadline = new Date(listing.deadline);
           if (!isNaN(deadline.getTime())) {
             const now = new Date();
-            const estNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+            const estNow = new Date(
+              now.toLocaleString("en-US", { timeZone: "America/New_York" })
+            );
 
             if (estNow > deadline) {
               router.push("/error");
@@ -68,21 +65,20 @@ export default function Listing({ params }: { params: { id: string } }) {
         }
 
         // Check if listing is visible
-        if (!listing.isVisible) {
+        if (!listing.is_visible) {
           router.push("/error");
           return;
         }
-
 
         setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching listings:", error);
-        router.push("/error")
+        router.push("/error");
       });
   }, [params.id, router]);
 
-  if (isLoading) return <Loader />
+  if (isLoading) return <Loader />;
 
   return (
     <main className="flex flex-col mx-auto justify-center items-center max-w-screen-sm px-5 py-2.5">
@@ -90,7 +86,7 @@ export default function Listing({ params }: { params: { id: string } }) {
         title={listingData.title}
         questions={listingData.questions}
         listingId={listingData.id}
-        includeEventsAttended={listingData.includeEventsAttended}
+        includeEventsAttended={listingData.include_events_attended}
         isPreview={false}
       />
     </main>
