@@ -14,17 +14,7 @@ interface ServerError {
 export default function Listing({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [listingData, setListingData] = useState<ListingData>({
-    date_created: "",
-    deadline: "",
-    id: "",
-    questions: [],
-    title: "",
-    is_visible: true,
-    include_events_attended: false,
-    is_encrypted: false,
-    active: true,
-  });
+  const [listingData, setListingData] = useState<ListingData | null>(null);
 
   useEffect(() => {
     // Fetch listings data from your /listings API endpoint
@@ -79,6 +69,8 @@ export default function Listing({ params }: { params: { id: string } }) {
   }, [params.id, router]);
 
   if (isLoading) return <Loader />;
+
+  if (!listingData) return;
 
   return (
     <main className="flex flex-col mx-auto justify-center items-center max-w-screen-sm px-5 py-2.5">
