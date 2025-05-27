@@ -3,16 +3,9 @@ import { useEffect, useState } from "react";
 import ListingCard from "@/components/admin/ListingCard";
 import Loader from "@/components/Loader";
 import { useAuth } from "../contexts/AuthContext";
+import { Listing } from "@/types/listing";
 
-interface Listing {
-  id: string;
-  title: string;
-  active: boolean;
-  deadline: string;
-  isEncrypted: boolean;
-  dateCreated: string;
-  isVisible: boolean;
-}
+
 
 export default function Admin() {
   const { token } = useAuth();
@@ -50,10 +43,10 @@ export default function Admin() {
             <ListingCard
               listingId={listing.id}
               title={listing.title}
-              active={listing.isVisible}
-              isEncrypted={listing.isEncrypted}
+              active={listing.is_visible}
+              isEncrypted={listing.is_encrypted}
               deadline={listing.deadline}
-              dateCreated={listing.dateCreated}
+              dateCreated={listing.date_created}
             />
           </div>
         ))}

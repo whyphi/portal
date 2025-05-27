@@ -7,15 +7,15 @@ export interface Events {
 }
 
 export interface FormData {
-  firstName: string;
-  lastName: string;
-  preferredName: string;
+  first_name: string;
+  last_name: string;
+  preferred_name: string;
   major: string;
   minor: string;
   gpa: string;
-  hasGpa: boolean;
-  gradYear: number;
-  gradMonth: string;
+  has_gpa: boolean;
+  grad_year: number;
+  grad_month: string;
   email: string;
   phone: string;
   linkedin: string;
@@ -38,6 +38,13 @@ export interface FormData {
   };
   responses: string[];
 }
+
+export interface DataToSend extends Omit<FormData, 'responses'>  {
+  listing_id: string
+  responses: { question: string; response: string }[]
+}
+
+export type RequiredFormFields = Array<keyof FormData>;
 
 export interface FormProps {
   title: string | null;
