@@ -15,9 +15,7 @@ export default function ApplicantPage({ applicant }: ApplicantPageProps) {
 
   const renderResponses = () => {
     return (
-      applicant.responses.length === 0 ? (
-        <p className={AdminTextStyles.default}>None</p>
-      ) : (
+      applicant.responses ? (
         <div>
           {applicant.responses.map((response, index) => (
             <ResponseCard
@@ -27,6 +25,8 @@ export default function ApplicantPage({ applicant }: ApplicantPageProps) {
             />
           ))}
         </div>
+      ) : (
+        <p className={AdminTextStyles.default}>None</p>
       )
     );
   };

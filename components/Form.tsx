@@ -157,6 +157,19 @@ export default function Form({
     return true;
   };
 
+  const normalizeFormData = (normalized: FormData): FormData => {
+    const result = { ...normalized };
+
+    Object.entries(result).forEach(([key, value]) => {
+      if (typeof value === "string") {
+        (result as any)[key] = value.trim() === "" ? null : value;
+      }
+      // TODO: potentially handle other types (e.g. Objects, Arrays...)
+    });
+
+    return result;
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
@@ -179,8 +192,10 @@ export default function Form({
         response: formData.responses[index],
       }));
 
+      const normalizedFormData = normalizeFormData(formData);
+
       const dataToSend: DataToSend = {
-        ...formData,
+        ...normalizedFormData,
         listing_id: listingId,
         responses: responseObjects, // Replace the 'responses' array with response objects
       };
