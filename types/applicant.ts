@@ -1,7 +1,6 @@
 export interface Applicant {
   id:             string;
   listing_id:     string;
-  responses:      Response[];
   first_name:     string;
   last_name:      string;
   preferred_name: string | null;
@@ -17,8 +16,9 @@ export interface Applicant {
   resume:         string;
   major:          string;
   phone:          string;
+  responses:      Response[] | null;
   colleges:       { [key: string]: boolean };
-  events:         null | { [key: string]: boolean };
+  events:         { [key: string]: boolean } | null;
 }
 
 export interface Response {
