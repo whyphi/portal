@@ -1,9 +1,11 @@
 export interface Listing {
-    dateCreated: string;
-    deadline: string;
-    isVisible: boolean;
-    listingId: string;
-    questions: { [key: string]: string }[]; // Assuming questions is an array of strings, update it according to your actual data structure
-    title: string;
-  }
-  
+  id: string;
+  title: string;
+  active: boolean;
+  date_created: string;
+  deadline: string;
+  is_encrypted: boolean;
+  is_visible: boolean;
+  include_events_attended: boolean;
+  questions: [] | { question: string; context: string }[];
+}

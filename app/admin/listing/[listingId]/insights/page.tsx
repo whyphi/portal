@@ -134,7 +134,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
   }
 
   const handleRowClick = (applicant: Applicant) => {
-    localStorage.setItem(selectedApplicantIdKey, applicant.applicantId);
+    localStorage.setItem(selectedApplicantIdKey, applicant.id);
     router.push(`/admin/listing/${params.listingId}`);
   };
 
@@ -145,7 +145,7 @@ export default function Insights({ params }: { params: { listingId: string } }) 
       onClick={() => handleRowClick(applicant)}
     >
       <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-        {applicant.firstName} {applicant.lastName}
+        {applicant.first_name} {applicant.last_name}
       </Table.Cell>
       {renderCell(applicant)}
     </Table.Row>

@@ -7,15 +7,15 @@ export interface Events {
 }
 
 export interface FormData {
-  firstName: string;
-  lastName: string;
-  preferredName: string;
+  first_name: string;
+  last_name: string;
+  preferred_name: string;
   major: string;
   minor: string;
   gpa: string;
-  hasGpa: boolean;
-  gradYear: string;
-  gradMonth: string;
+  has_gpa: boolean;
+  grad_year: number;
+  grad_month: string;
   email: string;
   phone: string;
   linkedin: string;
@@ -36,13 +36,19 @@ export interface FormData {
     Wheelock: boolean;
     Other: boolean;
   };
-  events: Events | null;
   responses: string[];
 }
 
+export interface DataToSend extends Omit<FormData, 'responses'>  {
+  listing_id: string
+  responses: { question: string; response: string }[]
+}
+
+export type RequiredFormFields = Array<keyof FormData>;
+
 export interface FormProps {
   title: string | null;
-  questions: [] | { question: string, context: string }[];
+  questions: [] | { question: string; context: string }[];
   listingId: string | null;
   includeEventsAttended: boolean;
   isPreview: boolean;

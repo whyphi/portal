@@ -1,24 +1,24 @@
 export interface Applicant {
-  website:       string;
-  listingId:     string;
-  colleges:      { [key: string]: boolean };
-  responses:     Response[];
-  lastName:      string;
-  linkedin:      string;
-  email:         string;
-  firstName:     string;
-  applicantId:   string;
-  minor:         string;
-  image:         string;
-  gpa:           string;
-  hasGpa:        boolean;
-  gradMonth:     string;
-  gradYear:      string;
-  resume:        string;
-  major:         string;
-  phone:         string;
-  preferredName: string;
-  events:        null | { [key: string]: boolean };
+  id:             string;
+  listing_id:     string;
+  first_name:     string;
+  last_name:      string;
+  preferred_name: string | null;
+  linkedin:       string | null;
+  website:        string | null;
+  email:          string;
+  minor:          string | null;
+  image:          string; // TODO: make nullable (maybe)
+  gpa:            string | null;
+  has_gpa:        boolean;
+  grad_month:     string;
+  grad_year:      number;
+  resume:         string;
+  major:          string;
+  phone:          string;
+  responses:      Response[] | null;
+  colleges:       { [key: string]: boolean };
+  events:         { [key: string]: boolean } | null;
 }
 
 export interface Response {
