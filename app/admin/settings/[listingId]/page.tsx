@@ -194,13 +194,13 @@ export default function ListingSettings({ params }: { params: { listingId: strin
                 </div>
                 <div className="mb-6">
                   <label className={`block ${AdminTextStyles.subtext}`}>
-                    Addtional Context / Subheadings
+                    Additional Context / Subheadings
                   </label>
                   <TextInput
                     className="block w-full"
                     id={`context-${index}`}
                     type="text"
-                    placeholder="Add any context text that explains the question here"
+                    placeholder="Add any context that explains the question here"
                     value={questionObj.context}
                     onChange={(e) =>
                       handleQuestionChange(index, "context", e.target.value)
