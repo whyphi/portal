@@ -51,7 +51,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
         // check that applicant exists in localStorage
         if (selectedApplicantId) {
           // Find the index of the applicant in the applicantData array
-          const applicantIndex = data.findIndex(applicant => selectedApplicantId == applicant.applicantId);
+          const applicantIndex = data.findIndex(applicant => selectedApplicantId == applicant.id);
 
           // Check if an applicant was found
           if (applicantIndex !== -1) {
@@ -116,13 +116,13 @@ export default function Listing({ params }: { params: { listingId: string } }) {
                   setSelectedApplicantIndex(index);
 
                   // push to localStorage
-                  localStorage.setItem(selectedApplicantIdKey, applicant.applicantId);
+                  localStorage.setItem(selectedApplicantIdKey, applicant.id);
                 }}
               >
                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {applicant.firstName} {applicant.lastName}
+                  {applicant.first_name} {applicant.last_name}
                 </Table.Cell>
-                <Table.Cell>{applicant.gradYear}</Table.Cell>
+                <Table.Cell>{applicant.grad_year}</Table.Cell>
                 <Table.Cell>
                   {/* Filter and render only true values */}
                   {Object.entries(applicant.colleges)
@@ -177,7 +177,7 @@ export default function Listing({ params }: { params: { listingId: string } }) {
     setSelectedApplicantIndex(index);
 
     // push to localStorage
-    localStorage.setItem(selectedApplicantIdKey, applicant.applicantId);
+    localStorage.setItem(selectedApplicantIdKey, applicant.id);
   };
 
   const scrollApplicantIntoView = (index: number) => {
