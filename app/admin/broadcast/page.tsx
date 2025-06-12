@@ -1,5 +1,5 @@
 "use client";
-import EmailForm from "@/components/admin/broadcast/EmailForm";
+import EmailForm from "@/components/EmailForm";
 
 export default function Broadcast() {
   return (
