@@ -23,6 +23,7 @@ export interface UserInEvent{
 
 export interface EventRush {
   id: string;
+  timeframe_id: string;
   name: string;
   date_created: string;
   last_modified: string;

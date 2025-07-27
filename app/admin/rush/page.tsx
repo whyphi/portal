@@ -232,15 +232,15 @@ export default function RushEvents() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          categoryId: selectedRushCategory?.id,
+          timeframe_id: selectedRushCategory?.id,
           name: eventFormData.eventName,
           code: eventCodeTrimmed,
           location: eventFormData.eventLocation,
           date: eventFormData.eventDate.toISOString(),
           deadline: eventFormData.eventDeadline.toISOString(),
-          eventCoverImage : eventFormData.eventCoverImage,
-          eventCoverImageName : eventFormData.eventCoverImageName,
-          eventCoverImageVersion: eventFormData.eventCoverImageVersion,
+          event_cover_image : eventFormData.eventCoverImage,
+          event_cover_image_name : eventFormData.eventCoverImageName,
+          event_cover_image_version: eventFormData.eventCoverImageVersion,
           ...(modifying && { _id: eventFormData.eventId })
         })
       })
