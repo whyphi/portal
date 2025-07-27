@@ -3,7 +3,7 @@
 import { useAuth } from "@/app/contexts/AuthContext";
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard"
 import { AdminTextStyles } from "@/styles/TextStyles"
-import { RushEvent } from "@/types/admin/events";
+import { EventRush } from "@/types/admin/events";
 import { useEffect, useState } from "react";
 import Loader from "@/components/Loader";
 import { Badge, Button, Clipboard, Table } from "flowbite-react";
@@ -11,7 +11,7 @@ import Timestamp from "react-timestamp";
 
 export default function RushEventPage({ params }: { params: { eventId: string } }) {
   const { token } = useAuth();
-  const [rushEvent, setRushEvent] = useState<RushEvent | null>();
+  const [rushEvent, setRushEvent] = useState<EventRush | null>();
   const [isLoading, setIsLoading] = useState(true);
   const [showCode, setShowCode] = useState(false);
 
@@ -108,7 +108,7 @@ export default function RushEventPage({ params }: { params: { eventId: string } 
         <SummaryCard title={renderCodeTitle()} value={renderCode()} />
         <SummaryCard title="Event Date" value={<Timestamp date={new Date(rushEvent.date)}/>} />
         <SummaryCard title="Event Deadline" value={<Timestamp date={new Date(rushEvent.deadline)}/>} />
-        <SummaryCard title="Last Modified" value={<Timestamp date={new Date(rushEvent.lastModified)}/>} />
+        <SummaryCard title="Last Modified" value={<Timestamp date={new Date(rushEvent.last_modified)}/>} />
       </div>
 
       <Table hoverable>

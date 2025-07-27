@@ -21,20 +21,21 @@ export interface UserInEvent{
   dateCheckedIn: string;
 }
 
-export interface RushEvent {
-  _id: string;
+export interface EventRush {
+  id: string;
   name: string;
-  dateCreated: string;
-  lastModified: string;
+  date_created: string;
+  last_modified: string;
   code: string;
   location: string;
   date: string;
   deadline: string;
-  eventCoverImage: string;
-  eventCoverImageName: string;
-  eventCoverImageVersion: string;
+  event_cover_image: string;
+  event_cover_image_name: string;
+  event_cover_image_version: string;
+  // TODO: maybe make optional?
   attendees: readonly Attendee[];
-  numAttendees: number;
+  // numAttendees: number;
 }
 
 interface Attendee {
@@ -43,12 +44,12 @@ interface Attendee {
   checkinTime: string;
 }
 
-export interface RushCategory {
-  _id: string;
-  dateCreated: string;
+export interface EventTimeframeRush {
+  id: string;
+  date_created: string;
   name: string;
-  defaultRushCategory: boolean;
-  events: readonly RushEvent[]
+  default_rush_category: boolean;
+  events_rush: readonly EventRush[]
 }
 
 export interface Analytics {

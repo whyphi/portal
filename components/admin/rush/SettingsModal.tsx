@@ -1,11 +1,11 @@
-import { RushCategory } from "@/types/admin/events";
+import { EventTimeframeRush } from "@/types/admin/events";
 import { Button, Dropdown, Label, Modal } from "flowbite-react";
 import { useState } from "react";
 
 interface SettingsModalProps {
 	showModal: boolean,
 	defaultRushCategoryId: string,
-  rushCategories: RushCategory[],
+  rushCategories: EventTimeframeRush[],
 	onClose: () => void,
 	onSubmit: (defaultRushCategoryId: string) => Promise<void>,
 }
@@ -21,11 +21,11 @@ export default function SettingsModal({
 	const [localDefaultRushCategoryId, setLocalDefaultRushCategoryId] = useState(defaultRushCategoryId);
 
 	const categories = rushCategories.map((category) => {
-		return { label: category.name, value: category._id }
+		return { label: category.name, value: category.id }
 	});
 
 	const getRushCategoryById = (categoryId: string | null): string => {
-		const category = rushCategories.find((category) => category._id === categoryId);
+		const category = rushCategories.find((category) => category.id === categoryId);
 		if (category) {
 			return category.name;
 		} else {

@@ -1,5 +1,5 @@
-import { EventFormData } from "@/app/admin/rush/page";
-import { RushCategory } from "@/types/admin/events";
+import { EventRushFormData } from "@/app/admin/rush/page";
+import { EventTimeframeRush } from "@/types/admin/events";
 import { addTwoHours } from "@/utils/date";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { AiOutlineLoading } from "react-icons/ai";
@@ -10,10 +10,10 @@ import { useEffect } from "react";
 
 interface EventModalProps {
 	showModal: boolean,
-	selectedRushCategory: RushCategory | null,
-	eventFormData: EventFormData,
+	selectedRushCategory: EventTimeframeRush | null,
+	eventFormData: EventRushFormData,
 	isSubmitting: boolean,
-	setEventFormData: React.Dispatch<React.SetStateAction<EventFormData>>,
+	setEventFormData: React.Dispatch<React.SetStateAction<EventRushFormData>>,
 	onClose: () => void,
 	onSubmit: () => void,
 	modifyingEvent?: boolean,
