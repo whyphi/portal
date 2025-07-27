@@ -241,7 +241,7 @@ export default function RushEvents() {
           event_cover_image : eventFormData.eventCoverImage,
           event_cover_image_name : eventFormData.eventCoverImageName,
           event_cover_image_version: eventFormData.eventCoverImageVersion,
-          ...(modifying && { _id: eventFormData.eventId })
+          ...(modifying && { id: eventFormData.eventId })
         })
       })
       if (!response.ok) {
@@ -257,7 +257,6 @@ export default function RushEvents() {
   }
 
   const handleDeleteEvent = async () => {
-    console.log("hit")
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${selectedEventToDelete?.id}`, {
         method: 'DELETE',
