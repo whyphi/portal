@@ -49,7 +49,7 @@ export interface EventTimeframeRush {
   id: string;
   date_created: string;
   name: string;
-  default_rush_category: boolean;
+  default_rush_timeframe: boolean;
   events_rush: readonly EventRush[]
 }
 

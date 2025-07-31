@@ -10,7 +10,7 @@ import { useEffect } from "react";
 
 interface EventModalProps {
 	showModal: boolean,
-	selectedRushCategory: EventTimeframeRush | null,
+	selectedRushTimeframe: EventTimeframeRush | null,
 	eventFormData: EventRushFormData,
 	isSubmitting: boolean,
 	setEventFormData: React.Dispatch<React.SetStateAction<EventRushFormData>>,
@@ -22,7 +22,7 @@ interface EventModalProps {
 // EventModel: can be used to either create or update events (by default, it is set to "creating" an event)
 export default function EventModal({
 	showModal,
-	selectedRushCategory,
+	selectedRushTimeframe: selectedRushTimeframe,
 	eventFormData,
 	isSubmitting,
 	setEventFormData,
@@ -51,7 +51,7 @@ export default function EventModal({
 			<Modal.Body className="dark:bg-background-dark">
 				<div className="space-y-6">
 					<h3 className="text-xl font-bold text-gray-900 dark:text-white">
-						{modifyingEvent ? `Modify Event` : `Create an Event for "${selectedRushCategory?.name}"`}
+						{modifyingEvent ? `Modify Event` : `Create an Event for "${selectedRushTimeframe?.name}"`}
 					</h3>
 					<div>
 						<div className="mb-2 block">
