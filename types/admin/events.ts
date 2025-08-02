@@ -42,7 +42,7 @@ export interface EventRush {
 interface Attendee {
   name: string;
   email: string;
-  checkinTime: string;
+  checkin_time: string;
 }
 
 export interface EventTimeframeRush {
