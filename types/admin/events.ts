@@ -1,3 +1,4 @@
+// ================= MEMBER TYPES =================
 export interface Timeframe {
   _id: string;
   name: string;
@@ -21,7 +22,12 @@ export interface UserInEvent {
   dateCheckedIn: string;
 }
 
-export interface EventRush {
+// ================= RUSH TYPES =================
+export interface EventRush extends EventsRushDefault {
+  attendees: readonly Attendee[];
+}
+
+interface EventsRushDefault {
   id: string;
   timeframe_id: string;
   name: string;
@@ -34,9 +40,6 @@ export interface EventRush {
   event_cover_image: string;
   event_cover_image_name: string;
   event_cover_image_version: string;
-  // TODO: maybe make optional?
-  attendees: readonly Attendee[];
-  // numAttendees: number;
 }
 
 interface Attendee {
@@ -53,16 +56,17 @@ export interface EventTimeframeRush {
   events_rush: readonly EventRush[];
 }
 
+// ================= RUSH-ANALYTICS TYPES =================
 export interface Analytics {
   timeframe: EventTimeframeRush;
   rushees: {
     [rusheeId: string]: AnalyticsAttendee;
   };
-  events: { [eventId: string]: EventRush };
+  events: { [eventId: string]: EventRushAnalytics };
 }
 
-interface AnalyticsAttendees {
-  [rusheeId: string]: AnalyticsAttendee;
+interface EventRushAnalytics extends EventsRushDefault {
+  num_attendees: readonly Attendee[];
 }
 
 interface AnalyticsAttendee {
