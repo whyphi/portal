@@ -5,7 +5,6 @@ import Loader from "@/components/AdminLoader";
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { Analytics } from "@/types/admin/events";
 import { getPortalBaseUrl } from "@/utils/getBaseURL";
-import { isRushThresholdMetAnalytics } from "@/utils/getRushThreshold";
 import { Badge, Drawer, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
