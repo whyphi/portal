@@ -40,7 +40,7 @@ export default function RushEventPage({ params }: { params: { eventId: string } 
     }
 
     fetchEventData();
-  }, [token]);
+  }, [token, params.eventId]);
 
   const renderEventStatus = () => {
     if (!rushEvent) return;

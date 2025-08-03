@@ -12,25 +12,25 @@ import SummaryCard from "@/components/admin/listing/insights/SummaryCard";
 import { getEventCounts, getMostPopularEvent, getNumRegisteredRushees, getPercentageRushThresholdMet } from "@/utils/admin/rush/analytics";
 import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, ResponsiveContainer } from "recharts";
 
-export default function RushAnalytics({ params }: { params: { categoryId: string } }) {
+export default function RushAnalytics({ params }: { params: { timeframeId: string } }) {
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [analytics, setAnalytics] = useState<Analytics | null>();
   const [error, setError] = useState<Error>();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedAttendeeEmail, setSelectedAttendeeEmail] = useState<string | null>(null);
-
-  const handleOpen = (email: string) => {
+  const [selectedRusheeId, setSelectedRusheeId] = useState<string | null>(null);
+  
+  const handleOpen = (rusheeId: string) => {
     setIsOpen(true);
-    setSelectedAttendeeEmail(email);
+    setSelectedRusheeId(rusheeId);
   };
   const handleClose = () => {
     setIsOpen(false);
-    setSelectedAttendeeEmail(null);
+    setSelectedRusheeId(null);
   };
 
   const handleDetailClick = (eventId: string) => {
-    const url = `${getPortalBaseUrl()}/admin/rush/${params.categoryId}/${eventId}`;
+    const url = `${getPortalBaseUrl()}/admin/rush/${params.timeframeId}/${eventId}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
@@ -38,7 +38,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
     const fetchAnalytics = async () => {
       try {
         // Fetch all rush categories and events from the API
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/category/${params.categoryId}/analytics`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/timeframe/${params.timeframeId}/analytics`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -58,24 +58,24 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
     };
 
     { token && fetchAnalytics(); }
-  }, [token]);
+  }, [token, params.timeframeId]);
 
   const renderAnalyticsTable = () => {
     if (!analytics) return;
-    return Object.keys(analytics.attendees).map((email) => (
+    return Object.entries(analytics.rushees).map(([rusheeId, rushee]) => (
       <Table.Row
-        onClick={() => handleOpen(email)}
-        key={email}
+        onClick={() => handleOpen(rusheeId)}
+        key={rusheeId}
         className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
       >
         <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-          {analytics.attendees[email].name}
+          {rushee.name}
         </Table.Cell>
-        <Table.Cell>{analytics.attendees[email].email}</Table.Cell>
-        <Table.Cell>{analytics.attendees[email].eventsAttended.length}</Table.Cell>
+        <Table.Cell>{rushee.email}</Table.Cell>
+        <Table.Cell>{rushee.num_events_attended}</Table.Cell>
         {/* TODO: create function to determine if the candidate can be accepted for interview (this can be handled potentially via Vault */}
         <Table.Cell>
-          {isRushThresholdMetAnalytics(analytics.attendees[email].eventsAttended)
+          {rushee.threshold
             ? <Badge color="success" className="inline-block">True</Badge>
             : <Badge color="failure" className="inline-block">False</Badge>}
         </Table.Cell>
@@ -84,18 +84,18 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
   }
 
   const renderAnalyticsDetailTable = () => {
-    if (!(analytics && selectedAttendeeEmail)) return;
-    return analytics.events.map((event) => (
+    if (!(analytics && selectedRusheeId)) return;
+    return analytics.rushees[selectedRusheeId].events_attended.map((event) => (
       <Table.Row
-        onClick={() => handleDetailClick(event.eventId)}
-        key={event.eventId}
+        onClick={() => handleDetailClick(event.id)}
+        key={event.id}
         className="bg-white dark:border-gray-700 dark:bg-gray-800 cursor-pointer"
       >
         <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-          {event.eventName}
+          {analytics.events[event.id].name}
         </Table.Cell>
         <Table.Cell>
-          {analytics.attendees[selectedAttendeeEmail].eventsAttended.find((attendeeEvent) => attendeeEvent.eventId == event.eventId)
+          {event.attended
             ?
             <Badge color="success" className="inline-block">Yes</Badge>
             :
@@ -144,7 +144,7 @@ export default function RushAnalytics({ params }: { params: { categoryId: string
     <div className="overflow-x-auto">
       <h1 className={`flex items-center gap-2 ${AdminTextStyles.subtitle}`}>
         Rush Analytics
-        <Badge size="lg">{analytics.categoryName}</Badge>
+        <Badge size="lg">{analytics.timeframe.name}</Badge>
       </h1>
       <div>
         <div className="mb-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

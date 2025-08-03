@@ -3,7 +3,7 @@ export interface Timeframe {
   name: string;
   spreadsheetId: string;
   dateCreated: string;
-  events: Event[]
+  events: Event[];
 }
 
 export interface Event {
@@ -15,7 +15,7 @@ export interface Event {
   tags: string[];
 }
 
-export interface UserInEvent{
+export interface UserInEvent {
   name: string;
   userId: string;
   dateCheckedIn: string;
@@ -50,27 +50,31 @@ export interface EventTimeframeRush {
   date_created: string;
   name: string;
   default_rush_timeframe: boolean;
-  events_rush: readonly EventRush[]
+  events_rush: readonly EventRush[];
 }
 
 export interface Analytics {
-  categoryName: string,
-  attendees: AnalyticsAttendees,
-  events: readonly AnalyticsEvent[],
+  timeframe: EventTimeframeRush;
+  rushees: {
+    [rusheeId: string]: AnalyticsAttendee;
+  };
+  events: { [eventId: string]: EventRush };
 }
 
 interface AnalyticsAttendees {
-  [email: string]: AnalyticsAttendee;
+  [rusheeId: string]: AnalyticsAttendee;
 }
 
 interface AnalyticsAttendee {
+  id: string;
   name: string;
   email: string;
-  checkinTime: string;
-  eventsAttended: readonly AnalyticsEvent[];
+  events_attended: readonly AnalyticsEvent[];
+  num_events_attended: number;
+  threshold: boolean;
 }
 
 export interface AnalyticsEvent {
-  eventId: string;
-  eventName: string;
+  id: string;
+  attended: boolean;
 }
