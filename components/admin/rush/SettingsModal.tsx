@@ -1,33 +1,33 @@
-import { RushCategory } from "@/types/admin/events";
+import { EventTimeframeRush } from "@/types/admin/events";
 import { Button, Dropdown, Label, Modal } from "flowbite-react";
 import { useState } from "react";
 
 interface SettingsModalProps {
 	showModal: boolean,
-	defaultRushCategoryId: string,
-  rushCategories: RushCategory[],
+	defaultRushTimeframeId: string,
+  rushTimeframes: EventTimeframeRush[],
 	onClose: () => void,
-	onSubmit: (defaultRushCategoryId: string) => Promise<void>,
+	onSubmit: (defaultRushTimeframeId: string) => Promise<void>,
 }
 
-// SettingsModal: used to select/update the defaultRushCategoryId (TODO: delete rushCategories here too)
+// SettingsModal: used to select/update the defaultRushTimeframeId (TODO: delete rushTimeframes here too)
 export default function SettingsModal({
 	showModal,
-	defaultRushCategoryId,
-	rushCategories,
+	defaultRushTimeframeId: defaultRushTimeframeId,
+	rushTimeframes: rushTimeframes,
 	onClose,
 	onSubmit,
 }: SettingsModalProps) {
-	const [localDefaultRushCategoryId, setLocalDefaultRushCategoryId] = useState(defaultRushCategoryId);
+	const [localDefaultRushTimeframeId, setLocalDefaultRushTimeframeId] = useState(defaultRushTimeframeId);
 
-	const categories = rushCategories.map((category) => {
-		return { label: category.name, value: category._id }
+	const timeframes = rushTimeframes.map((timeframe) => {
+		return { label: timeframe.name, value: timeframe.id }
 	});
 
-	const getRushCategoryById = (categoryId: string | null): string => {
-		const category = rushCategories.find((category) => category._id === categoryId);
-		if (category) {
-			return category.name;
+	const getRushTimeframeById = (timeframeId: string | null): string => {
+		const timeframe = rushTimeframes.find((timeframe) => timeframe.id === timeframeId);
+		if (timeframe) {
+			return timeframe.name;
 		} else {
 			return "None";
 		}
@@ -44,17 +44,17 @@ export default function SettingsModal({
 
 					<div>
 						<div className="mb-2 block">
-							<Label htmlFor="defaultRushCategoryId" value="Default Rush Category" />
+							<Label htmlFor="defaultRushTimeframeId" value="Default Rush Timeframe" />
 							<span className="text-red-500"> *</span>
 						</div>
-						<Dropdown label={getRushCategoryById(localDefaultRushCategoryId)} color="gray">
-							<Dropdown.Item onClick={() => setLocalDefaultRushCategoryId("")}>
+						<Dropdown label={getRushTimeframeById(localDefaultRushTimeframeId)} color="gray">
+							<Dropdown.Item onClick={() => setLocalDefaultRushTimeframeId("")}>
 								None
 							</Dropdown.Item>
 							<Dropdown.Divider />
-							{categories.map((category) => (
-                <Dropdown.Item key={category.value} onClick={() => setLocalDefaultRushCategoryId(category.value)}>
-                  {category.label}
+							{timeframes.map((timeframe) => (
+                <Dropdown.Item key={timeframe.value} onClick={() => setLocalDefaultRushTimeframeId(timeframe.value)}>
+                  {timeframe.label}
                 </Dropdown.Item>
               ))}
 						</Dropdown>
@@ -63,7 +63,7 @@ export default function SettingsModal({
 					<div className="w-full">
 						<Button
 							// disabled={}
-							onClick={() => onSubmit(localDefaultRushCategoryId)}
+							onClick={() => onSubmit(localDefaultRushTimeframeId)}
 						>
 							Update Settings
 						</Button>
