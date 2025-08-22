@@ -9,7 +9,7 @@ import { AdminTextStyles } from "@/styles/TextStyles";
 
 export default function AccountSettings() {
   const { token } = useAuth();
-  const _id = getUserId();
+  const id = getUserId();
   const router = useRouter();
 
   const [user, setUser] = useState<Member>({} as Member);
@@ -17,7 +17,7 @@ export default function AccountSettings() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/member/${_id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/members/${id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -31,7 +31,7 @@ export default function AccountSettings() {
       }
     }
     fetchUser();
-  }, [_id, token]); // Include _id and token in the dependency array
+  }, [id, token]); // Include _id and token in the dependency array
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setUser((prevUser) => ({
@@ -47,7 +47,7 @@ export default function AccountSettings() {
         <form className="flex flex-col gap-4" onSubmit={(e) => {
           e.preventDefault();
           console.log(user);
-          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/member/${_id}`, {
+          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/members/${id}`, {
             method: "PUT",
             headers: {
               Authorization: `Bearer ${token}`,
