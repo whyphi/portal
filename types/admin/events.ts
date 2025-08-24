@@ -1,19 +1,32 @@
+import { User } from "@/types/admin/users";
+
 // ================= MEMBER TYPES =================
-export interface Timeframe {
-  _id: string;
+export interface EventTimeframeMember {
+  id: string;
   name: string;
-  spreadsheetId: string;
-  dateCreated: string;
-  events: Event[];
+  spreadsheet_id: string;
+  date_created: string;
+  events_member: EventMember[];
 }
 
-export interface Event {
-  _id: string;
+export interface EventMember {
+  id: string;
+  code: string;
   name: string;
-  dateCreated: string;
-  timeframeId: string;
-  usersAttended: UserInEvent[];
-  tags: string[];
+  date_created: string;
+  timeframe_id: string;
+  spreadsheet_col: string;
+  spreadsheet_tab: string;
+  tags?: string[]; // TODO: maybe remove tags
+}
+
+export interface EventMemberDetails extends EventMember {
+  attendees: EventMemberAttendee[];
+}
+
+interface EventMemberAttendee {
+  checkin_time: string;
+  user: User;
 }
 
 export interface UserInEvent {
@@ -23,11 +36,11 @@ export interface UserInEvent {
 }
 
 // ================= RUSH TYPES =================
-export interface EventRush extends EventsRushDefault {
+export interface EventRush extends EventRushDefault {
   attendees: readonly Attendee[];
 }
 
-interface EventsRushDefault {
+interface EventRushDefault {
   id: string;
   timeframe_id: string;
   name: string;
@@ -65,7 +78,7 @@ export interface Analytics {
   events: { [eventId: string]: EventRushAnalytics };
 }
 
-interface EventRushAnalytics extends EventsRushDefault {
+interface EventRushAnalytics extends EventRushDefault {
   num_attendees: readonly Attendee[];
 }
 

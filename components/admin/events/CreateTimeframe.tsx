@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineUserGroup, HiOutlinePlus, HiOutlineX } from "react-icons/hi";
 import { Label, TextInput, Button, Select, Badge } from "flowbite-react";
 import { useAuth } from "@/app/contexts/AuthContext";
-import { Timeframe } from "@/types/admin/events";
+import { EventTimeframeMember } from "@/types/admin/events";
 import { Spinner } from "flowbite-react";
 
 interface CreateTimeframeProps {
-  timeframes: Timeframe[];
+  timeframes: EventTimeframeMember[];
   onClose: () => void; // Prop for close button click handler
 }
 
@@ -41,7 +41,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({
     const getSheetTabs = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex]._id}/sheets`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex].id}/sheets`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -108,7 +108,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({
   };
 
   const handleCreateEvent = async () => {
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex]._id}/events`;
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/timeframes/${timeframes[selectedTimeframeIndex].id}/events`;
     const options = {
       method: "POST",
       headers: {
