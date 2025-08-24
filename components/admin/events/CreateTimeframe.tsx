@@ -93,7 +93,7 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({
           },
           body: JSON.stringify({
             name: timeframeName,
-            spreadsheetId: spreadsheetId,
+            spreadsheet_id: spreadsheetId,
           }),
         }
       );
@@ -117,8 +117,8 @@ const CreateTimeframe: React.FC<CreateTimeframeProps> = ({
       },
       body: JSON.stringify({
         name: eventName,
-        tags: tags,
-        sheetTab: selectedSheetTab,
+        // tags: tags,
+        spreadsheet_tab: selectedSheetTab,
         code: eventCode,
       }),
     };
