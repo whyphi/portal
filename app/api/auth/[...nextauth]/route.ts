@@ -64,8 +64,6 @@ async function getUserInfo(email: string) {
   const roles =
     data.user_roles?.map((ur: any) => ur.roles?.name).filter(Boolean) ?? [];
 
-    console.log("user roles", roles);
-    
   return {
     id: data.id,
     email: data.email,

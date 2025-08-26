@@ -24,7 +24,6 @@ export default function Attendance({ params }: { params: { eventId: string } }) 
       }
     );
     const data = await response.json();
-    console.log(data);
     setEvent(data);
     setIsLoading(false);
   };
