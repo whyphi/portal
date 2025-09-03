@@ -8,17 +8,18 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { HiPlus } from "react-icons/hi";
 
-
 interface FormData {
   title: string;
   questions: [] | { question: string; context: string }[];
   deadline: Date;
+  include_events_attended: boolean;
 }
 
 const initialValues: FormData = {
   title: "",
   questions: [] as { question: string; context: string }[], // Specify the type here
   deadline: new Date(),
+  include_events_attended: true,
 };
 
 export default function Create() {
@@ -36,7 +37,7 @@ export default function Create() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/create`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/create`,
         {
           method: "POST",
           headers: {
@@ -85,7 +86,11 @@ export default function Create() {
     };
 
     // Encode the form data into a query parameter string
-    const { questions, ...formDataStringsOnly } = formDataWithDates;
+    const {
+      questions,
+      include_events_attended: includeEventsAttended,
+      ...formDataStringsOnly
+    } = formDataWithDates;
     const flattenedQuestions = flattenQuestions(formData.questions);
 
     const formDataQueryString = new URLSearchParams({
@@ -275,6 +280,21 @@ export default function Create() {
 
       {renderQuestions()}
       {renderDeadline()}
+
+      <div className="flex items-center gap-2 mb-6">
+        <Checkbox
+          id="includeEventsAttended"
+          checked={formData.include_events_attended}
+          color="purple"
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              include_events_attended: e.target.checked,
+            }))
+          }
+        />
+        <Label htmlFor="includeEventsAttended">Include Events Attended</Label>
+      </div>
 
       <div className="flex gap-4">
         <button
