@@ -78,32 +78,45 @@ export default function RushEvents() {
   };
 
   useEffect(() => {
-    // Fetch all rush timeframes and events from the API
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data: EventTimeframeRush[]) => {
-        // Create a new object with the timeframes and false as their initial code toggle status
-        const timeframesCodeToggled = data.reduce((acc: Record<string, boolean>, timeframe: EventTimeframeRush) => {
-          acc[timeframe.id] = false;
-          return acc;
-        }, {} as Record<string, boolean>);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
 
-        // Set the timeframes and their initial code toggle status to state
-        setEventTimeframesRush(data);
+        // First fetch: rush timeframes
+        const resTimeframes = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const timeframes: EventTimeframeRush[] = await resTimeframes.json();
+
+        // Set timeframes + toggle state
+        const timeframesCodeToggled = timeframes.reduce(
+          (acc: Record<string, boolean>, timeframe: EventTimeframeRush) => {
+            acc[timeframe.id] = false;
+            return acc;
+          },
+          {}
+        );
+        setEventTimeframesRush(timeframes);
         setRushTimeframeCodeToggled(timeframesCodeToggled);
 
-        // set defaultRushCategoryId
-        const defaultRushTimeframe = data.find((timeframe) => timeframe.default_rush_timeframe);
-        setDefaultRushTimeframeId(defaultRushTimeframe?.id ?? "")
+        // Set defaultRushTimeframeId
+        const defaultRushTimeframe = timeframes.find(
+          (tf) => tf.default_rush_timeframe
+        );
+        setDefaultRushTimeframeId(defaultRushTimeframe?.id ?? "");
 
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
         // Stop the loading spinner
         setIsLoading(false);
-      })
-      .catch((err) => console.error(err));
+      }
+    };
+
+    fetchData()
   }, [token]);
 
   function onCloseCreateEventModal() {
