@@ -120,7 +120,7 @@ export default function ApplicantInfoCard({
               className={`flex flex-row gap-2 items-center ${ThinAdminTextStyles.default}`}
             >
               {Constants.EVENT_THRESHOLD_TITLE}
-              {isRushThresholdMet(applicant.events) ? (
+              {applicant.threshold ? (
                 <Badge color="success">True</Badge>
               ) : (
                 <Badge color="failure">False</Badge>
