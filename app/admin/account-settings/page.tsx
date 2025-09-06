@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
-import { useAuth, getUserId } from "@/app/contexts/AuthContext";
+import { useAuth, useUserId } from "@/app/contexts/AuthContext";
 import { Button, Card, Select, Label, TextInput } from "flowbite-react";
 import { Member } from "@/types/admin/account-settings/member";
 import { AdminTextStyles } from "@/styles/TextStyles";
 
 export default function AccountSettings() {
   const { token } = useAuth();
-  const id = getUserId();
+  const id = useUserId();
   const router = useRouter();
 
   const [user, setUser] = useState<Member>({} as Member);

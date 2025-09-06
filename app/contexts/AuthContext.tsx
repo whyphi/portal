@@ -65,7 +65,7 @@ export const useAuth = () => {
   return context;
 };
 
-export const getUserId = () => {
+export const useUserId = () => {
   const { token } = useAuth();
   if (!token) {
     return null;

@@ -53,7 +53,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         setListingData(data)
         setFormData({
           title: data.title,
-          questions: data.questions,
+          questions: data.questions ?? [],
           deadline: new Date(data.deadline), // Assuming data.deadline is a valid date string
         });
         setSelectedDate(new Date(data.deadline));
