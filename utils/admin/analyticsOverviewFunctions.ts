@@ -198,7 +198,6 @@ export const getMemberCollegeDistributionData = async (token: any) => {
       count,
     }));
 
-    console.log(formattedCollegeDistribution);
     return formattedCollegeDistribution;
   } catch (error) {
     console.error('Error fetching member data:', error);

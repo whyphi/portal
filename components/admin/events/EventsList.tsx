@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link'
 import { Card, Badge, Modal, Button, Popover, ListGroup } from "flowbite-react";
-import { Event } from "@/types/admin/events";
+import { EventMember } from "@/types/admin/events";
 import { HiDotsVertical, HiOutlineTrash } from "react-icons/hi";
 import { useAuth } from '@/app/contexts/AuthContext';
 import Timestamp from 'react-timestamp';
@@ -12,13 +12,13 @@ import { AdminTextStyles } from '@/styles/TextStyles';
 
 
 interface EventsListProps {
-  events: Event[];
+  events: EventMember[];
 }
 
 const EventsList: React.FC<EventsListProps> = ({ events }) => {
   const { token } = useAuth();
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventMember | null>(null);
 
   const handleOptionsClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -29,14 +29,14 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
   return (
     <div>
       {events.map((event) => (
-        <Link className='w-full' href={`/admin/events/${event._id}`} key={event._id}>
+        <Link className='w-full' href={`/admin/events/${event.id}`} key={event.id}>
           <Card className={`mb-3 ${AdminTextStyles.card}`}>
             <div className='flex flex-row items-center justify-between'>
               <div className='flex flex-col gap-2'>
                 <a className="text-base font-medium text-gray-900 dark:text-white">{event.name}</a>
                 <div className='flex gap-2 items-center truncate text-sm text-gray-500 dark:text-gray-400'>
                   Date created:
-                  <Badge><Timestamp date={new Date(event.dateCreated)} /></Badge>
+                  <Badge><Timestamp date={new Date(event.date_created)} /></Badge>
                 </div>
               </div>
               <div className='flex gap-2'>
@@ -94,7 +94,7 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
         <Modal.Footer className="dark:bg-background-dark">
           <Button color="failure" onClick={async () => {
             try {
-              await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/${selectedEvent?._id}`, {
+              await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/${selectedEvent?.id}`, {
                 method: 'DELETE',
                 headers: {
                   Authorization: `Bearer ${token}`,

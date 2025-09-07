@@ -7,5 +7,5 @@ export interface Listing {
   is_encrypted: boolean;
   is_visible: boolean;
   include_events_attended: boolean;
-  questions: [] | { question: string; context: string }[];
+  questions: { question: string; context: string }[] | null;
 }

@@ -6,7 +6,7 @@ import { Button, Accordion } from "flowbite-react";
 import { HiOutlineCog, HiPlus } from "react-icons/hi";
 import CreateTimeframe from "@/components/admin/events/CreateTimeframe";
 import { useAuth } from "@/app/contexts/AuthContext";
-import { Timeframe } from "@/types/admin/events";
+import { EventTimeframeMember } from "@/types/admin/events";
 import EventsList from "@/components/admin/events/EventsList";
 import { useRouter } from "next/navigation";
 import { AdminTextStyles } from "@/styles/TextStyles";
@@ -15,7 +15,7 @@ export default function Events() {
   const router = useRouter();
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [timeframes, setTimeframes] = useState<Timeframe[]>([]);
+  const [timeframes, setTimeframes] = useState<EventTimeframeMember[]>([]);
   const [isCreateTimeframeVisible, setIsCreateTimeframeVisible] = useState<boolean>(false);
 
 
@@ -75,7 +75,7 @@ export default function Events() {
               <div className="text-m font-medium text-gray-900 dark:text-white">{timeframe.name}</div>
             </Accordion.Title>
             <Accordion.Content className="dark:bg-background-dark">
-              <EventsList events={timeframe.events} />
+              <EventsList events={timeframe.events_member} />
             </Accordion.Content>
           </Accordion.Panel>
         </Accordion>

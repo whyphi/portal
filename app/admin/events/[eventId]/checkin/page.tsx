@@ -37,9 +37,8 @@ export default function CheckInPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        id: session?.token?._id,
+        id: session?.token?.id,
         code: code,
-        email: session?.user?.email,
       }),
     })
       .then(async (res) => {

@@ -3,20 +3,23 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from "next/navigation";
-import { Checkbox, Label, TextInput } from "flowbite-react";
+import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { AdminTextStyles } from "@/styles/TextStyles";
+import { HiPlus } from "react-icons/hi";
 
 interface FormData {
   title: string;
   questions: [] | { question: string; context: string }[];
   deadline: Date;
+  include_events_attended: boolean;
 }
 
 const initialValues: FormData = {
   title: "",
   questions: [] as { question: string; context: string }[], // Specify the type here
   deadline: new Date(),
+  include_events_attended: true,
 };
 
 export default function Create() {
@@ -34,7 +37,7 @@ export default function Create() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/create`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/listings/create`,
         {
           method: "POST",
           headers: {
@@ -83,7 +86,11 @@ export default function Create() {
     };
 
     // Encode the form data into a query parameter string
-    const { questions, ...formDataStringsOnly } = formDataWithDates;
+    const {
+      questions,
+      include_events_attended: includeEventsAttended,
+      ...formDataStringsOnly
+    } = formDataWithDates;
     const flattenedQuestions = flattenQuestions(formData.questions);
 
     const formDataQueryString = new URLSearchParams({
@@ -223,28 +230,13 @@ export default function Create() {
                 </div>
               ))}
         </div>
-        <button
+        <Button
           onClick={handleAddQuestion}
-          type="button"
-          className="w-full mb-8 text-center inline-flex items-center justify-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+          color="light"
+          className="w-full mb-8"
         >
-          <svg
-            className="w-4 h-4 text-gray-800 dark:text-white mr-1"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 5.757v8.486M5.757 10h8.486M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-            />
-          </svg>{" "}
           Add Question
-        </button>
+        </Button>
       </div>
     );
   };
@@ -288,6 +280,21 @@ export default function Create() {
 
       {renderQuestions()}
       {renderDeadline()}
+
+      <div className="flex items-center gap-2 mb-6">
+        <Checkbox
+          id="includeEventsAttended"
+          checked={formData.include_events_attended}
+          color="purple"
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              include_events_attended: e.target.checked,
+            }))
+          }
+        />
+        <Label htmlFor="includeEventsAttended">Include Events Attended</Label>
+      </div>
 
       <div className="flex gap-4">
         <button
