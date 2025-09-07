@@ -76,7 +76,7 @@ export default function Listing({ params }: { params: { id: string } }) {
     <main className="flex flex-col mx-auto justify-center items-center max-w-screen-sm px-5 py-2.5">
       <Form
         title={listingData.title}
-        questions={listingData.questions}
+        questions={listingData.questions ?? []}
         listingId={listingData.id}
         includeEventsAttended={listingData.include_events_attended}
         isPreview={false}

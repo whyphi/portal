@@ -14,7 +14,7 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [translateX, setTranslateX] = useState<string>('0');
 
-  const [categoryName, setCategoryName] = useState<string>("");
+  const [timeframeName, setTimeframeName] = useState<string>("");
 
 
   useEffect(() => {
@@ -22,24 +22,24 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
   }, [isOpen]);
 
 
-  const handleInputchange = (e: React.ChangeEvent<HTMLInputElement>) => setCategoryName(e.target.value);
+  const handleInputchange = (e: React.ChangeEvent<HTMLInputElement>) => setTimeframeName(e.target.value);
 
   const handleCloseButtonClick = () => {
     setIsOpen(false);
     setTimeout(onClose, 200); // Call onClose after transition duration (300ms)
   };
 
-  const createRushCategoryEvent = async () => {
+  const createRushTimeframe = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/category`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/timeframe`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: categoryName,
-          defaultRushCategory: false
+          name: timeframeName,
+          default_rush_timeframe: false
         })
       })
       if (!response.ok) {
@@ -70,7 +70,7 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
       </button>
       <div>
         <h5 id="drawer-label" className="inline-flex items-center mb-6 text-base font-semibold text-gray-500 uppercase dark:text-gray-400">
-          <HiOutlineUserGroup className="w-3.5 h-3.5 me-2.5" />NEW CATEGORY
+          <HiOutlineUserGroup className="w-3.5 h-3.5 me-2.5" />NEW TIMEFRAME
         </h5>
         <div className="mb-4">
           <div className="mb-2 block">
@@ -81,9 +81,9 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
             key="timeframeName"
             required
             id="timeframeName"
-            placeholder="Fall 2024"
+            placeholder="e.g. Fall 2024"
             type="text"
-            value={categoryName}
+            value={timeframeName}
             onChange={handleInputchange}
           />
         </div>
@@ -91,9 +91,9 @@ const CreateDrawer: React.FC<CreateDrawerProps> = ({ onClose }) => {
         <Button
           className="w-full"
           color="purple"
-          onClick={createRushCategoryEvent}
-          disabled={categoryName === ""}
-        >Create Category</Button>
+          onClick={createRushTimeframe}
+          disabled={timeframeName === ""}
+        >Create Timeframe</Button>
       </div>
       <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
     </div>

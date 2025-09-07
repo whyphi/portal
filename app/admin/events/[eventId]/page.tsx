@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
-import { Timeframe } from "@/types/admin/events";
+import { EventTimeframeMember } from "@/types/admin/events";
 import { HiArrowNarrowLeft, HiCheckCircle, HiOutlineUserGroup, HiOutlineTable } from "react-icons/hi";
 
 import Loader from "@/components/Loader";
@@ -11,7 +11,7 @@ import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
 
 export default function Event({ params }: { params: { eventId: string } }) {
   const { token } = useAuth();
-  const [event, setEvent] = React.useState<Timeframe | null>(null);
+  const [event, setEvent] = React.useState<EventTimeframeMember | null>(null);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const fetchData = async () => {
@@ -46,7 +46,7 @@ export default function Event({ params }: { params: { eventId: string } }) {
 
       <div>
         <h1 className={AdminTextStyles.subtitle}>{event.name}</h1>
-        <p className={`mt-2 ${DimmedAdminTextStyles.default}`}>ID: {event._id}</p>
+        <p className={`mt-2 ${DimmedAdminTextStyles.default}`}>ID: {event.id}</p>
       </div>
       <div className="w-full max-w p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
         <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white">
@@ -55,7 +55,7 @@ export default function Event({ params }: { params: { eventId: string } }) {
         <ul className="my-4 space-y-3">
           <li>
             <a
-              href={`/admin/events/${event._id}/checkin?eventId=${event._id}&eventName=${encodeURIComponent(event.name)}`}
+              href={`/admin/events/${event.id}/checkin?eventId=${event.id}&eventName=${encodeURIComponent(event.name)}`}
               className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
             >
               <HiCheckCircle className="w-4 h-4" />
@@ -63,7 +63,7 @@ export default function Event({ params }: { params: { eventId: string } }) {
             </a>
           </li>
           <li>
-            <a href={`/admin/events/${event._id}/attendance`} className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+            <a href={`/admin/events/${event.id}/attendance`} className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
               <HiOutlineUserGroup className="w-4 h-4" />
               <span className="flex-1 ms-3 whitespace-nowrap">View Attendance</span>
             </a>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
-import { Timeframe } from "@/types/admin/events";
+import { EventTimeframeMember } from "@/types/admin/events";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { Button, Modal } from 'flowbite-react';
 import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
@@ -14,7 +14,7 @@ export default function TimeframeSetting({ params }: { params: { timeframeId: st
   const { token } = useAuth();
   const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [timeframe, setTimeframe] = useState<Timeframe>();
+  const [timeframe, setTimeframe] = useState<EventTimeframeMember>();
 
   const fetchData = () => {
     setIsLoading(true);

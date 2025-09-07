@@ -1,5 +1,5 @@
-import { EventFormData } from "@/app/admin/rush/page";
-import { RushCategory } from "@/types/admin/events";
+import { EventRushFormData } from "@/app/admin/rush/page";
+import { EventTimeframeRush } from "@/types/admin/events";
 import { addTwoHours } from "@/utils/date";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { AiOutlineLoading } from "react-icons/ai";
@@ -10,10 +10,10 @@ import { useEffect } from "react";
 
 interface EventModalProps {
 	showModal: boolean,
-	selectedRushCategory: RushCategory | null,
-	eventFormData: EventFormData,
+	selectedRushTimeframe: EventTimeframeRush | null,
+	eventFormData: EventRushFormData,
 	isSubmitting: boolean,
-	setEventFormData: React.Dispatch<React.SetStateAction<EventFormData>>,
+	setEventFormData: React.Dispatch<React.SetStateAction<EventRushFormData>>,
 	onClose: () => void,
 	onSubmit: () => void,
 	modifyingEvent?: boolean,
@@ -22,7 +22,7 @@ interface EventModalProps {
 // EventModel: can be used to either create or update events (by default, it is set to "creating" an event)
 export default function EventModal({
 	showModal,
-	selectedRushCategory,
+	selectedRushTimeframe: selectedRushTimeframe,
 	eventFormData,
 	isSubmitting,
 	setEventFormData,
@@ -51,7 +51,7 @@ export default function EventModal({
 			<Modal.Body className="dark:bg-background-dark">
 				<div className="space-y-6">
 					<h3 className="text-xl font-bold text-gray-900 dark:text-white">
-						{modifyingEvent ? `Modify Event` : `Create an Event for "${selectedRushCategory?.name}"`}
+						{modifyingEvent ? `Modify Event` : `Create an Event for "${selectedRushTimeframe?.name}"`}
 					</h3>
 					<div>
 						<div className="mb-2 block">

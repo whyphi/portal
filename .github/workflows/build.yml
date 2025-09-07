@@ -25,6 +25,9 @@ jobs:
 
       - name: Build Next.js App
         run: npm run build
+        env:
+          SUPABASE_URL: "http://localhost:54321"
+          SUPABASE_KEY: "fake-key"
 
       - name: Check for Build Errors
         run: |
