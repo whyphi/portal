@@ -7,7 +7,7 @@ import { Button, Accordion, Avatar, Modal, TextInput, Label, Tooltip, Card, Butt
 import { HiPlus } from "react-icons/hi";
 import { FaRegCopy } from 'react-icons/fa';
 import CreateDrawer from "@/components/admin/rush/CreateDrawer";
-import { RushCategory, RushEvent } from "@/types/admin/events";
+import { EventTimeframeRush, EventRush } from "@/types/admin/events";
 import { HiOutlinePencil, HiLink, HiOutlineTrash } from "react-icons/hi";
 import Link from "next/link";
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,7 +19,7 @@ import SettingsModal from "@/components/admin/rush/SettingsModal";
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { getRushBaseUrl } from "@/utils/getBaseURL";
 
-export interface EventFormData {
+export interface EventRushFormData {
   eventName: string,
   eventCode: string,
   eventLocation: string,
@@ -31,7 +31,7 @@ export interface EventFormData {
   eventId?: string,
 }
 
-const initialValues: EventFormData = {
+const initialValues: EventRushFormData = {
   eventName: "",
   eventCode: "",
   eventLocation: "",
@@ -46,31 +46,31 @@ export default function RushEvents() {
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [rushCategories, setRushCategories] = useState<RushCategory[]>([]);
+  const [eventTimeframesRush, setEventTimeframesRush] = useState<EventTimeframeRush[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [eventFormData, setEventFormData] = useState<EventFormData>(initialValues);
+  const [eventFormData, setEventFormData] = useState<EventRushFormData>(initialValues);
 
   // States managing the create event modal
   const [openCreateEventModal, setOpenCreateEventModal] = useState<boolean>(false);
   const [openModifyEventModal, setOpenModifyEventModal] = useState<boolean>(false);
-  const [selectedRushCategory, setSelectedRushCategory] = useState<RushCategory | null>(null);
+  const [selectedRushTimeframe, setSelectedRushTimeframe] = useState<EventTimeframeRush | null>(null);
 
   // States managing the delete event modal
   const [openDeleteEventModal, setOpenDeleteEventModal] = useState<boolean>(false);
-  const [selectedEventToDelete, setSelectedEventToDelete] = useState<RushEvent | null>(null);
+  const [selectedEventToDelete, setSelectedEventToDelete] = useState<EventRush | null>(null);
   const [toDeleteEventNameInput, setToDeleteEventNameInput] = useState<string>("");
 
   // States managing the settings modal
   const [openSettingsModal, setOpenSettingsModal] = useState<boolean>(false);
-  const [defaultRushCategoryId, setDefaultRushCategoryId] = useState<string>("");
+  const [defaultRushTimeframeId, setDefaultRushTimeframeId] = useState<string>("");
 
-  const [rushCategoriesCodeToggled, setRushCategoriesCodeToggled] = useState<Record<string, boolean>>({});
+  const [rushTimeframesCodeToggled, setRushTimeframeCodeToggled] = useState<Record<string, boolean>>({});
 
   // state to track copied status (for event.code)
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = (e: React.MouseEvent<SVGAElement>, event: RushEvent) => {
+  const handleCopy = (e: React.MouseEvent<SVGAElement>, event: EventRush) => {
     e.preventDefault();
     navigator.clipboard.writeText(event.code);
     setCopied(true);
@@ -78,32 +78,45 @@ export default function RushEvents() {
   };
 
   useEffect(() => {
-    // Fetch all rush categories and events from the API
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data: RushCategory[]) => {
-        // Create a new object with the categories and false as their initial code toggle status
-        const categoriesCodeToggled = data.reduce((acc: Record<string, boolean>, category: RushCategory) => {
-          acc[category._id] = false;
-          return acc;
-        }, {} as Record<string, boolean>);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
 
-        // Set the categories and their initial code toggle status to state
-        setRushCategories(data);
-        setRushCategoriesCodeToggled(categoriesCodeToggled);
+        // First fetch: rush timeframes
+        const resTimeframes = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const timeframes: EventTimeframeRush[] = await resTimeframes.json();
 
-        // set defaultRushCategoryId
-        const defaultRushCategory = data.find((category) => category.defaultRushCategory);
-        setDefaultRushCategoryId(defaultRushCategory?._id ?? "")
+        // Set timeframes + toggle state
+        const timeframesCodeToggled = timeframes.reduce(
+          (acc: Record<string, boolean>, timeframe: EventTimeframeRush) => {
+            acc[timeframe.id] = false;
+            return acc;
+          },
+          {}
+        );
+        setEventTimeframesRush(timeframes);
+        setRushTimeframeCodeToggled(timeframesCodeToggled);
 
+        // Set defaultRushTimeframeId
+        const defaultRushTimeframe = timeframes.find(
+          (tf) => tf.default_rush_timeframe
+        );
+        setDefaultRushTimeframeId(defaultRushTimeframe?.id ?? "");
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
         // Stop the loading spinner
         setIsLoading(false);
-      })
-      .catch((err) => console.error(err));
+      }
+    };
+
+    fetchData()
   }, [token]);
 
   function onCloseCreateEventModal() {
@@ -124,10 +137,10 @@ export default function RushEvents() {
   const handleDrawerOpen = () => setIsDrawerOpen(true);
   const handleDrawerClose = () => setIsDrawerOpen(false);
 
-  const EventRow = ({ event, index, categoryId }: { event: RushEvent, index: number, categoryId: string }) => {
+  const EventRow = ({ event, index, timeframeId: timeframeId }: { event: EventRush, index: number, timeframeId: string }) => {
     return (
       <Card className={`mb-3 ${AdminTextStyles.card}`} key={index}>
-        <Link href={`/admin/rush/${categoryId}/${event._id}`}>
+        <Link href={`/admin/rush/${timeframeId}/${event.id}`}>
           <div className="flex flex-col gap-5 md:flex-row lg:flex-row items-center w-full">
             <div className="flex-1">
                 <div className="flex items-center px-2 space-x-4">
@@ -156,9 +169,9 @@ export default function RushEvents() {
                     </p>
                     <div className="flex gap-3 items-center">
                       <code className="truncate text-sm text-gray-500 dark:text-gray-400">
-                        {rushCategoriesCodeToggled[categoryId] ? (`Code: ${event.code}`) : "Code: •••••••"}
+                        {rushTimeframesCodeToggled[timeframeId] ? (`Code: ${event.code}`) : "Code: •••••••"}
                       </code>
-                      {rushCategoriesCodeToggled[categoryId] && (
+                      {rushTimeframesCodeToggled[timeframeId] && (
                         <Tooltip content={copied ? 'Copied!' : 'Copy code to clipboard'} placement="top">
                           <FaRegCopy
                             className="w-4 h-4 cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -181,10 +194,10 @@ export default function RushEvents() {
                     eventLocation: event.location,
                     eventDate: new Date(event.date),
                     eventDeadline: new Date(event.deadline),
-                    eventCoverImage: event.eventCoverImage,
-                    eventCoverImageName: event.eventCoverImageName,
-                    eventCoverImageVersion: event.eventCoverImageVersion,
-                    eventId: event._id,
+                    eventCoverImage: event.event_cover_image,
+                    eventCoverImageName: event.event_cover_image_name,
+                    eventCoverImageVersion: event.event_cover_image_version,
+                    eventId: event.id,
                   });
                   setOpenModifyEventModal(true);
                 }}
@@ -199,7 +212,7 @@ export default function RushEvents() {
               />
               <a
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => e.stopPropagation()}
-                href={`${getRushBaseUrl()}/checkin/${event._id}`}
+                href={`${getRushBaseUrl()}/checkin/${event.id}`}
                 target="_blank"
                 rel="noopener"
               >
@@ -232,16 +245,16 @@ export default function RushEvents() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          categoryId: selectedRushCategory?._id,
+          timeframe_id: selectedRushTimeframe?.id,
           name: eventFormData.eventName,
           code: eventCodeTrimmed,
           location: eventFormData.eventLocation,
           date: eventFormData.eventDate.toISOString(),
           deadline: eventFormData.eventDeadline.toISOString(),
-          eventCoverImage : eventFormData.eventCoverImage,
-          eventCoverImageName : eventFormData.eventCoverImageName,
-          eventCoverImageVersion: eventFormData.eventCoverImageVersion,
-          ...(modifying && { _id: eventFormData.eventId })
+          event_cover_image : eventFormData.eventCoverImage,
+          event_cover_image_name : eventFormData.eventCoverImageName,
+          event_cover_image_version: eventFormData.eventCoverImageVersion,
+          ...(modifying && { id: eventFormData.eventId })
         })
       })
       if (!response.ok) {
@@ -257,9 +270,8 @@ export default function RushEvents() {
   }
 
   const handleDeleteEvent = async () => {
-    console.log("hit")
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${selectedEventToDelete?._id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${selectedEventToDelete?.id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -277,7 +289,7 @@ export default function RushEvents() {
   }
 
   // handleRusheeEvent : by default creates a rush event
-  const handleUpdateSettings = async (defaultRushCategoryId: string) => {
+  const handleUpdateSettings = async (defaultRushTimeframeId: string) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/settings`, {
         method: "PATCH",
@@ -286,7 +298,7 @@ export default function RushEvents() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          defaultRushCategoryId: defaultRushCategoryId
+          default_rush_timeframe_id: defaultRushTimeframeId
         })
       })
       if (!response.ok) {
@@ -317,28 +329,28 @@ export default function RushEvents() {
         </Button.Group>
       </div>
       <div className="mt-4 block">
-        {rushCategories.map((data: RushCategory, index) => (
+        {eventTimeframesRush.map((data: EventTimeframeRush, index) => (
           <Accordion key={index} collapseAll className="mb-2">
             <Accordion.Panel>
               <Accordion.Title>
                 <div className="flex flex-row items-center gap-3">
                   <div className="text-m font-medium text-gray-900 dark:text-white">{data.name}</div>
-                  {data.defaultRushCategory && <Badge color="teal">default</Badge>}
+                  {data.default_rush_timeframe && <Badge color="teal">default</Badge>}
                 </div>
               </Accordion.Title>
               <Accordion.Content className="dark:bg-background-dark">
                 <div className="flex flex-row items-center w-full mb-4 overflow-x-auto">
-                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setSelectedRushCategory(data); setOpenCreateEventModal(true) }}>Create Event</Button>
-                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushCategoriesCodeToggled({ ...rushCategoriesCodeToggled, [data._id]: !rushCategoriesCodeToggled[data._id] }); }}>
-                    {rushCategoriesCodeToggled[data._id] ? "Hide Code" : "Show Code"}
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setSelectedRushTimeframe(data); setOpenCreateEventModal(true) }}>Create Event</Button>
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => { setRushTimeframeCodeToggled({ ...rushTimeframesCodeToggled, [data.id]: !rushTimeframesCodeToggled[data.id] }); }}>
+                    {rushTimeframesCodeToggled[data.id] ? "Hide Code" : "Show Code"}
                   </Button>
-                  <Button size="xs" color="gray" className="mr-2" onClick={() => window.open(`/admin/rush/${data._id}/analytics`, '_blank', 'noopener,noreferrer')}>
+                  <Button size="xs" color="gray" className="mr-2" onClick={() => window.open(`/admin/rush/${data.id}/analytics`, '_blank', 'noopener,noreferrer')}>
                     View Analytics
                   </Button>
                   <Button size="xs" color="gray" className="mr-2" disabled>Export Data</Button>
                 </div>
-                {data.events && data.events.map((event: RushEvent, index: number) => (
-                  <EventRow event={event} index={index} key={index} categoryId={data._id} />
+                {data.events_rush && data.events_rush.map((event: EventRush, index: number) => (
+                  <EventRow event={event} index={index} key={index} timeframeId={data.id} />
                 ))}
               </Accordion.Content>
             </Accordion.Panel>
@@ -351,7 +363,7 @@ export default function RushEvents() {
       {/* Custom Create/Modify Event Component Modal */}
       <EventModal
         showModal={openCreateEventModal}
-        selectedRushCategory={selectedRushCategory}
+        selectedRushTimeframe={selectedRushTimeframe}
         eventFormData={eventFormData}
         isSubmitting={isSubmitting}
         setEventFormData={setEventFormData}
@@ -361,7 +373,7 @@ export default function RushEvents() {
 
       <EventModal
         showModal={openModifyEventModal}
-        selectedRushCategory={selectedRushCategory}
+        selectedRushTimeframe={selectedRushTimeframe}
         eventFormData={eventFormData}
         isSubmitting={isSubmitting}
         setEventFormData={setEventFormData}
@@ -373,10 +385,10 @@ export default function RushEvents() {
       {/* Custom Settings Component Modal */}
       <SettingsModal
         showModal={openSettingsModal}
-        defaultRushCategoryId={defaultRushCategoryId}
-        rushCategories={rushCategories}
+        defaultRushTimeframeId={defaultRushTimeframeId}
+        rushTimeframes={eventTimeframesRush}
         onClose={() => setOpenSettingsModal(false)}
-        onSubmit={(defaultRushCategoryId) => handleUpdateSettings(defaultRushCategoryId)}
+        onSubmit={(defaultRushTimeframeId) => handleUpdateSettings(defaultRushTimeframeId)}
       />
 
       {/* Custom Delete Event Component Modal */}

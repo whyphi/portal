@@ -1,74 +1,97 @@
-export interface Timeframe {
-  _id: string;
+import { User } from "@/types/admin/users";
+
+// ================= MEMBER TYPES =================
+export interface EventTimeframeMember {
+  id: string;
   name: string;
-  spreadsheetId: string;
-  dateCreated: string;
-  events: Event[]
+  spreadsheet_id: string;
+  date_created: string;
+  events_member: EventMember[];
 }
 
-export interface Event {
-  _id: string;
+export interface EventMember {
+  id: string;
+  code: string;
   name: string;
-  dateCreated: string;
-  timeframeId: string;
-  usersAttended: UserInEvent[];
-  tags: string[];
+  date_created: string;
+  timeframe_id: string;
+  spreadsheet_col: string;
+  spreadsheet_tab: string;
+  tags?: string[]; // TODO: maybe remove tags
 }
 
-export interface UserInEvent{
+export interface EventMemberDetails extends EventMember {
+  attendees: EventMemberAttendee[];
+}
+
+interface EventMemberAttendee {
+  checkin_time: string;
+  user: User;
+}
+
+export interface UserInEvent {
   name: string;
   userId: string;
   dateCheckedIn: string;
 }
 
-export interface RushEvent {
-  _id: string;
+// ================= RUSH TYPES =================
+export interface EventRush extends EventRushDefault {
+  attendees: readonly Attendee[];
+}
+
+interface EventRushDefault {
+  id: string;
+  timeframe_id: string;
   name: string;
-  dateCreated: string;
-  lastModified: string;
+  date_created: string;
+  last_modified: string;
   code: string;
   location: string;
   date: string;
   deadline: string;
-  eventCoverImage: string;
-  eventCoverImageName: string;
-  eventCoverImageVersion: string;
-  attendees: readonly Attendee[];
-  numAttendees: number;
+  event_cover_image: string;
+  event_cover_image_name: string;
+  event_cover_image_version: string;
 }
 
 interface Attendee {
   name: string;
   email: string;
-  checkinTime: string;
+  checkin_time: string;
 }
 
-export interface RushCategory {
-  _id: string;
-  dateCreated: string;
+export interface EventTimeframeRush {
+  id: string;
+  date_created: string;
   name: string;
-  defaultRushCategory: boolean;
-  events: readonly RushEvent[]
+  default_rush_timeframe: boolean;
+  events_rush: readonly EventRush[];
 }
 
+// ================= RUSH-ANALYTICS TYPES =================
 export interface Analytics {
-  categoryName: string,
-  attendees: AnalyticsAttendees,
-  events: readonly AnalyticsEvent[],
+  timeframe: EventTimeframeRush;
+  rushees: {
+    [rusheeId: string]: AnalyticsAttendee;
+  };
+  events: { [eventId: string]: EventRushAnalytics };
 }
 
-interface AnalyticsAttendees {
-  [email: string]: AnalyticsAttendee;
+interface EventRushAnalytics extends EventRushDefault {
+  num_attendees: readonly Attendee[];
 }
 
 interface AnalyticsAttendee {
+  id: string;
   name: string;
   email: string;
-  checkinTime: string;
-  eventsAttended: readonly AnalyticsEvent[];
+  events_attended: readonly AnalyticsEvent[];
+  num_events_attended: number;
+  threshold: boolean;
 }
 
 export interface AnalyticsEvent {
-  eventId: string;
-  eventName: string;
+  id: string;
+  attended: boolean;
 }

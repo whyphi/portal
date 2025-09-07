@@ -36,7 +36,6 @@ export default function Onboarding() {
   const router = useRouter()
   const { token } = useAuth();
   const { data: session, status, update } = useSession()
-  console.log(session)
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [name, setName] = useState<string>("");

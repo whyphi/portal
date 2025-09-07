@@ -3,7 +3,7 @@
 import { useAuth } from "@/app/contexts/AuthContext";
 import SummaryCard from "@/components/admin/listing/insights/SummaryCard"
 import { AdminTextStyles } from "@/styles/TextStyles"
-import { RushEvent } from "@/types/admin/events";
+import { EventRush } from "@/types/admin/events";
 import { useEffect, useState } from "react";
 import Loader from "@/components/Loader";
 import { Badge, Button, Clipboard, Table } from "flowbite-react";
@@ -11,7 +11,7 @@ import Timestamp from "react-timestamp";
 
 export default function RushEventPage({ params }: { params: { eventId: string } }) {
   const { token } = useAuth();
-  const [rushEvent, setRushEvent] = useState<RushEvent | null>();
+  const [rushEvent, setRushEvent] = useState<EventRush | null>();
   const [isLoading, setIsLoading] = useState(true);
   const [showCode, setShowCode] = useState(false);
 
@@ -19,14 +19,17 @@ export default function RushEventPage({ params }: { params: { eventId: string } 
     const fetchEventData = async () => {
       try {
         // Fetch rush event from the API
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${params.eventId}`, {
-          method: "POST",
-          body: JSON.stringify({ hideCode: false }),
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${
+            params.eventId
+          }?hideAttendees=${false}&hideCode=${false}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         const data = await response.json()
         setRushEvent(data);
         setIsLoading(false);
@@ -37,7 +40,7 @@ export default function RushEventPage({ params }: { params: { eventId: string } 
     }
 
     fetchEventData();
-  }, [token]);
+  }, [token, params.eventId]);
 
   const renderEventStatus = () => {
     if (!rushEvent) return;
@@ -87,7 +90,7 @@ export default function RushEventPage({ params }: { params: { eventId: string } 
       >
         <Table.Cell>{attendee.name}</Table.Cell>
         <Table.Cell>{attendee.email}</Table.Cell>
-        <Table.Cell>{<Timestamp date={new Date(attendee.checkinTime)}/>}</Table.Cell>
+        <Table.Cell>{<Timestamp date={new Date(attendee.checkin_time)}/>}</Table.Cell>
       </Table.Row>
     ));
   }
@@ -103,12 +106,12 @@ export default function RushEventPage({ params }: { params: { eventId: string } 
       </h3>
 
       <div className="mb-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
-        <SummaryCard title="Number of Attendees" value={rushEvent.numAttendees} />
+        <SummaryCard title="Number of Attendees" value={rushEvent.attendees.length} />
         <SummaryCard title="Location" value={rushEvent.location} />
         <SummaryCard title={renderCodeTitle()} value={renderCode()} />
         <SummaryCard title="Event Date" value={<Timestamp date={new Date(rushEvent.date)}/>} />
         <SummaryCard title="Event Deadline" value={<Timestamp date={new Date(rushEvent.deadline)}/>} />
-        <SummaryCard title="Last Modified" value={<Timestamp date={new Date(rushEvent.lastModified)}/>} />
+        <SummaryCard title="Last Modified" value={<Timestamp date={new Date(rushEvent.last_modified)}/>} />
       </div>
 
       <Table hoverable>

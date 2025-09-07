@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
-import { Timeframe } from "@/types/admin/events";
+import { EventTimeframeMember } from "@/types/admin/events";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import TimeframesList from "@/components/admin/events/settings/TimeframesList";
 import { AdminTextStyles } from "@/styles/TextStyles";
@@ -13,7 +13,7 @@ export default function TimeframeSettings() {
   const router = useRouter();
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [timeframes, setTimeframes] = useState<Timeframe[]>([]);
+  const [timeframes, setTimeframes] = useState<EventTimeframeMember[]>([]);
 
 
   const fetchData = () => {

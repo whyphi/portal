@@ -19,6 +19,7 @@ export interface Applicant {
   responses:      Response[] | null;
   colleges:       { [key: string]: boolean };
   events:         { [key: string]: boolean } | null;
+  threshold?:     boolean;
 }
 
 export interface Response {

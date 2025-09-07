@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const sessionWithToken = session;
         
         // Check if user is a newUser
-        if (sessionWithToken && sessionWithToken.token?.isNewUser === undefined || sessionWithToken.token?.isNewUser) {
+        if (sessionWithToken && sessionWithToken.token?.is_new_user === undefined || sessionWithToken.token?.is_new_user) {
           
           // To prevent infinite reloads; only redirect if the pathname is not /admin/onboarding
           if (pathname !== "/admin/onboarding") {
@@ -65,17 +65,16 @@ export const useAuth = () => {
   return context;
 };
 
-/* eslint-disable */
-export const getUserId = () => {
+export const useUserId = () => {
   const { token } = useAuth();
   if (!token) {
     return null;
   }
   const decodedToken = jwt.decode(token) as jwt.JwtPayload | null;
-  if (!decodedToken || typeof decodedToken?._id === "undefined") {
+  if (!decodedToken || typeof decodedToken?.id === "undefined") {
     return null;
   }
 
-  return decodedToken?._id;
+  return decodedToken?.id;
 }
 
