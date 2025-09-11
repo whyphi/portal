@@ -12,24 +12,24 @@ import Loader from "@/components/Loader";
 
 interface UserInfo {
   college: string;
-  graduationYear: string;
+  grad_year: string;
   major: string;
   minor: string;
   class: string;
   team: string;
   family: string;
-  isEboard: string;
+  is_eboard: string;
 }
 
 const initUserInfo: UserInfo = {
   college: "",
-  graduationYear: "",
+  grad_year: "",
   major: "",
   minor: "",
   class: "",
   team: "",
   family: "",
-  isEboard: ""
+  is_eboard: ""
 }
 
 export default function Onboarding() {
@@ -48,7 +48,7 @@ export default function Onboarding() {
     getSession().then((session: any) => {
       if (session) {
         setName(session?.user?.name);
-        setUserId(session.token._id);
+        setUserId(session.token.id);
         setUserEmail(session.token.email);
       }
       setIsLoading(false);
@@ -186,15 +186,15 @@ export default function Onboarding() {
               <option value="Other">Other</option>
             </Select>
             <div className="mb-2 mt-4 block">
-              <Label htmlFor="graduationYear" value="Enter your graduation year (20XX) " /><span className="text-red-500">*</span>
+              <Label htmlFor="grad_year" value="Enter your graduation year (20XX) " /><span className="text-red-500">*</span>
             </div>
             <TextInput
-              key="graduationYearInput"
+              key="gradYearInput"
               required
-              id="graduationYear"
+              id="grad_year"
               type="text"
               sizing="md"
-              value={userInfo["graduationYear"]}
+              value={userInfo["grad_year"]}
               onChange={handleInputchange}
             />
             <div className="mb-2 mt-4 block">
@@ -225,7 +225,7 @@ export default function Onboarding() {
               className="w-28"
               color="purple"
               onClick={nextStep}
-              disabled={userInfo.college === "" || userInfo.graduationYear === "" || userInfo.major === ""}
+              disabled={userInfo.college === "" || userInfo.grad_year === "" || userInfo.major === ""}
             >Next</Button>
           </div>
         </div>
@@ -243,7 +243,7 @@ export default function Onboarding() {
           <div className="mt-4"></div>
           <div className="max-w-md">
             <div className="mb-2 mt-4 block">
-              <Label htmlFor="graduationYear" value="What class did you intiate as? " /><span className="text-red-500">*</span>
+              <Label htmlFor="grad_year" value="What class did you intiate as? " /><span className="text-red-500">*</span>
             </div>
             <TextInput
               key="classInput"
@@ -272,7 +272,7 @@ export default function Onboarding() {
             </Select>
 
             <div className="mb-2 mt-4 block">
-              <Label htmlFor="graduationYear" value="What family are you in? " /><span className="text-red-500">*</span>
+              <Label htmlFor="grad_year" value="What family are you in? " /><span className="text-red-500">*</span>
             </div>
             <TextInput
               key="familyInput"
@@ -285,9 +285,9 @@ export default function Onboarding() {
             />
 
             <div className="max-w-md mt-4 mb-2 block">
-              <Label htmlFor="isEboard" value="Are you part of the Executive Board? " /><span className="text-red-500">*</span>
+              <Label htmlFor="is_eboard" value="Are you part of the Executive Board? " /><span className="text-red-500">*</span>
             </div>
-            <Select id="isEboard" required onChange={handleSelectChange} value={userInfo.isEboard}>
+            <Select id="is_eboard" required onChange={handleSelectChange} value={userInfo.is_eboard}>
               <option value="">-- Select yes/no</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
@@ -299,7 +299,7 @@ export default function Onboarding() {
               className="w-28"
               color="purple"
               onClick={nextStep}
-              disabled={userInfo.class === "" || userInfo.team === "" || userInfo.family === "" || userInfo.isEboard === ""}
+              disabled={userInfo.class === "" || userInfo.team === "" || userInfo.family === "" || userInfo.is_eboard === ""}
             >Next</Button>
           </div>
         </div>
@@ -312,17 +312,6 @@ export default function Onboarding() {
       <div>
         {previousButton()}
         <div>
-          <h2 className={AdminTextStyles.subtitle}>Check-in QR-Code and Next Steps</h2>
-          <p className={AdminTextStyles.subparagraph}>{`This will be your QR-Code to checking in to PCT-related events. You should able to find this QR-Code on the sidebar of the WhyPhi website ☺️`}</p>
-          <div className="mt-4"></div>
-          <div className="max-w-md">
-
-            {/* https://github.com/zpao/qrcode.react */}
-            <QRCodeSVG value={JSON.stringify({ id: userId, email: userEmail })} size={256} />
-
-
-          </div>
-
           <p className={AdminTextStyles.subtext}>{`If you have any questions, feel free to reach out to the tech team anytime!`}</p>
           <div className="flex flex-row justify-end mt-8">
             <Button
