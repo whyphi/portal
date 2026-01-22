@@ -20,6 +20,7 @@ export interface FormData {
   phone: string;
   linkedin: string;
   website: string;
+  video_url: string | null;
   resume: File | null;
   image: File | null;
   colleges: {
@@ -48,7 +49,7 @@ export type RequiredFormFields = Array<keyof FormData>;
 
 export interface FormProps {
   title: string | null;
-  questions: [] | { question: string; context: string }[];
+  questions: [] | { question: string; context: string; type?: "text" | "video" }[];
   listingId: string | null;
   includeEventsAttended: boolean;
   isPreview: boolean;

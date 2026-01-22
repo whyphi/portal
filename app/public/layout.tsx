@@ -1,17 +1,13 @@
 "use client"
-import '../globals.css'
 
-
-export default function RootLayout({
+export default function PublicLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className="min-w-screen min-h-screen">
-          {children}
-      </body>
-    </html>
+    <div className="min-w-screen min-h-screen">
+      {children}
+    </div>
   )
 }
