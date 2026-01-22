@@ -131,7 +131,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
   const handleAddQuestion = () => {
     setFormData((prevData) => ({
       ...prevData,
-goit      questions: [...prevData.questions, { question: "", context: "", type: "text" }],
+      questions: [...prevData.questions, { question: "", context: "", type: "text" }],
     }));
   };
 
