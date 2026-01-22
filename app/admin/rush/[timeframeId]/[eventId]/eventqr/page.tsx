@@ -39,7 +39,7 @@ export default function RushEventQR({
       setIsLoading(true);
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${params.eventId}?hideAttendees=true&hideCode=false`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/events/rush/${params.eventId}?hideAttendees=true`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

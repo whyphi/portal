@@ -70,7 +70,7 @@ export default function EventQR({ params }: { params: { eventId: string } }) {
     }
 
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const qrCodeData = `${baseUrl}/admin/events/${event.id}/autocheckin?code=${encodeURIComponent(event.code)}`;
+    const qrCodeData = `${baseUrl}/admin/events/${event.id}/autocheckin?code=${event.code}`;
 
     const handleOpenQr = () => {
         const url = getSvgObjectUrl();
