@@ -7,17 +7,18 @@ import { Badge, Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { HiPlus } from "react-icons/hi";
+import { Question } from "@/types/listing";
 
 interface FormData {
   title: string;
-  questions: [] | { question: string; context: string; type: "text" | "video" }[];
+  questions: Question[];
   deadline: Date;
   include_events_attended: boolean;
 }
 
 const initialValues: FormData = {
   title: "",
-  questions: [] as { question: string; context: string; type: "text" | "video" }[],
+  questions: [],
   deadline: new Date(),
   include_events_attended: true,
 };
@@ -62,13 +63,13 @@ export default function Create() {
     }
   };
 
-  function flattenQuestions(questions: { [key: string]: string }[]): {
+  function flattenQuestions(questions: Question[]): {
     [key: string]: string;
   } {
     // Flatten the 'questions' array into a flat object
     const flattenedQuestions = questions.reduce((acc, question, index) => {
       Object.keys(question).forEach((key) => {
-        acc[`questions[${index}].${key}`] = question[key];
+        acc[`questions[${index}].${key}`] = question[key as keyof Question];
       });
       return acc;
     }, {} as Record<string, string>);

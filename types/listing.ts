@@ -1,3 +1,4 @@
+// NOTE: ensure backwards compatability if this type is ever changed (this type is the source of what is saved in DB)
 export interface Question {
   question: string;
   context: string;
