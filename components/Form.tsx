@@ -35,7 +35,6 @@ const initialValues: FormData = {
   phone: "",
   linkedin: "",
   website: "",
-  video_url: null,
   resume: null,
   image: null,
   colleges: {
@@ -220,7 +219,7 @@ export default function Form({
       const dataToSend: DataToSend = {
         ...normalizedFormData,
         listing_id: listingId,
-        responses: responseObjects, // Replace the 'responses' array with response objects
+        responses: responseObjects,
         video_url: videoUrl,
       };
 

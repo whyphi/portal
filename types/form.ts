@@ -20,7 +20,6 @@ export interface FormData {
   phone: string;
   linkedin: string;
   website: string;
-  video_url: string | null;
   resume: File | null;
   image: File | null;
   colleges: {
@@ -40,9 +39,11 @@ export interface FormData {
   responses: string[];
 }
 
-export interface DataToSend extends Omit<FormData, 'responses'>  {
-  listing_id: string
-  responses: { question: string; response: string }[]
+export interface DataToSend extends Omit<FormData, 'responses'> {
+  listing_id: string;
+  responses: { question: string; response: string }[];
+  // Derived at submit time from video question responses, not stored in form state 
+  video_url: string | null;
 }
 
 export type RequiredFormFields = Array<keyof FormData>;
