@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { EventTimeframeMember } from "@/types/admin/events";
-import { HiArrowNarrowLeft, HiCheckCircle, HiOutlineUserGroup, HiOutlineTable } from "react-icons/hi";
+import { HiArrowNarrowLeft, HiCheckCircle, HiOutlineUserGroup, HiOutlineTable, HiQrcode } from "react-icons/hi";
 
 import Loader from "@/components/Loader";
 import { AdminTextStyles, DimmedAdminTextStyles } from "@/styles/TextStyles";
@@ -53,6 +53,15 @@ export default function Event({ params }: { params: { eventId: string } }) {
           Features
         </h5>
         <ul className="my-4 space-y-3">
+          <li>
+            <a
+              href={`/admin/events/${event.id}/eventqr?eventId=${event.id}&eventName=${encodeURIComponent(event.name)}`}
+              className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+            >
+              <HiQrcode className="w-4 h-4" />
+              <span className="flex-1 ms-3 whitespace-nowrap">Generate QR</span>
+            </a>
+          </li>
           <li>
             <a
               href={`/admin/events/${event.id}/checkin?eventId=${event.id}&eventName=${encodeURIComponent(event.name)}`}

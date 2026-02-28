@@ -8,8 +8,10 @@ import { useEffect, useState } from "react";
 import Loader from "@/components/Loader";
 import { Badge, Button, Clipboard, Table } from "flowbite-react";
 import Timestamp from "react-timestamp";
+import Link from "next/link";
+import { HiQrcode } from "react-icons/hi";
 
-export default function RushEventPage({ params }: { params: { eventId: string } }) {
+export default function RushEventPage({ params }: { params: { timeframeId: string, eventId: string } }) {
   const { token } = useAuth();
   const [rushEvent, setRushEvent] = useState<EventRush | null>();
   const [isLoading, setIsLoading] = useState(true);
@@ -104,6 +106,13 @@ export default function RushEventPage({ params }: { params: { eventId: string } 
         Status:
         {renderEventStatus()}
       </h3>
+      <Link 
+        href={`/admin/rush/${params.timeframeId}/${rushEvent.id}/eventqr`}
+        className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 mb-4"
+      >
+        <HiQrcode className="h-5 w-5 mr-2" />
+        Rushee QR Check-In
+      </Link>
 
       <div className="mb-8 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
         <SummaryCard title="Number of Attendees" value={rushEvent.attendees.length} />
