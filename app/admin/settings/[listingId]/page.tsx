@@ -56,7 +56,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
           questions: (data.questions ?? []).map(q => ({
             question: q.question,
             context: q.context,
-            type: (q.type ?? "text") as "text" | "video", // Default to "text" for backward compatibility
+            type: q.type ?? "text",
           })),
           deadline: new Date(data.deadline), // Assuming data.deadline is a valid date string
         });

@@ -211,11 +211,17 @@ export default function Form({
 
       const normalizedFormData = normalizeFormData(formData);
 
+      const videoIndex = questions.findIndex((q) => q.type === "video");
+      const videoUrl =
+        videoIndex >= 0
+          ? (formData.responses[videoIndex]?.trim() || null)
+          : null;
+
       const dataToSend: DataToSend = {
         ...normalizedFormData,
         listing_id: listingId,
         responses: responseObjects, // Replace the 'responses' array with response objects
-        video_url: formData.video_url?.trim() || null, // Send null if empty
+        video_url: videoUrl,
       };
 
       // Make a POST request to the /apply API endpoint
@@ -295,15 +301,7 @@ export default function Form({
               type="url"
               placeholder="https://drive.google.com/file/d/... or https://youtube.com/watch?v=..."
               value={formData.responses[index] || ""}
-              onChange={(e) => {
-                const value = e.target.value.trim();
-                handleResponseChange(index, value);
-                // Also update video_url field
-                setFormData((prevData) => ({
-                  ...prevData,
-                  video_url: value || null,
-                }));
-              }}
+              onChange={(e) => handleResponseChange(index, e.target.value.trim())}
               disabled={isSubmitting}
               color={
                 formData.responses[index] &&
