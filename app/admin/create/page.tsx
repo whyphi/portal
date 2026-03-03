@@ -3,21 +3,22 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from "next/navigation";
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import { Badge, Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { AdminTextStyles } from "@/styles/TextStyles";
 import { HiPlus } from "react-icons/hi";
+import { Question } from "@/types/listing";
 
 interface FormData {
   title: string;
-  questions: [] | { question: string; context: string }[];
+  questions: Question[];
   deadline: Date;
   include_events_attended: boolean;
 }
 
 const initialValues: FormData = {
   title: "",
-  questions: [] as { question: string; context: string }[], // Specify the type here
+  questions: [],
   deadline: new Date(),
   include_events_attended: true,
 };
@@ -62,13 +63,13 @@ export default function Create() {
     }
   };
 
-  function flattenQuestions(questions: { [key: string]: string }[]): {
+  function flattenQuestions(questions: Question[]): {
     [key: string]: string;
   } {
     // Flatten the 'questions' array into a flat object
     const flattenedQuestions = questions.reduce((acc, question, index) => {
       Object.keys(question).forEach((key) => {
-        acc[`questions[${index}].${key}`] = question[key];
+        acc[`questions[${index}].${key}`] = question[key as keyof Question];
       });
       return acc;
     }, {} as Record<string, string>);
@@ -113,10 +114,10 @@ export default function Create() {
     }));
   };
 
-  const handleAddQuestion = () => {
+  const handleAddQuestion = (type: "text" | "video" = "text") => {
     setFormData((prevData) => ({
       ...prevData,
-      questions: [...prevData.questions, { question: "", context: "" }],
+      questions: [...prevData.questions, { question: "", context: "", type }],
     }));
   };
 
@@ -131,15 +132,14 @@ export default function Create() {
 
   const handleQuestionChange = (
     index: number,
-    field: string,
+    field: "question" | "context",
     value: string
   ) => {
     const updatedQuestions = [...formData.questions];
     const questionObj = updatedQuestions[index];
 
     if (questionObj) {
-      // Ensure questionObj is defined
-      questionObj[field as keyof typeof questionObj] = value;
+      questionObj[field] = value;
 
       setFormData((prevData) => ({
         ...prevData,
@@ -179,7 +179,10 @@ export default function Create() {
             ? "None"
             : formData.questions.map((questionObj, index) => (
                 <div className="w-full" key={index}>
-                  <div className="flex justify-end">
+                  <div className="flex justify-between items-center mb-2">
+                    <Badge color={questionObj.type === "video" ? "purple" : "gray"}>
+                      {questionObj.type === "video" ? "Video Response" : "Text Response"}
+                    </Badge>
                     <svg
                       onClick={() => handleRemoveQuestion(index)}
                       className="w-4 h-4 text-gray-800 dark:text-white hover:bg-gray-100"
@@ -203,9 +206,9 @@ export default function Create() {
                       Question <span className="text-red-500">*</span>
                     </label>
                     <TextInput
-                      id={`question-${index}`} // Set a unique id for each question input
+                      id={`question-${index}`}
                       type="text"
-                      placeholder="Question"
+                      placeholder={questionObj.type === "video" ? "e.g., Why do you want to join PCT?" : "Question"}
                       value={questionObj.question}
                       onChange={(e) =>
                         handleQuestionChange(index, "question", e.target.value)
@@ -217,9 +220,9 @@ export default function Create() {
                       Additional Context / Subheadings
                     </label>
                     <TextInput
-                      id={`additional-${index}`} // Set a unique id for each additional input
+                      id={`additional-${index}`}
                       type="text"
-                      placeholder="Add any additional text that explains the question here"
+                      placeholder={questionObj.type === "video" ? "e.g., Upload to YouTube or Google Drive" : "Add any additional text that explains the question here"}
                       value={questionObj.context}
                       onChange={(e) =>
                         handleQuestionChange(index, "context", e.target.value)
@@ -230,13 +233,24 @@ export default function Create() {
                 </div>
               ))}
         </div>
-        <Button
-          onClick={handleAddQuestion}
-          color="light"
-          className="w-full mb-8"
-        >
-          Add Question
-        </Button>
+        <div className="flex gap-2 mb-8">
+          <Button
+            onClick={() => handleAddQuestion("text")}
+            color="light"
+            className="flex-1"
+          >
+            <HiPlus className="mr-2 h-4 w-4" />
+            Add Text Question
+          </Button>
+          <Button
+            onClick={() => handleAddQuestion("video")}
+            color="purple"
+            className="flex-1"
+          >
+            <HiPlus className="mr-2 h-4 w-4" />
+            Add Video Question
+          </Button>
+        </div>
       </div>
     );
   };

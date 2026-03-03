@@ -39,16 +39,18 @@ export interface FormData {
   responses: string[];
 }
 
-export interface DataToSend extends Omit<FormData, 'responses'>  {
-  listing_id: string
-  responses: { question: string; response: string }[]
+export interface DataToSend extends Omit<FormData, 'responses'> {
+  listing_id: string;
+  responses: { question: string; response: string }[];
+  // Derived at submit time from video question responses, not stored in form state 
+  video_url: string | null;
 }
 
 export type RequiredFormFields = Array<keyof FormData>;
 
 export interface FormProps {
   title: string | null;
-  questions: [] | { question: string; context: string }[];
+  questions: [] | { question: string; context: string; type?: "text" | "video" }[];
   listingId: string | null;
   includeEventsAttended: boolean;
   isPreview: boolean;

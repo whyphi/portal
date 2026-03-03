@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from 'next/navigation';
-import { Listing } from "@/types/listing";
+import { Listing, Question } from "@/types/listing";
 import { Button, Modal, TextInput } from 'flowbite-react';
 import CustomAlert from "@/components/admin/settings/CustomAlert";
 import { useAuth } from "@/app/contexts/AuthContext";
@@ -13,7 +13,7 @@ import { AdminTextStyles } from "@/styles/TextStyles";
 
 interface FormData {
   title: string;
-  questions: { [key: string]: string }[];
+  questions: Question[];
   deadline: Date;
 }
 
@@ -53,7 +53,11 @@ export default function ListingSettings({ params }: { params: { listingId: strin
         setListingData(data)
         setFormData({
           title: data.title,
-          questions: data.questions ?? [],
+          questions: (data.questions ?? []).map(q => ({
+            question: q.question,
+            context: q.context,
+            type: q.type ?? "text",
+          })),
           deadline: new Date(data.deadline), // Assuming data.deadline is a valid date string
         });
         setSelectedDate(new Date(data.deadline));
@@ -127,7 +131,7 @@ export default function ListingSettings({ params }: { params: { listingId: strin
   const handleAddQuestion = () => {
     setFormData((prevData) => ({
       ...prevData,
-      questions: [...prevData.questions, { question: "", context: "" }],
+      questions: [...prevData.questions, { question: "", context: "", type: "text" }],
     }));
   };
 
@@ -140,9 +144,12 @@ export default function ListingSettings({ params }: { params: { listingId: strin
     }));
   };
 
-  const handleQuestionChange = (index: number, field: string, value: string) => {
+  const handleQuestionChange = (index: number, field: "question" | "context", value: string) => {
     const updatedQuestions = [...formData.questions];
-    updatedQuestions[index][field] = value;
+    updatedQuestions[index] = {
+      ...updatedQuestions[index],
+      [field]: value,
+    };
     setFormData((prevData) => ({
       ...prevData,
       questions: updatedQuestions,

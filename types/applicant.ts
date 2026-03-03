@@ -17,6 +17,7 @@ export interface Applicant {
   major:          string;
   phone:          string;
   responses:      Response[] | null;
+  video_url:      string | null;
   colleges:       { [key: string]: boolean };
   events:         { [key: string]: boolean } | null;
   threshold?:     boolean;

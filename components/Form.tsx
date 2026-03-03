@@ -128,7 +128,11 @@ export default function Form({
       alert(`Incomplete fields. Please fill in all required fields.`);
       return false;
     } else if (
-      formData.responses.some((response) => {
+      formData.responses.some((response, index) => {
+        // Skip word count for video questions
+        if (questions[index]?.type === "video") {
+          return false;
+        }
         if (typeof response === "string") {
           const wordCount = response.trim().split(/\s+/).filter(Boolean).length;
           return wordCount > maxWordCount;
@@ -139,6 +143,18 @@ export default function Form({
       alert(
         `One or more responses are over the maximum word count. Please edit your response.`
       );
+      return false;
+    } else if (
+      // Validate video URLs
+      questions.some((q, index) => {
+        if (q.type === "video") {
+          const response = formData.responses[index];
+          return !response || !response.match(/^https?:\/\/.+/);
+        }
+        return false;
+      })
+    ) {
+      alert(`Please enter a valid video URL starting with http:// or https://`);
       return false;
     } else if (!confirmUndergraduate) {
       alert(
@@ -194,10 +210,17 @@ export default function Form({
 
       const normalizedFormData = normalizeFormData(formData);
 
+      const videoIndex = questions.findIndex((q) => q.type === "video");
+      const videoUrl =
+        videoIndex >= 0
+          ? (formData.responses[videoIndex]?.trim() || null)
+          : null;
+
       const dataToSend: DataToSend = {
         ...normalizedFormData,
         listing_id: listingId,
-        responses: responseObjects, // Replace the 'responses' array with response objects
+        responses: responseObjects,
+        video_url: videoUrl,
       };
 
       // Make a POST request to the /apply API endpoint
@@ -260,28 +283,68 @@ export default function Form({
 
   // Component that handles essay questions
   const renderResponseInputs = () => {
-    return questions.map((question, index) => (
-      <div key={index} className="flex flex-col gap-1 mb-6">
-        <label className={AdminTextStyles.default}>
-          {question.question} (Max {maxWordCount} words){" "}
-          <span className="text-red-500">*</span>
-        </label>
-        <Textarea
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 h-32"
-          value={formData.responses[index]}
-          onChange={(e) => handleResponseChange(index, e.target.value)}
-          placeholder={question.context}
-          disabled={isSubmitting}
-        />
-        <p className="text-sm text-gray-500">
-          {maxWordCount - getWordCount(formData.responses[index]) + 1 >= 0
-            ? `Remaining words: ${
-                maxWordCount - getWordCount(formData.responses[index])
-              }`
-            : "Remaining words: Over word count!"}
-        </p>
-      </div>
-    ));
+    return questions.map((question, index) => {
+      // Video question - render URL input
+      if (question.type === "video") {
+        return (
+          <div key={index} className="flex flex-col gap-1 mb-6">
+            <label className={AdminTextStyles.default}>
+              {question.question}{" "}
+              <span className="text-red-500">*</span>
+            </label>
+            <p className="text-sm text-gray-500 mb-2">
+              {question.context || "Upload your video to Google Drive or YouTube and paste the link below."}
+            </p>
+            <TextInput
+              id={`video_response_${index}`}
+              type="url"
+              placeholder="https://drive.google.com/file/d/... or https://youtube.com/watch?v=..."
+              value={formData.responses[index] || ""}
+              onChange={(e) => handleResponseChange(index, e.target.value.trim())}
+              disabled={isSubmitting}
+              color={
+                formData.responses[index] &&
+                !formData.responses[index].match(/^https?:\/\/.+/)
+                  ? "failure"
+                  : undefined
+              }
+              helperText={
+                formData.responses[index] &&
+                !formData.responses[index].match(/^https?:\/\/.+/) ? (
+                  <span className="text-red-500">
+                    Please enter a valid URL starting with http:// or https://
+                  </span>
+                ) : undefined
+              }
+            />
+          </div>
+        );
+      }
+
+      // Text question - render textarea (default)
+      return (
+        <div key={index} className="flex flex-col gap-1 mb-6">
+          <label className={AdminTextStyles.default}>
+            {question.question} (Max {maxWordCount} words){" "}
+            <span className="text-red-500">*</span>
+          </label>
+          <Textarea
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 h-32"
+            value={formData.responses[index]}
+            onChange={(e) => handleResponseChange(index, e.target.value)}
+            placeholder={question.context}
+            disabled={isSubmitting}
+          />
+          <p className="text-sm text-gray-500">
+            {maxWordCount - getWordCount(formData.responses[index]) + 1 >= 0
+              ? `Remaining words: ${
+                  maxWordCount - getWordCount(formData.responses[index])
+                }`
+              : "Remaining words: Over word count!"}
+          </p>
+        </div>
+      );
+    });
   };
 
   const handleChange = (
